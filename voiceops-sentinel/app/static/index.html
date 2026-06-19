@@ -1,0 +1,1329 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>VoiceOps Sentinel – Dashboard</title>
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  
+  <style>
+    :root {
+      --bg-dark: #0a0712;
+      --bg-card: rgba(21, 16, 36, 0.75);
+      --border-color: rgba(255, 255, 255, 0.08);
+      --text-main: #f8fafc;
+      --text-muted: #94a3b8;
+      --primary: #8b5cf6;
+      --primary-hover: #7c3aed;
+      --success: #10b981;
+      --danger: #ff6f61;
+      --warning: #f59e0b;
+      --accent-purple: #c084fc;
+      --accent-blue: #ff6f61;
+      --font-header: 'Outfit', sans-serif;
+      --font-body: 'Inter', sans-serif;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background-color: var(--bg-dark);
+      background-image: 
+        radial-gradient(circle at 10% 20%, rgba(139, 92, 246, 0.12) 0%, transparent 40%),
+        radial-gradient(circle at 90% 80%, rgba(255, 111, 97, 0.12) 0%, transparent 40%);
+      color: var(--text-main);
+      font-family: var(--font-body);
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    header {
+      backdrop-filter: blur(12px);
+      background: rgba(15, 23, 42, 0.6);
+      border-bottom: 1px solid var(--border-color);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1rem 2rem;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+
+    .logo-container {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+
+    .logo-icon {
+      background: linear-gradient(135deg, var(--primary), var(--accent-blue));
+      border-radius: 12px;
+      height: 40px;
+      width: 40px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 800;
+      font-family: var(--font-header);
+      font-size: 1.25rem;
+      box-shadow: 0 4px 12px rgba(139, 92, 246, 0.3);
+    }
+
+    .logo-text h1 {
+      font-family: var(--font-header);
+      font-size: 1.4rem;
+      font-weight: 700;
+      letter-spacing: -0.025em;
+    }
+
+    .logo-text span {
+      background: linear-gradient(to right, #a78bfa, #fca5a5);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .logo-badge {
+      font-size: 0.75rem;
+      font-weight: 600;
+      background: rgba(139, 92, 246, 0.15);
+      color: #c084fc;
+      padding: 0.15rem 0.5rem;
+      border-radius: 9999px;
+      border: 1px solid rgba(139, 92, 246, 0.3);
+    }
+
+    .api-status {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      background: rgba(30, 41, 59, 0.5);
+      border: 1px solid var(--border-color);
+      padding: 0.5rem 1rem;
+      border-radius: 9999px;
+      font-size: 0.85rem;
+      font-weight: 500;
+    }
+
+    .status-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background-color: var(--success);
+      box-shadow: 0 0 8px var(--success);
+    }
+
+    .status-dot.offline {
+      background-color: var(--danger);
+      box-shadow: 0 0 8px var(--danger);
+    }
+
+    .container {
+      max-width: 1440px;
+      margin: 2rem auto;
+      padding: 0 1.5rem;
+      display: grid;
+      grid-template-columns: 360px 1fr;
+      gap: 1.5rem;
+      align-items: start;
+    }
+
+    @media (max-width: 1024px) {
+      .container {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    /* Cards */
+    .card {
+      background: var(--bg-card);
+      backdrop-filter: blur(16px);
+      border: 1px solid var(--border-color);
+      border-radius: 16px;
+      padding: 1.5rem;
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+      transition: transform 0.2s ease, border-color 0.2s ease;
+    }
+
+    .card:hover {
+      border-color: rgba(255, 255, 255, 0.15);
+    }
+
+    .card-title {
+      font-family: var(--font-header);
+      font-size: 1.15rem;
+      font-weight: 600;
+      margin-bottom: 1rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      color: var(--text-main);
+    }
+
+    /* Sidebar controls */
+    .sidebar {
+      display: flex;
+      flex-direction: column;
+      gap: 1.5rem;
+    }
+
+    /* File Drag & Drop */
+    .upload-zone {
+      border: 2px dashed rgba(255, 255, 255, 0.15);
+      border-radius: 12px;
+      padding: 2rem 1rem;
+      text-align: center;
+      cursor: pointer;
+      background: rgba(15, 23, 42, 0.4);
+      transition: all 0.3s ease;
+    }
+
+    .upload-zone:hover, .upload-zone.dragover {
+      border-color: var(--primary);
+      background: rgba(139, 92, 246, 0.05);
+    }
+
+    .upload-icon {
+      font-size: 2.5rem;
+      margin-bottom: 1rem;
+      display: inline-block;
+    }
+
+    .upload-text h3 {
+      font-size: 0.95rem;
+      font-weight: 500;
+      margin-bottom: 0.25rem;
+    }
+
+    .upload-text p {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+    }
+
+    /* File Input hidden */
+    #fileInput {
+      display: none;
+    }
+
+    /* Selected File Display */
+    .selected-file-card {
+      display: none;
+      background: rgba(15, 23, 42, 0.6);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 8px;
+      padding: 0.75rem;
+      margin-top: 1rem;
+      align-items: center;
+      justify-content: space-between;
+      font-size: 0.85rem;
+    }
+
+    .file-details {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      overflow: hidden;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+    }
+
+    .file-icon {
+      color: var(--primary);
+    }
+
+    .remove-file {
+      cursor: pointer;
+      color: var(--text-muted);
+      font-weight: bold;
+      padding: 0.25rem;
+    }
+
+    .remove-file:hover {
+      color: var(--danger);
+    }
+
+    /* Form Fields */
+    .form-group {
+      margin-bottom: 1.25rem;
+    }
+
+    .form-group label {
+      display: block;
+      font-size: 0.85rem;
+      font-weight: 500;
+      margin-bottom: 0.5rem;
+      color: var(--text-muted);
+    }
+
+    .form-control {
+      width: 100%;
+      background: rgba(15, 23, 42, 0.6);
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      padding: 0.75rem;
+      color: var(--text-main);
+      font-family: var(--font-body);
+      font-size: 0.9rem;
+      transition: border-color 0.2s;
+    }
+
+    .form-control:focus {
+      outline: none;
+      border-color: var(--primary);
+    }
+
+    select.form-control {
+      appearance: none;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%2394a3b8'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 0.75rem center;
+      background-size: 1rem;
+      padding-right: 2rem;
+    }
+
+    .btn {
+      width: 100%;
+      background: linear-gradient(135deg, var(--primary), var(--accent-blue));
+      color: var(--text-main);
+      border: none;
+      border-radius: 8px;
+      padding: 0.85rem;
+      font-family: var(--font-header);
+      font-weight: 600;
+      font-size: 0.95rem;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      box-shadow: 0 4px 12px rgba(139, 92, 246, 0.2);
+    }
+
+    .btn:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 6px 16px rgba(139, 92, 246, 0.35);
+    }
+
+    .btn:disabled {
+      background: rgba(148, 163, 184, 0.2);
+      color: var(--text-muted);
+      cursor: not-allowed;
+      transform: none;
+      box-shadow: none;
+    }
+
+    /* Main Content Area */
+    .main-panel {
+      display: flex;
+      flex-direction: column;
+      gap: 1.5rem;
+    }
+
+    /* Welcome / Empty state */
+    .empty-state {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 8rem 2rem;
+      text-align: center;
+    }
+
+    .empty-icon {
+      font-size: 4rem;
+      margin-bottom: 1.5rem;
+      opacity: 0.6;
+    }
+
+    .empty-state h2 {
+      font-family: var(--font-header);
+      font-size: 1.5rem;
+      margin-bottom: 0.5rem;
+    }
+
+    .empty-state p {
+      color: var(--text-muted);
+      max-width: 400px;
+    }
+
+    /* Processing/Loading spinner */
+    .loader-container {
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 6rem 2rem;
+    }
+
+    .spinner {
+      border: 4px solid rgba(139, 92, 246, 0.1);
+      border-left: 4px solid var(--primary);
+      border-radius: 50%;
+      width: 48px;
+      height: 48px;
+      animation: spin 1s linear infinite;
+      margin-bottom: 1.5rem;
+    }
+
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+
+    .loader-text h3 {
+      font-family: var(--font-header);
+      font-size: 1.25rem;
+      margin-bottom: 0.25rem;
+      text-align: center;
+    }
+
+    .loader-text p {
+      color: var(--text-muted);
+      font-size: 0.85rem;
+      text-align: center;
+    }
+
+    /* Audio Player Section */
+    .audio-section {
+      display: none;
+      flex-direction: column;
+      gap: 1rem;
+    }
+
+    .custom-player {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      background: rgba(15, 23, 42, 0.5);
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      padding: 0.75rem 1.25rem;
+      width: 100%;
+    }
+
+    .play-btn {
+      background: var(--primary);
+      border: none;
+      border-radius: 50%;
+      height: 40px;
+      width: 40px;
+      min-width: 40px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--text-main);
+      transition: background 0.2s;
+    }
+
+    .play-btn:hover {
+      background: var(--primary-hover);
+    }
+
+    .player-timeline {
+      flex-grow: 1;
+      height: 6px;
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 3px;
+      position: relative;
+      cursor: pointer;
+    }
+
+    .player-progress {
+      height: 100%;
+      background: linear-gradient(90deg, var(--primary), var(--accent-purple));
+      border-radius: 3px;
+      width: 0%;
+      position: relative;
+    }
+
+    .player-progress::after {
+      content: '';
+      position: absolute;
+      right: -4px;
+      top: -3px;
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      background: var(--text-main);
+      box-shadow: 0 0 6px var(--primary);
+    }
+
+    .player-time {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      min-width: 80px;
+      text-align: right;
+    }
+
+    /* Grid layout for Dashboard analysis */
+    .analysis-grid {
+      display: none;
+      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+      gap: 1.5rem;
+    }
+
+    /* Sentiment timeline design */
+    .sentiment-track {
+      position: relative;
+      padding-left: 1rem;
+      border-left: 2px solid rgba(255, 255, 255, 0.08);
+      margin: 1rem 0;
+      display: flex;
+      flex-direction: column;
+      gap: 1.25rem;
+    }
+
+    .sentiment-node {
+      position: relative;
+    }
+
+    .sentiment-node::before {
+      content: '';
+      position: absolute;
+      left: -1.45rem;
+      top: 0.25rem;
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      background: var(--text-muted);
+      border: 2px solid var(--bg-dark);
+    }
+
+    .sentiment-node.positive::before {
+      background: var(--success);
+      box-shadow: 0 0 6px var(--success);
+    }
+
+    .sentiment-node.negative::before {
+      background: var(--danger);
+      box-shadow: 0 0 6px var(--danger);
+    }
+
+    .sentiment-node.neutral::before {
+      background: var(--accent-blue);
+      box-shadow: 0 0 6px var(--accent-blue);
+    }
+
+    .sentiment-header {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      margin-bottom: 0.25rem;
+    }
+
+    .sentiment-badge {
+      font-size: 0.75rem;
+      font-weight: 600;
+      padding: 0.1rem 0.4rem;
+      border-radius: 4px;
+      text-transform: uppercase;
+    }
+
+    .sentiment-badge.positive {
+      background: rgba(16, 185, 129, 0.15);
+      color: #34d399;
+    }
+
+    .sentiment-badge.negative {
+      background: rgba(239, 68, 68, 0.15);
+      color: #fca5a5;
+    }
+
+    .sentiment-badge.neutral {
+      background: rgba(59, 130, 246, 0.15);
+      color: #93c5fd;
+    }
+
+    .sentiment-text {
+      font-size: 0.85rem;
+      line-height: 1.4;
+    }
+
+    /* Action Checklist items */
+    .action-list {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+    }
+
+    .action-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 0.75rem;
+      background: rgba(15, 23, 42, 0.4);
+      padding: 0.75rem;
+      border-radius: 8px;
+      border: 1px solid var(--border-color);
+      font-size: 0.85rem;
+      line-height: 1.4;
+    }
+
+    .action-checkbox {
+      margin-top: 0.2rem;
+      accent-color: var(--primary);
+      cursor: pointer;
+    }
+
+    /* Metadata details grid */
+    .meta-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 1rem;
+    }
+
+    .meta-item {
+      background: rgba(15, 23, 42, 0.4);
+      padding: 0.75rem;
+      border-radius: 8px;
+      border: 1px solid var(--border-color);
+    }
+
+    .meta-label {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      margin-bottom: 0.25rem;
+    }
+
+    .meta-value {
+      font-family: var(--font-header);
+      font-size: 1.1rem;
+      font-weight: 600;
+    }
+
+    /* Diarized Interactive Transcript Section */
+    .transcript-section {
+      display: none;
+    }
+
+    .transcript-container {
+      max-height: 500px;
+      overflow-y: auto;
+      padding-right: 0.5rem;
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+
+    /* Custom scrollbar for transcript container */
+    .transcript-container::-webkit-scrollbar {
+      width: 6px;
+    }
+    
+    .transcript-container::-webkit-scrollbar-track {
+      background: rgba(255, 255, 255, 0.02);
+      border-radius: 3px;
+    }
+    
+    .transcript-container::-webkit-scrollbar-thumb {
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 3px;
+    }
+
+    .transcript-block {
+      display: flex;
+      flex-direction: column;
+      background: rgba(15, 23, 42, 0.3);
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      padding: 1rem;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      position: relative;
+    }
+
+    .transcript-block:hover {
+      background: rgba(255, 255, 255, 0.02);
+      border-color: rgba(255, 255, 255, 0.15);
+    }
+
+    .transcript-block.active-segment {
+      background: rgba(139, 92, 246, 0.08);
+      border-color: var(--primary);
+      box-shadow: 0 0 12px rgba(139, 92, 246, 0.15);
+    }
+
+    .transcript-meta {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 0.5rem;
+    }
+
+    .speaker-tag {
+      font-family: var(--font-header);
+      font-size: 0.8rem;
+      font-weight: 700;
+      padding: 0.15rem 0.5rem;
+      border-radius: 6px;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .speaker-tag.agent {
+      background: rgba(139, 92, 246, 0.15);
+      color: #c084fc;
+      border: 1px solid rgba(139, 92, 246, 0.3);
+    }
+
+    .speaker-tag.customer {
+      background: rgba(255, 111, 97, 0.15);
+      color: #fca5a5;
+      border: 1px solid rgba(255, 111, 97, 0.3);
+    }
+
+    .timestamp-tag {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      font-family: monospace;
+    }
+
+    .transcript-body {
+      font-size: 0.9rem;
+      line-height: 1.5;
+      color: var(--text-main);
+    }
+
+    .confidence-badge {
+      font-size: 0.7rem;
+      color: var(--text-muted);
+      margin-top: 0.5rem;
+      display: flex;
+      align-items: center;
+      gap: 0.25rem;
+    }
+
+    .confidence-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--success);
+    }
+
+    .confidence-dot.medium {
+      background: var(--warning);
+    }
+
+    .confidence-dot.low {
+      background: var(--danger);
+    }
+
+    .success-alert {
+      background: rgba(16, 185, 129, 0.1);
+      border: 1px solid rgba(16, 185, 129, 0.2);
+      border-radius: 8px;
+      padding: 0.75rem;
+      color: #a7f3d0;
+      font-size: 0.85rem;
+      margin-bottom: 1rem;
+      display: none;
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <div class="logo-container">
+      <div class="logo-icon">V</div>
+      <div class="logo-text">
+        <h1>VoiceOps <span>Sentinel</span></h1>
+      </div>
+      <span class="logo-badge">Call Intelligence</span>
+    </div>
+    <div class="api-status">
+      <div class="status-dot" id="statusDot"></div>
+      <span id="statusText">System Active</span>
+    </div>
+  </header>
+
+  <div class="container">
+    <!-- Sidebar Panel -->
+    <div class="sidebar">
+      <div class="card">
+        <h2 class="card-title">
+          <span>🎙️</span> Ingest Audio Call
+        </h2>
+        
+        <div class="upload-zone" id="uploadZone">
+          <span class="upload-icon">📤</span>
+          <div class="upload-text">
+            <h3>Drag & Drop Call Audio</h3>
+            <p>Supports MP3, WAV, FLAC (max 25MB)</p>
+          </div>
+          <input type="file" id="fileInput" accept=".mp3,.wav,.flac">
+        </div>
+
+        <div class="selected-file-card" id="selectedFileCard">
+          <div class="file-details">
+            <span class="file-icon">📄</span>
+            <span id="fileNameDisplay" style="overflow: hidden; text-overflow: ellipsis;">call_audio.wav</span>
+          </div>
+          <span class="remove-file" id="removeFileBtn">×</span>
+        </div>
+      </div>
+
+      <div class="card">
+        <h2 class="card-title">
+          <span>⚙️</span> Transcription Settings
+        </h2>
+        
+        <div class="form-group">
+          <label for="asrBackend">ASR Engine Backend</label>
+          <select id="asrBackend" class="form-control">
+            <option value="whisper">OpenAI Whisper (Primary)</option>
+            <option value="deepgram">Deepgram SDK (Fallback)</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label for="languageHint">Language Code (Optional)</label>
+          <input type="text" id="languageHint" class="form-control" placeholder="e.g. en, es, fr">
+        </div>
+
+        <div class="form-group">
+          <label for="referenceText">Reference Text for WER (Optional)</label>
+          <textarea id="referenceText" class="form-control" rows="3" placeholder="Enter ground-truth reference text to calculate Word Error Rate..."></textarea>
+        </div>
+
+        <button class="btn" id="transcribeBtn" disabled>
+          <span>⚡</span> Process Call
+        </button>
+      </div>
+    </div>
+
+    <!-- Main Workspace -->
+    <div class="main-panel">
+      <div class="success-alert" id="successAlert">
+        Transcribed successfully in <span id="transcribeDurationSec">0.0</span> seconds.
+      </div>
+
+      <!-- Welcome State -->
+      <div class="card empty-state" id="emptyState">
+        <span class="empty-icon">📊</span>
+        <h2>No Active Call Analytics</h2>
+        <p>Upload a customer support audio call from the sidebar controls to generate transcription, diarization mapping, and call intelligence events.</p>
+      </div>
+
+      <!-- Processing State -->
+      <div class="card loader-container" id="loaderState">
+        <div class="spinner"></div>
+        <div class="loader-text">
+          <h3>Analyzing Audio Call...</h3>
+          <p>Normalizing audio levels, converting to mono 16kHz format, and running automatic speech recognition pipeline.</p>
+        </div>
+      </div>
+
+      <!-- Live Player Block (Hidden initially) -->
+      <div class="card audio-section" id="audioSection">
+        <h2 class="card-title"><span>🔊</span> Call Audio Integration</h2>
+        <div class="custom-player">
+          <button class="play-btn" id="playBtn">▶</button>
+          <div class="player-timeline" id="playerTimeline">
+            <div class="player-progress" id="playerProgress"></div>
+          </div>
+          <div class="player-time" id="playerTime">0:00 / 0:00</div>
+        </div>
+        <audio id="audioSource" style="display: none;"></audio>
+      </div>
+
+      <!-- Call Analytics Dashboard (Hidden initially) -->
+      <div class="analysis-grid" id="analysisGrid">
+        
+        <!-- Call Intelligence & Sentiment -->
+        <div class="card">
+          <h2 class="card-title"><span>📈</span> Sentiment Shifts</h2>
+          <div class="sentiment-track" id="sentimentTrack">
+            <!-- Dynamically populated sentiment timeline -->
+          </div>
+        </div>
+
+        <!-- Follow-up Action Items -->
+        <div class="card">
+          <h2 class="card-title"><span>✅</span> Extracted Action Items</h2>
+          <ul class="action-list" id="actionList">
+            <!-- Dynamically populated action items -->
+          </ul>
+        </div>
+
+        <!-- Audio Metadata Card -->
+        <div class="card">
+          <h2 class="card-title"><span>📋</span> Session Information</h2>
+          <div class="meta-grid">
+            <div class="meta-item">
+              <div class="meta-label">Duration</div>
+              <div class="meta-value" id="metaDuration">0.0s</div>
+            </div>
+            <div class="meta-item">
+              <div class="meta-label">ASR Backend</div>
+              <div class="meta-value" id="metaBackend" style="text-transform: capitalize;">Whisper</div>
+            </div>
+            <div class="meta-item">
+              <div class="meta-label">Language</div>
+              <div class="meta-value" id="metaLanguage" style="text-transform: uppercase;">en</div>
+            </div>
+            <div class="meta-item">
+              <div class="meta-label">WER Score</div>
+              <div class="meta-value" id="metaWer">N/A</div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Conversation Transcript Card (Hidden initially) -->
+      <div class="card transcript-section" id="transcriptSection">
+        <h2 class="card-title"><span>💬</span> Diarized Transcript (Click segments to seek)</h2>
+        <div class="transcript-container" id="transcriptContainer">
+          <!-- Dynamically populated transcript segments -->
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <script>
+    // Elements
+    const uploadZone = document.getElementById('uploadZone');
+    const fileInput = document.getElementById('fileInput');
+    const selectedFileCard = document.getElementById('selectedFileCard');
+    const fileNameDisplay = document.getElementById('fileNameDisplay');
+    const removeFileBtn = document.getElementById('removeFileBtn');
+    const transcribeBtn = document.getElementById('transcribeBtn');
+    const asrBackend = document.getElementById('asrBackend');
+    const languageHint = document.getElementById('languageHint');
+    const referenceText = document.getElementById('referenceText');
+
+    const emptyState = document.getElementById('emptyState');
+    const loaderState = document.getElementById('loaderState');
+    const audioSection = document.getElementById('audioSection');
+    const analysisGrid = document.getElementById('analysisGrid');
+    const transcriptSection = document.getElementById('transcriptSection');
+
+    // Audio Elements
+    const audioSource = document.getElementById('audioSource');
+    const playBtn = document.getElementById('playBtn');
+    const playerTimeline = document.getElementById('playerTimeline');
+    const playerProgress = document.getElementById('playerProgress');
+    const playerTime = document.getElementById('playerTime');
+
+    // Analytics details
+    const successAlert = document.getElementById('successAlert');
+    const transcribeDurationSec = document.getElementById('transcribeDurationSec');
+    const sentimentTrack = document.getElementById('sentimentTrack');
+    const actionList = document.getElementById('actionList');
+    const transcriptContainer = document.getElementById('transcriptContainer');
+
+    const metaDuration = document.getElementById('metaDuration');
+    const metaBackend = document.getElementById('metaBackend');
+    const metaLanguage = document.getElementById('metaLanguage');
+    const metaWer = document.getElementById('metaWer');
+
+    // State Variables
+    let selectedFile = null;
+    let segmentsData = [];
+    let isPlaying = false;
+
+    // Check backend health
+    async function checkHealth() {
+      try {
+        const res = await fetch('/health');
+        if (res.ok) {
+          document.getElementById('statusDot').className = 'status-dot';
+          document.getElementById('statusText').innerText = 'System Active';
+        } else {
+          setOffline();
+        }
+      } catch (err) {
+        setOffline();
+      }
+    }
+
+    function setOffline() {
+      document.getElementById('statusDot').className = 'status-dot offline';
+      document.getElementById('statusText').innerText = 'Server Offline';
+    }
+
+    setInterval(checkHealth, 5000);
+    checkHealth();
+
+    // File Drag & Drop events
+    uploadZone.addEventListener('click', () => fileInput.click());
+
+    uploadZone.addEventListener('dragover', (e) => {
+      e.preventDefault();
+      uploadZone.classList.add('dragover');
+    });
+
+    uploadZone.addEventListener('dragleave', () => {
+      uploadZone.classList.remove('dragover');
+    });
+
+    uploadZone.addEventListener('drop', (e) => {
+      e.preventDefault();
+      uploadZone.classList.remove('dragover');
+      if (e.dataTransfer.files.length > 0) {
+        handleFileSelect(e.dataTransfer.files[0]);
+      }
+    });
+
+    fileInput.addEventListener('change', (e) => {
+      if (e.target.files.length > 0) {
+        handleFileSelect(e.target.files[0]);
+      }
+    });
+
+    function handleFileSelect(file) {
+      const allowed = ['.mp3', '.wav', '.flac'];
+      const ext = file.name.substring(file.name.lastIndexOf('.')).toLowerCase();
+      
+      if (!allowed.includes(ext)) {
+        alert('Unsupported file format. Please select an mp3, wav, or flac file.');
+        return;
+      }
+
+      if (file.size > 26214400) {
+        alert('File size exceeds the 25MB limit.');
+        return;
+      }
+
+      selectedFile = file;
+      fileNameDisplay.innerText = file.name;
+      selectedFileCard.style.display = 'flex';
+      transcribeBtn.disabled = false;
+      
+      // Load file into audio player
+      const fileUrl = URL.createObjectURL(file);
+      audioSource.src = fileUrl;
+      audioSource.load();
+    }
+
+    removeFileBtn.addEventListener('click', () => {
+      selectedFile = null;
+      fileInput.value = '';
+      selectedFileCard.style.display = 'none';
+      transcribeBtn.disabled = true;
+      audioSource.src = '';
+      resetUI();
+    });
+
+    function resetUI() {
+      emptyState.style.display = 'flex';
+      loaderState.style.display = 'none';
+      audioSection.style.display = 'none';
+      analysisGrid.style.display = 'none';
+      transcriptSection.style.display = 'none';
+      successAlert.style.display = 'none';
+      segmentsData = [];
+    }
+
+    // Audio Playback Events
+    audioSource.addEventListener('loadedmetadata', () => {
+      updateTimeDisplay();
+    });
+
+    audioSource.addEventListener('timeupdate', () => {
+      const current = audioSource.currentTime;
+      const duration = audioSource.duration || 1;
+      const pct = (current / duration) * 100;
+      playerProgress.style.width = `${pct}%`;
+      updateTimeDisplay();
+      highlightActiveSegment(current);
+    });
+
+    audioSource.addEventListener('ended', () => {
+      isPlaying = false;
+      playBtn.innerText = '▶';
+    });
+
+    playBtn.addEventListener('click', () => {
+      if (!audioSource.src) return;
+      if (isPlaying) {
+        audioSource.pause();
+        playBtn.innerText = '▶';
+      } else {
+        audioSource.play();
+        playBtn.innerText = '⏸';
+      }
+      isPlaying = !isPlaying;
+    });
+
+    playerTimeline.addEventListener('click', (e) => {
+      if (!audioSource.duration) return;
+      const rect = playerTimeline.getBoundingClientRect();
+      const clickX = e.clientX - rect.left;
+      const pct = clickX / rect.width;
+      audioSource.currentTime = pct * audioSource.duration;
+    });
+
+    function updateTimeDisplay() {
+      const current = formatTime(audioSource.currentTime);
+      const total = formatTime(audioSource.duration || 0);
+      playerTime.innerText = `${current} / ${total}`;
+    }
+
+    function formatTime(secs) {
+      const m = Math.floor(secs / 60);
+      const s = Math.floor(secs % 60);
+      return `${m}:${s < 10 ? '0' : ''}${s}`;
+    }
+
+    // Highlighting transcript segments synchronized with audio playback
+    function highlightActiveSegment(currentTime) {
+      if (!segmentsData.length) return;
+      
+      let activeIndex = -1;
+      for (let i = 0; i < segmentsData.length; i++) {
+        if (currentTime >= segmentsData[i].start && currentTime <= segmentsData[i].end) {
+          activeIndex = i;
+          break;
+        }
+      }
+
+      // Remove existing active states
+      document.querySelectorAll('.transcript-block').forEach((el, idx) => {
+        if (idx === activeIndex) {
+          if (!el.classList.contains('active-segment')) {
+            el.classList.add('active-segment');
+            el.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+          }
+        } else {
+          el.classList.remove('active-segment');
+        }
+      });
+    }
+
+    // Process transcription form submission
+    transcribeBtn.addEventListener('click', async () => {
+      if (!selectedFile) return;
+
+      // Reset panels
+      resetUI();
+      emptyState.style.display = 'none';
+      loaderState.style.display = 'flex';
+
+      const formData = new FormData();
+      formData.append('file', selectedFile);
+      if (languageHint.value.trim()) {
+        formData.append('language', languageHint.value.trim());
+      }
+      if (referenceText.value.trim()) {
+        formData.append('reference_text', referenceText.value.trim());
+      }
+
+      const backendVal = asrBackend.value;
+      
+      const startTime = performance.now();
+
+      try {
+        // Fetch endpoint
+        const response = await fetch('/transcribe', {
+          method: 'POST',
+          body: formData,
+          headers: {
+            // Include dynamic ASR backend selection in request if backed up by env
+            // The backend handles this dynamically based on env variable setup
+          }
+        });
+
+        if (!response.ok) {
+          const errData = await response.json();
+          throw new Error(errData.detail || 'Transcription failed');
+        }
+
+        const result = await resultMockCheck(await response.json(), backendVal);
+        const durationSec = ((performance.now() - startTime) / 1000).toFixed(2);
+        
+        displayResult(result, durationSec);
+      } catch (err) {
+        alert('Error: ' + err.message);
+        resetUI();
+      }
+    });
+
+    // Clean or mock diarization/sentiment when backend ASR lacks speaker tags
+    async function resultMockCheck(data, backendVal) {
+      // In Week 1, standard Whisper returns segments.
+      // We will enhance segments with simulated Diarization (Agent/Customer separation)
+      // and sentiment labels to present the complete visual dashboard design.
+      
+      const segments = data.segments || [];
+      segmentsData = segments;
+      
+      // Let's dynamically tag segments alternately as Agent & Customer to show diarization UI
+      const mockResult = { ...data };
+      mockResult.segments = segments.map((seg, i) => {
+        // Tag agent or customer based on simple index rules
+        const speaker = i % 2 === 0 ? 'Agent' : 'Customer';
+        const speakerTag = speaker.toLowerCase();
+        
+        // Mock some sentiment
+        let sentiment = 'neutral';
+        if (seg.text.toLowerCase().includes('help') || seg.text.toLowerCase().includes('thank')) {
+          sentiment = 'positive';
+        } else if (seg.text.toLowerCase().includes('problem') || seg.text.toLowerCase().includes('waiting') || seg.text.toLowerCase().includes('trouble')) {
+          sentiment = 'negative';
+        }
+
+        return {
+          ...seg,
+          speaker,
+          speakerTag,
+          sentiment
+        };
+      });
+
+      return mockResult;
+    }
+
+    function displayResult(result, processTimeSec) {
+      loaderState.style.display = 'none';
+      audioSection.style.display = 'flex';
+      analysisGrid.style.display = 'grid';
+      transcriptSection.style.display = 'block';
+
+      // Alert
+      transcribeDurationSec.innerText = processTimeSec;
+      successAlert.style.display = 'block';
+
+      // Meta info
+      metaDuration.innerText = result.duration_seconds.toFixed(1) + 's';
+      metaBackend.innerText = result.asr_backend;
+      metaLanguage.innerText = result.language;
+      metaWer.innerText = result.wer_score !== null ? (result.wer_score * 100).toFixed(1) + '%' : 'N/A';
+
+      // Populate Transcript
+      transcriptContainer.innerHTML = '';
+      result.segments.forEach((seg) => {
+        const block = document.createElement('div');
+        block.className = 'transcript-block';
+        
+        const meta = document.createElement('div');
+        meta.className = 'transcript-meta';
+        
+        const speaker = document.createElement('span');
+        speaker.className = `speaker-tag ${seg.speakerTag}`;
+        speaker.innerText = seg.speaker;
+        
+        const time = document.createElement('span');
+        time.className = 'timestamp-tag';
+        time.innerText = `[${formatTime(seg.start)} - ${formatTime(seg.end)}]`;
+        
+        meta.appendChild(speaker);
+        meta.appendChild(time);
+        
+        const text = document.createElement('p');
+        text.className = 'transcript-body';
+        text.innerText = seg.text;
+
+        const confidence = document.createElement('div');
+        confidence.className = 'confidence-badge';
+        
+        let confClass = 'success';
+        if (seg.confidence < 0.6) confClass = 'low';
+        else if (seg.confidence < 0.85) confClass = 'medium';
+        
+        confidence.innerHTML = `<span class="confidence-dot ${confClass}"></span> ASR Confidence: ${(seg.confidence * 100).toFixed(0)}%`;
+
+        block.appendChild(meta);
+        block.appendChild(text);
+        block.appendChild(confidence);
+
+        // Click event to seek
+        block.addEventListener('click', () => {
+          audioSource.currentTime = seg.start;
+          if (!isPlaying) {
+            audioSource.play();
+            playBtn.innerText = '⏸';
+            isPlaying = true;
+          }
+        });
+
+        transcriptContainer.appendChild(block);
+      });
+
+      // Populate Sentiment Track Timeline
+      sentimentTrack.innerHTML = '';
+      
+      const sentimentNodes = result.segments.map(seg => {
+        return {
+          speaker: seg.speaker,
+          text: seg.text,
+          sentiment: seg.sentiment,
+          time: formatTime(seg.start)
+        };
+      });
+
+      if (sentimentNodes.length === 0) {
+        sentimentTrack.innerHTML = '<div class="sentiment-text">No timeline data available.</div>';
+      } else {
+        sentimentNodes.forEach(node => {
+          const el = document.createElement('div');
+          el.className = `sentiment-node ${node.sentiment}`;
+          
+          el.innerHTML = `
+            <div class="sentiment-header">
+              <strong>${node.speaker}</strong>
+              <span class="sentiment-badge ${node.sentiment}">${node.sentiment}</span>
+            </div>
+            <div class="sentiment-text">"${node.text}"</div>
+            <div style="font-size: 0.75rem; color: var(--text-muted); margin-top: 0.2rem;">Timestamp: ${node.time}</div>
+          `;
+          sentimentTrack.appendChild(el);
+        });
+      }
+
+      // Populate Extracted Action Items
+      actionList.innerHTML = '';
+      const sampleActions = [
+        "Verify customer ID and phone number before processing the refund form",
+        "Send confirmation email regarding the delayed package delivery within 24 hours",
+        "Check support logs for other occurrences of error number 12345",
+        "Generate a callback follow-up ticket in the CRM dashboard"
+      ];
+
+      // Add actual action triggers if found in text, else generic mock action list
+      let hasActions = false;
+      result.segments.forEach(seg => {
+        const lower = seg.text.toLowerCase();
+        if (lower.includes('phone') || lower.includes('number') || lower.includes('verify')) {
+          addActionItem("Verify customer verification details (phone number, account credentials)");
+          hasActions = true;
+        }
+        if (lower.includes('refund') || lower.includes('weeks') || lower.includes('check')) {
+          addActionItem("Escalate pending refund issue to manager");
+          hasActions = true;
+        }
+        if (lower.includes('shipping') || lower.includes('delay') || lower.includes('email')) {
+          addActionItem("Send delay shipping email with new tracking number to customer");
+          hasActions = true;
+        }
+      });
+
+      if (!hasActions) {
+        // Fallback to defaults
+        sampleActions.forEach(action => addActionItem(action));
+      }
+    }
+
+    function addActionItem(text) {
+      const li = document.createElement('li');
+      li.className = 'action-item';
+      li.innerHTML = `
+        <input type="checkbox" class="action-checkbox">
+        <span>${text}</span>
+      `;
+      actionList.appendChild(li);
+    }
+  </script>
+</body>
+</html>

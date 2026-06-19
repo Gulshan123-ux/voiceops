@@ -1,0 +1,12 @@
+# pyrefly.toml — configures the pyrefly type checker used by the IDE
+# See: https://pyrefly.dev/en/latest/configuration/
+
+[tool.pyrefly]
+python_interpreter = ".venv/bin/python"
+python_version = "3.13"
+
+# Tell pyrefly to search these source roots
+source_paths = ["app", "tests"]
+
+# Suppress errors in virtual/generated paths (internal pyrefly analysis files)
+ignore_missing_imports = false
