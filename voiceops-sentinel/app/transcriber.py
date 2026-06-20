@@ -185,7 +185,7 @@ def _parse_whisper_response(raw: dict) -> list[TranscriptSegment]:
         List of TranscriptSegment with confidence derived from avg_logprob.
     """
     segments: list[TranscriptSegment] = []
-    for seg in raw.get("segments") or []:
+    for idx, seg in enumerate(raw.get("segments") or []):
         avg_logprob = seg.get("avg_logprob", -0.5)
         segments.append(
             TranscriptSegment(
@@ -194,6 +194,7 @@ def _parse_whisper_response(raw: dict) -> list[TranscriptSegment]:
                 end=round(float(seg.get("end", 0.0)), 3),
                 text=seg.get("text", "").strip(),
                 confidence=_logprob_to_confidence(avg_logprob),
+                speaker=f"Speaker {chr(65 + (idx % 2))}",
             )
         )
     return segments
@@ -274,7 +275,7 @@ def _call_deepgram_api(audio_path: Path, language: str | None = None) -> dict:
         Exception: On API errors (retried up to 3 times).
     """
     # Lazy import of deepgram elements to prevent load-time dependency errors
-    from deepgram import DeepgramClient, PrerecordedOptions  # noqa: PLC0415
+    from deepgram import DeepgramClient  # noqa: PLC0415
 
     api_key = os.getenv("DEEPGRAM_API_KEY")
     if not api_key:
@@ -288,25 +289,29 @@ def _call_deepgram_api(audio_path: Path, language: str | None = None) -> dict:
     with open(audio_path, "rb") as f:
         audio_data = f.read()
 
-    options = PrerecordedOptions(
+    # Deepgram SDK v5+ / v7+ uses client.listen.v1.media.transcribe_file with kwarg options
+    response = client.listen.v1.media.transcribe_file(
+        request=audio_data,
         model="nova-2",
         smart_format=True,
         punctuate=True,
         paragraphs=True,
         utterances=True,
+        diarize=True,
         language=language or "en",
-    )
-
-    # Deepgram SDK v3 uses listen.rest.v("1").transcribe_file
-    response = client.listen.rest.v("1").transcribe_file(
-        {"buffer": audio_data, "mimetype": "audio/wav"},
-        options,
     )
 
     elapsed = time.perf_counter() - t_start
     logger.info("Deepgram API returned in %.3f s", elapsed)
 
-    return response.to_dict() if hasattr(response, "to_dict") else dict(response)
+    if hasattr(response, "model_dump"):
+        return response.model_dump()
+    elif hasattr(response, "to_dict"):
+        return response.to_dict()
+    elif hasattr(response, "dict"):
+        return response.dict()
+    else:
+        return dict(response)
 
 
 def _parse_deepgram_response(
@@ -341,6 +346,12 @@ def _parse_deepgram_response(
             sum(w.get("confidence", 0.0) for w in words) / len(words)
             if words else 0.0
         )
+        speaker_val = utt.get("speaker")
+        if speaker_val is not None:
+            speaker_tag = f"Speaker {chr(65 + int(speaker_val))}"
+        else:
+            speaker_tag = f"Speaker {chr(65 + (idx % 2))}"
+
         segments.append(
             TranscriptSegment(
                 id=idx,
@@ -348,6 +359,7 @@ def _parse_deepgram_response(
                 end=round(float(utt.get("end", duration_seconds)), 3),
                 text=utt.get("transcript", "").strip(),
                 confidence=round(avg_conf, 4),
+                speaker=speaker_tag,
             )
         )
 
@@ -367,6 +379,7 @@ def _parse_deepgram_response(
                     end=duration_seconds,
                     text=transcript.strip(),
                     confidence=round(alternatives[0].get("confidence", 0.0), 4),
+                    speaker="Speaker A",
                 )
             )
 
@@ -420,6 +433,7 @@ def _transcribe_deepgram(
         asr_backend="deepgram",
     )
 
+
 def _transcribe_mock(
     audio_path: Path,
     duration_seconds: float,
@@ -429,7 +443,10 @@ def _transcribe_mock(
 ) -> TranscriptionResult:
     """Generate a realistic mock transcription result for testing and demos."""
     logger.info("Using mock transcription backend for file=%s", original_filename)
-    
+
+    lang_lower = (language or "").strip().lower()
+    is_hinglish = lang_lower.startswith("hi") or "hinglish" in lang_lower
+
     if reference_text:
         # Split reference text into simulated segments
         words = reference_text.split()
@@ -447,10 +464,65 @@ def _transcribe_mock(
                     end=round(end, 2),
                     text=text,
                     confidence=0.98,
+                    speaker=f"Speaker {chr(65 + (len(segments) % 2))}",
                 )
             )
         full_text = reference_text
         wer_score = 0.0
+    elif is_hinglish:
+        # Return a realistic Hinglish code-switching customer support dialogue
+        segments = [
+            TranscriptSegment(
+                id=0,
+                start=0.5,
+                end=4.5,
+                text=(
+                    "Hello, support team mein aapka swagat hai. "
+                    "Mera naam Amit hai. Main aapki kya help kar sakta hoon?"
+                ),
+                confidence=0.99,
+                speaker="Speaker A",
+            ),
+            TranscriptSegment(
+                id=1,
+                start=5.0,
+                end=11.2,
+                text=(
+                    "Hi Amit, main apna balance check karna chahta hoon. "
+                    "Mera account number double nine eight eight seven six hai "
+                    "aur email check@test.com hai."
+                ),
+                confidence=0.95,
+                speaker="Speaker B",
+            ),
+            TranscriptSegment(
+                id=2,
+                start=11.8,
+                end=16.5,
+                text=(
+                    "Sure, main check kar leta hoon. Phone details aur ID confirm "
+                    "karne ke liye shukriya. Main system mein entry load kar raha hoon."
+                ),
+                confidence=0.98,
+                speaker="Speaker A",
+            ),
+            TranscriptSegment(
+                id=3,
+                start=17.0,
+                end=21.5,
+                text="Dhanyawad Amit. Refund kab tak status reflect karega portal par?",
+                confidence=0.99,
+                speaker="Speaker B",
+            )
+        ]
+        # Adjust timestamps to fit within actual audio duration
+        if duration_seconds > 0:
+            scale = duration_seconds / 22.0
+            for seg in segments:
+                seg.start = round(seg.start * scale, 2)
+                seg.end = round(seg.end * scale, 2)
+        full_text = _build_full_transcript(segments)
+        wer_score = None
     else:
         # Predefined realistic customer support scenario matching our design
         segments = [
@@ -460,20 +532,29 @@ def _transcribe_mock(
                 end=4.2,
                 text="Thank you for calling support. My name is Alex. How can I help you today?",
                 confidence=0.99,
+                speaker="Speaker A",
             ),
             TranscriptSegment(
                 id=1,
                 start=4.8,
                 end=9.5,
-                text="Hi Alex, I'm calling because I see an unexpected charge of forty-five dollars on my bill.",
+                text=(
+                    "Hi Alex, I'm calling because I see an unexpected charge "
+                    "of forty-five dollars on my bill."
+                ),
                 confidence=0.95,
+                speaker="Speaker B",
             ),
             TranscriptSegment(
                 id=2,
                 start=10.1,
                 end=15.3,
-                text="I apologize for the confusion. Let me check your account details and resolve this issue right away.",
+                text=(
+                    "I apologize for the confusion. Let me check your "
+                    "account details and resolve this issue right away."
+                ),
                 confidence=0.98,
+                speaker="Speaker A",
             ),
             TranscriptSegment(
                 id=3,
@@ -481,6 +562,7 @@ def _transcribe_mock(
                 end=20.5,
                 text="Thank you, I appreciate your quick help with this billing issue.",
                 confidence=0.99,
+                speaker="Speaker B",
             )
         ]
         # Adjust timestamps to fit within actual audio duration
@@ -496,7 +578,7 @@ def _transcribe_mock(
         job_id=uuid.uuid4(),
         audio_file=original_filename,
         duration_seconds=duration_seconds,
-        language=language or "en",
+        language=language or ("hi" if is_hinglish else "en"),
         segments=segments,
         full_transcript=full_text,
         wer_score=wer_score,
@@ -518,29 +600,7 @@ def transcribe(
 ) -> TranscriptionResult:
     """
     Dispatch transcription to the correct backend based on ``ASR_BACKEND`` env var.
-
-    This is the **single public function** that callers (main.py, tests) should
-    use.  It reads ``ASR_BACKEND`` at call-time so that the backend can be
-    switched without restarting the server (useful for A/B testing).
-
-    Backend selection:
-      * ``ASR_BACKEND=whisper``  (default) → OpenAI Whisper API
-      * ``ASR_BACKEND=deepgram``           → Deepgram Nova-2
-      * ``ASR_BACKEND=mock``               → Local mock transcription
-
-    Args:
-        audio_path:        Path to preprocessed WAV file.
-        duration_seconds:  Audio duration in seconds.
-        original_filename: Original filename (stored in result).
-        language:          Optional BCP-47 language hint.
-        reference_text:    Optional ground-truth for WER computation.
-
-    Returns:
-        TranscriptionResult with all fields populated.
-
-    Raises:
-        ValueError: If ``ASR_BACKEND`` is set to an unknown value.
-        EnvironmentError: If the required API key is missing.
+    Also post-processes results with smart features: PII redaction and Action Item extraction.
     """
     backend = os.getenv("ASR_BACKEND", "whisper").strip().lower()
 
@@ -550,48 +610,80 @@ def transcribe(
     )
 
     if backend == "mock":
-        return _transcribe_mock(
+        result = _transcribe_mock(
             audio_path, duration_seconds, original_filename,
             language=language, reference_text=reference_text,
         )
     elif backend == "whisper":
         try:
-            return _transcribe_whisper(
+            result = _transcribe_whisper(
                 audio_path, duration_seconds, original_filename,
                 language=language, reference_text=reference_text,
             )
         except Exception as exc:
             exc_str = str(exc).lower()
-            if "401" in exc_str or "api key" in exc_str or "unauthorized" in exc_str or "auth" in exc_str:
+            if (
+                "401" in exc_str
+                or "api key" in exc_str
+                or "unauthorized" in exc_str
+                or "auth" in exc_str
+            ):
                 logger.warning(
-                    "Whisper ASR returned 401/unauthorized. Falling back to local Mock ASR. Error: %s",
+                    "Whisper ASR returned 401/unauthorized. "
+                    "Falling back to local Mock ASR. Error: %s",
                     exc,
                 )
-                return _transcribe_mock(
+                result = _transcribe_mock(
                     audio_path, duration_seconds, original_filename,
                     language=language, reference_text=reference_text,
                 )
-            raise
+            else:
+                raise
     elif backend == "deepgram":
         try:
-            return _transcribe_deepgram(
+            result = _transcribe_deepgram(
                 audio_path, duration_seconds, original_filename,
                 language=language, reference_text=reference_text,
             )
         except Exception as exc:
             exc_str = str(exc).lower()
-            if "401" in exc_str or "api key" in exc_str or "unauthorized" in exc_str or "auth" in exc_str:
+            if (
+                "401" in exc_str
+                or "api key" in exc_str
+                or "unauthorized" in exc_str
+                or "auth" in exc_str
+            ):
                 logger.warning(
-                    "Deepgram ASR returned 401/unauthorized. Falling back to local Mock ASR. Error: %s",
+                    "Deepgram ASR returned 401/unauthorized. "
+                    "Falling back to local Mock ASR. Error: %s",
                     exc,
                 )
-                return _transcribe_mock(
+                result = _transcribe_mock(
                     audio_path, duration_seconds, original_filename,
                     language=language, reference_text=reference_text,
                 )
-            raise
+            else:
+                raise
     else:
         raise ValueError(
             f"Unknown ASR_BACKEND='{backend}'. "
             "Valid options: 'whisper', 'deepgram', 'mock'."
         )
+
+    # Post-process with Smart Features
+    from app.smart_features import redact_pii, extract_action_items, evaluate_alerts
+
+    # 1. Action Item Extraction (run before redacting PII to avoid missing keywords)
+    result.action_items = extract_action_items(result.segments)
+
+    # 2. Evaluate Manager Alerts
+    flagged, reasons = evaluate_alerts(result.wer_score, result.segments)
+    result.is_flagged = flagged
+    result.flag_reasons = reasons
+
+    # 3. PII Redaction
+    for seg in result.segments:
+        seg.text = redact_pii(seg.text)
+    result.full_transcript = redact_pii(result.full_transcript)
+
+    return result

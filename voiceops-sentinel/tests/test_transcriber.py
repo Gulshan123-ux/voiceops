@@ -16,15 +16,13 @@ Run with:
 
 from __future__ import annotations
 
-import uuid
-from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
 from unittest.mock import MagicMock, patch
 
 import pytest
 
-from app.schemas import TranscriptSegment, TranscriptionResult
+from app.schemas import TranscriptSegment
 
 
 # ── Helpers ──────────────────────────────────────────────────────────────────
@@ -254,3 +252,117 @@ class TestEnvironmentErrors:
 
         with pytest.raises(EnvironmentError, match="OPENAI_API_KEY"):
             _call_whisper_api(dummy)
+
+
+# ─────────────────────────────────────────────────────────────────────────────
+# Tests: Smart Features (PII Redaction, Action Items, Hinglish mock)
+# ─────────────────────────────────────────────────────────────────────────────
+
+class TestSmartFeatures:
+    """Validate PII redaction and Action Item extractor."""
+
+    def test_pii_redaction(self) -> None:
+        """Verify emails, phones, and names are correctly redacted."""
+        from app.smart_features import redact_pii
+
+        raw_text = "Hello my name is Alex, my email is check@test.com and phone is +91-9886012345."
+        redacted = redact_pii(raw_text)
+
+        assert "[REDACTED NAME]" in redacted
+        assert "[REDACTED EMAIL]" in redacted
+        assert "[REDACTED PHONE]" in redacted
+
+    def test_pii_redaction_hinglish(self) -> None:
+        """Verify spelled-out numbers in Hinglish calls are redacted."""
+        from app.smart_features import redact_pii
+
+        raw_text = (
+            "Mera naam Amit hai aur number nine double eight "
+            "six zero one two three four five hai."
+        )
+        redacted = redact_pii(raw_text)
+
+        assert "[REDACTED NAME]" in redacted
+        assert "[REDACTED PHONE]" in redacted
+
+    def test_action_item_extraction(self) -> None:
+        """Verify action items are extracted based on support keywords."""
+        from app.smart_features import extract_action_items
+        from app.schemas import TranscriptSegment
+
+        segments = [
+            TranscriptSegment(
+                id=0, start=0.0, end=2.0, text="Please schedule a callback tomorrow."
+            ),
+            TranscriptSegment(
+                id=1, start=2.0, end=4.0, text="I will process the refund check now."
+            )
+        ]
+        actions = extract_action_items(segments)
+
+        assert any("callback" in a.lower() for a in actions)
+        assert any("refund" in a.lower() for a in actions)
+
+    def test_mock_hinglish_call(
+        self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+    ) -> None:
+        """Verify Hinglish option returns Hinglish dialog in mock backend."""
+        monkeypatch.setenv("ASR_BACKEND", "mock")
+        from app.transcriber import transcribe
+
+        dummy = tmp_path / "dummy.wav"
+        dummy.write_bytes(b"\x00" * 100)
+
+        result = transcribe(
+            audio_path=dummy,
+            duration_seconds=10.0,
+            original_filename="dummy.wav",
+            language="hi-en"
+        )
+
+        assert result.language == "hi-en"
+        # The mock dialogue has Amit / swagat / refund questions
+        assert any("[REDACTED NAME]" in seg.text for seg in result.segments)
+        assert any("[REDACTED EMAIL]" in seg.text for seg in result.segments)
+
+    def test_evaluate_alerts(self) -> None:
+        """Verify alerts are triggered on high WER and frustrated customer keywords."""
+        from app.smart_features import evaluate_alerts
+        from app.schemas import TranscriptSegment
+
+        # Case 1: High WER trigger
+        segments_ok = [
+            TranscriptSegment(
+                id=0, start=0.0, end=2.0, text="Everything is fine.", speaker="Speaker B"
+            )
+        ]
+        flagged, reasons = evaluate_alerts(0.35, segments_ok)
+        assert flagged is True
+        assert any("High Word Error Rate" in r for r in reasons)
+
+        # Case 2: Frustrated customer keywords trigger
+        segments_frustrated = [
+            TranscriptSegment(
+                id=0,
+                start=0.0,
+                end=2.0,
+                text="I am very frustrated with this service.",
+                speaker="Speaker B",
+            )
+        ]
+        flagged, reasons = evaluate_alerts(0.05, segments_frustrated)
+        assert flagged is True
+        assert any("Customer frustration" in r for r in reasons)
+
+        # Case 3: Frustrated agent keywords (should not trigger alert if agent is talking)
+        segments_agent_frustrated = [
+            TranscriptSegment(
+                id=0,
+                start=0.0,
+                end=2.0,
+                text="I am very frustrated with this service.",
+                speaker="Speaker A",
+            )
+        ]
+        flagged, reasons = evaluate_alerts(0.05, segments_agent_frustrated)
+        assert flagged is False

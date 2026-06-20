@@ -338,9 +338,14 @@ def print_wer_report(report: WERReport) -> None:
 
     for r in report.scenarios:
         status = "✅ PASS" if r.passed else "❌ FAIL"
+        is_noisy = (
+            "noise" in r.scenario.lower()
+            or "phone" in r.scenario.lower()
+            or "accent" in r.scenario.lower()
+        )
         threshold_label = (
             f"{WER_THRESHOLD_NOISY * 100:.0f}%"
-            if "noise" in r.scenario.lower() or "phone" in r.scenario.lower() or "accent" in r.scenario.lower()
+            if is_noisy
             else f"{WER_THRESHOLD_CLEAN * 100:.0f}%"
         )
         print(

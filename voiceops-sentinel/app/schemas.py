@@ -31,6 +31,9 @@ class TranscriptSegment(BaseModel):
         le=1.0,
         description="Confidence score [0, 1]; None if provider does not return it",
     )
+    speaker: Optional[str] = Field(
+        None, description="Speaker identifier (e.g. 'Speaker A' or 'Speaker B')"
+    )
 
 
 # ─────────────────────────────────────────────────────────────────────────────
@@ -39,7 +42,7 @@ class TranscriptSegment(BaseModel):
 class TranscriptionResult(BaseModel):
     """Full transcription response envelope."""
 
-    job_id: UUID = Field(..., description="Unique job identifier (UUIDv4)")
+    job_id: str = Field(..., description="Unique job identifier (UUIDv4)")
     audio_file: str = Field(..., description="Original uploaded filename")
     duration_seconds: float = Field(
         ..., ge=0.0, description="Audio duration in seconds"
@@ -53,17 +56,33 @@ class TranscriptionResult(BaseModel):
     full_transcript: str = Field(
         ..., description="Concatenated plain-text transcript"
     )
+    redacted_transcript: str = Field(
+        ..., description="PII-redacted transcript"
+    )
+    sentiment: str = Field(
+        ..., description="Overall sentiment (Positive / Negative / Neutral)"
+    )
+    sentiment_score: float = Field(
+        ..., description="Sentiment confidence score (0-100)"
+    )
     wer_score: Optional[float] = Field(
         None,
         ge=0.0,
         description="Word Error Rate vs. reference (if reference was provided)",
     )
-    processed_at: datetime = Field(
-        ..., description="UTC timestamp when processing completed"
+    action_items: List[str] = Field(
+        default_factory=list, description="Extracted customer support action items"
     )
-    asr_backend: str = Field(
-        default="whisper", description="ASR engine used ('whisper' or 'deepgram')"
+    speakers: dict[str, List[TranscriptSegment]] = Field(
+        default_factory=dict, description="Segments grouped by speaker (Agent / Customer)"
     )
+    flagged: bool = Field(
+        default=False, description="Whether the call triggered manager alerts"
+    )
+    processed_at: str = Field(
+        ..., description="ISO timestamp when processing completed"
+    )
+
 
 
 # ─────────────────────────────────────────────────────────────────────────────

@@ -37,7 +37,7 @@ import aiofiles
 from dotenv import load_dotenv
 from fastapi import FastAPI, File, Form, HTTPException, UploadFile, status
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.responses import JSONResponse, HTMLResponse
+from fastapi.responses import HTMLResponse
 
 from app.preprocessor import preprocess_audio
 from app.schemas import ErrorResponse, TranscriptionResult
@@ -49,6 +49,7 @@ load_dotenv()
 # ─────────────────────────────────────────────────────────────────────────────
 # Logging setup
 # ─────────────────────────────────────────────────────────────────────────────
+
 
 def _configure_logging() -> None:
     """
@@ -98,6 +99,7 @@ logger = logging.getLogger(__name__)
 
 # Thread pool for blocking preprocessor / transcriber calls
 _executor = ThreadPoolExecutor(max_workers=4, thread_name_prefix="voiceops")
+
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
@@ -202,7 +204,7 @@ async def serve_dashboard() -> HTMLResponse:
     index_path = Path(__file__).parent / "static" / "index.html"
     if not index_path.exists():
         return HTMLResponse(
-            content="<h1>Dashboard index.html not found</h1>", 
+            content="<h1>Dashboard index.html not found</h1>",
             status_code=status.HTTP_404_NOT_FOUND
         )
     return HTMLResponse(content=index_path.read_text(encoding="utf-8"))

@@ -17,7 +17,6 @@ Design decisions
 from __future__ import annotations
 
 import logging
-import os
 import time
 from pathlib import Path
 from typing import Tuple
@@ -156,7 +155,11 @@ def _strip_silence(audio: AudioSegment) -> AudioSegment:
 
     # Only strip if silence exceeds the threshold
     start_trim = leading_silence_ms if leading_silence_ms > MAX_SILENCE_MS else 0
-    end_trim = len(audio) - trailing_silence_ms if trailing_silence_ms > MAX_SILENCE_MS else len(audio)
+    end_trim = (
+        len(audio) - trailing_silence_ms
+        if trailing_silence_ms > MAX_SILENCE_MS
+        else len(audio)
+    )
 
     trimmed = audio[start_trim:end_trim]
     saved_ms = original_duration_ms - len(trimmed)

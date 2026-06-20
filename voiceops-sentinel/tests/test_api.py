@@ -1,8 +1,8 @@
-import pytest
 from fastapi.testclient import TestClient
 from app.main import app
 
 client = TestClient(app)
+
 
 def test_get_dashboard():
     """Verify that GET / returns the dashboard HTML successfully."""
@@ -11,6 +11,7 @@ def test_get_dashboard():
     assert "text/html" in response.headers["content-type"]
     assert "VoiceOps Sentinel" in response.text
     assert "Ingest Audio Call" in response.text
+
 
 def test_get_health():
     """Verify that GET /health returns the correct JSON health check payload."""

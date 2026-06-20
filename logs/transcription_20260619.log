@@ -1,0 +1,155 @@
+2026-06-19 10:05:29,643 | INFO     | root:79 | Logging initialised: level=20, file=logs/transcription_20260619.log
+2026-06-19 10:05:29,643 | INFO     | app.main:106 | VoiceOps Sentinel starting up | ASR_BACKEND=mock | MAX_FILE_SIZE=26214400 bytes
+2026-06-19 10:06:38,893 | INFO     | app.main:112 | VoiceOps Sentinel shutting down…
+2026-06-19 10:06:39,477 | INFO     | root:79 | Logging initialised: level=20, file=logs/transcription_20260619.log
+2026-06-19 10:06:39,477 | INFO     | app.main:106 | VoiceOps Sentinel starting up | ASR_BACKEND=mock | MAX_FILE_SIZE=26214400 bytes
+2026-06-19 10:09:49,485 | INFO     | app.main:112 | VoiceOps Sentinel shutting down…
+2026-06-19 10:09:50,012 | INFO     | root:79 | Logging initialised: level=20, file=logs/transcription_20260619.log
+2026-06-19 10:09:50,012 | INFO     | app.main:106 | VoiceOps Sentinel starting up | ASR_BACKEND=mock | MAX_FILE_SIZE=26214400 bytes
+2026-06-19 10:11:25,686 | INFO     | root:79 | Logging initialised: level=20, file=logs/transcription_20260619.log
+2026-06-19 10:11:25,686 | INFO     | app.main:106 | VoiceOps Sentinel starting up | ASR_BACKEND=mock | MAX_FILE_SIZE=26214400 bytes
+2026-06-19 10:11:27,002 | INFO     | app.main:112 | VoiceOps Sentinel shutting down…
+2026-06-19 10:11:27,357 | INFO     | root:80 | Logging initialised: level=20, file=logs/transcription_20260619.log
+2026-06-19 10:11:27,357 | INFO     | app.main:108 | VoiceOps Sentinel starting up | ASR_BACKEND=mock | MAX_FILE_SIZE=26214400 bytes
+2026-06-19 10:11:30,995 | INFO     | app.main:114 | VoiceOps Sentinel shutting down…
+2026-06-19 10:11:31,350 | INFO     | root:80 | Logging initialised: level=20, file=logs/transcription_20260619.log
+2026-06-19 10:11:31,350 | INFO     | app.main:108 | VoiceOps Sentinel starting up | ASR_BACKEND=mock | MAX_FILE_SIZE=26214400 bytes
+2026-06-19 10:11:38,356 | INFO     | app.main:114 | VoiceOps Sentinel shutting down…
+2026-06-19 10:11:38,718 | INFO     | root:80 | Logging initialised: level=20, file=logs/transcription_20260619.log
+2026-06-19 10:11:38,718 | INFO     | app.main:108 | VoiceOps Sentinel starting up | ASR_BACKEND=mock | MAX_FILE_SIZE=26214400 bytes
+2026-06-19 10:11:52,475 | INFO     | app.main:114 | VoiceOps Sentinel shutting down…
+2026-06-19 10:12:50,324 | INFO     | root:80 | Logging initialised: level=20, file=logs/transcription_20260619.log
+2026-06-19 10:12:50,324 | INFO     | app.main:108 | VoiceOps Sentinel starting up | ASR_BACKEND=mock | MAX_FILE_SIZE=26214400 bytes
+2026-06-19 10:12:57,080 | INFO     | app.main:285 | File received: name=test_tone.wav, content_type=application/octet-stream
+2026-06-19 10:12:57,081 | INFO     | app.main:301 | File spooled: name=test_tone.wav, size=264644 bytes
+2026-06-19 10:12:57,081 | INFO     | app.preprocessor:205 | Preprocessing started: test_tone.wav
+2026-06-19 10:12:57,084 | INFO     | app.preprocessor:227 | Preprocessing complete: file=test_tone.wav, duration=3.00s, preprocessing_time=0.003s, output=preprocessed_test_tone.wav
+2026-06-19 10:12:57,084 | INFO     | app.transcriber:557 | Transcription dispatched: backend=mock, file=test_tone.wav, duration=3.00s
+2026-06-19 10:12:57,084 | INFO     | app.transcriber:435 | Using mock transcription backend for file=test_tone.wav
+2026-06-19 10:12:57,085 | INFO     | app.main:369 | Transcription complete: job_id=df769bc2-3668-4c85-8fa3-5dc40acfe55e, segments=4, duration=3.00s, wer=N/A
+2026-06-19 10:13:56,661 | INFO     | app.main:285 | File received: name=freesound_community-nem_070725-60173.mp3, content_type=audio/mpeg
+2026-06-19 10:13:56,670 | INFO     | app.main:301 | File spooled: name=freesound_community-nem_070725-60173.mp3, size=11934144 bytes
+2026-06-19 10:13:56,670 | INFO     | app.preprocessor:205 | Preprocessing started: freesound_community-nem_070725-60173.mp3
+2026-06-19 10:13:57,484 | INFO     | app.preprocessor:227 | Preprocessing complete: file=freesound_community-nem_070725-60173.mp3, duration=1491.77s, preprocessing_time=0.815s, output=preprocessed_freesound_community-nem_070725-60173.wav
+2026-06-19 10:13:57,486 | INFO     | app.transcriber:557 | Transcription dispatched: backend=mock, file=freesound_community-nem_070725-60173.mp3, duration=1491.77s
+2026-06-19 10:13:57,486 | INFO     | app.transcriber:435 | Using mock transcription backend for file=freesound_community-nem_070725-60173.mp3
+2026-06-19 10:13:57,487 | INFO     | app.main:369 | Transcription complete: job_id=5b77d59d-d0a2-47be-a751-92a6805d18ed, segments=4, duration=1491.77s, wer=N/A
+2026-06-19 10:24:48,465 | INFO     | app.main:285 | File received: name=common_voice_hi_23796067.mp3, content_type=audio/mpeg
+2026-06-19 10:24:48,472 | INFO     | app.main:301 | File spooled: name=common_voice_hi_23796067.mp3, size=30573 bytes
+2026-06-19 10:24:48,473 | INFO     | app.preprocessor:205 | Preprocessing started: common_voice_hi_23796067.mp3
+2026-06-19 10:24:48,677 | INFO     | app.preprocessor:227 | Preprocessing complete: file=common_voice_hi_23796067.mp3, duration=3.82s, preprocessing_time=0.205s, output=preprocessed_common_voice_hi_23796067.wav
+2026-06-19 10:24:48,678 | INFO     | app.transcriber:557 | Transcription dispatched: backend=mock, file=common_voice_hi_23796067.mp3, duration=3.82s
+2026-06-19 10:24:48,678 | INFO     | app.transcriber:435 | Using mock transcription backend for file=common_voice_hi_23796067.mp3
+2026-06-19 10:24:48,678 | INFO     | app.main:369 | Transcription complete: job_id=86309772-3dd8-4cd4-b50c-4990a7d3b4f4, segments=3, duration=3.82s, wer=0.0000
+2026-06-19 10:25:50,378 | INFO     | app.main:285 | File received: name=common_voice_hi_23795247.mp3, content_type=audio/mpeg
+2026-06-19 10:25:50,381 | INFO     | app.main:301 | File spooled: name=common_voice_hi_23795247.mp3, size=23661 bytes
+2026-06-19 10:25:50,382 | INFO     | app.preprocessor:205 | Preprocessing started: common_voice_hi_23795247.mp3
+2026-06-19 10:25:50,543 | INFO     | app.preprocessor:227 | Preprocessing complete: file=common_voice_hi_23795247.mp3, duration=2.95s, preprocessing_time=0.162s, output=preprocessed_common_voice_hi_23795247.wav
+2026-06-19 10:25:50,544 | INFO     | app.transcriber:557 | Transcription dispatched: backend=mock, file=common_voice_hi_23795247.mp3, duration=2.95s
+2026-06-19 10:25:50,544 | INFO     | app.transcriber:435 | Using mock transcription backend for file=common_voice_hi_23795247.mp3
+2026-06-19 10:25:50,544 | INFO     | app.main:369 | Transcription complete: job_id=238704a0-1d01-4735-8749-0bb08955235d, segments=4, duration=2.95s, wer=N/A
+2026-06-19 21:06:04,250 | INFO     | app.main:285 | File received: name=freesound_community-nem_070725-60173.mp3, content_type=audio/mpeg
+2026-06-19 21:06:04,261 | INFO     | app.main:301 | File spooled: name=freesound_community-nem_070725-60173.mp3, size=11934144 bytes
+2026-06-19 21:06:04,262 | INFO     | app.preprocessor:205 | Preprocessing started: freesound_community-nem_070725-60173.mp3
+2026-06-19 21:06:04,992 | INFO     | app.preprocessor:227 | Preprocessing complete: file=freesound_community-nem_070725-60173.mp3, duration=1491.77s, preprocessing_time=0.731s, output=preprocessed_freesound_community-nem_070725-60173.wav
+2026-06-19 21:06:04,995 | INFO     | app.transcriber:557 | Transcription dispatched: backend=mock, file=freesound_community-nem_070725-60173.mp3, duration=1491.77s
+2026-06-19 21:06:04,995 | INFO     | app.transcriber:435 | Using mock transcription backend for file=freesound_community-nem_070725-60173.mp3
+2026-06-19 21:06:04,996 | INFO     | app.main:369 | Transcription complete: job_id=d354d9bb-2227-4168-9ec6-78f50cd1013f, segments=4, duration=1491.77s, wer=N/A
+2026-06-19 21:06:35,940 | INFO     | app.main:285 | File received: name=freesound_community-nem_070725-60173.mp3, content_type=audio/mpeg
+2026-06-19 21:06:35,945 | INFO     | app.main:301 | File spooled: name=freesound_community-nem_070725-60173.mp3, size=11934144 bytes
+2026-06-19 21:06:35,946 | INFO     | app.preprocessor:205 | Preprocessing started: freesound_community-nem_070725-60173.mp3
+2026-06-19 21:06:36,679 | INFO     | app.preprocessor:227 | Preprocessing complete: file=freesound_community-nem_070725-60173.mp3, duration=1491.77s, preprocessing_time=0.734s, output=preprocessed_freesound_community-nem_070725-60173.wav
+2026-06-19 21:06:36,682 | INFO     | app.transcriber:557 | Transcription dispatched: backend=mock, file=freesound_community-nem_070725-60173.mp3, duration=1491.77s
+2026-06-19 21:06:36,682 | INFO     | app.transcriber:435 | Using mock transcription backend for file=freesound_community-nem_070725-60173.mp3
+2026-06-19 21:06:36,682 | INFO     | app.main:369 | Transcription complete: job_id=2e6162be-2f16-46cf-a6ac-6a2c9df042d1, segments=4, duration=1491.77s, wer=N/A
+2026-06-19 21:10:22,633 | INFO     | app.main:285 | File received: name=freesound_community-nem_070725-60173.mp3, content_type=audio/mpeg
+2026-06-19 21:10:22,642 | INFO     | app.main:301 | File spooled: name=freesound_community-nem_070725-60173.mp3, size=11934144 bytes
+2026-06-19 21:10:22,645 | INFO     | app.preprocessor:205 | Preprocessing started: freesound_community-nem_070725-60173.mp3
+2026-06-19 21:10:23,413 | INFO     | app.preprocessor:227 | Preprocessing complete: file=freesound_community-nem_070725-60173.mp3, duration=1491.77s, preprocessing_time=0.769s, output=preprocessed_freesound_community-nem_070725-60173.wav
+2026-06-19 21:10:23,414 | INFO     | app.transcriber:557 | Transcription dispatched: backend=mock, file=freesound_community-nem_070725-60173.mp3, duration=1491.77s
+2026-06-19 21:10:23,414 | INFO     | app.transcriber:435 | Using mock transcription backend for file=freesound_community-nem_070725-60173.mp3
+2026-06-19 21:10:23,415 | INFO     | app.main:369 | Transcription complete: job_id=9a7bfc4c-cf7f-4fa1-91ae-329fccfa0300, segments=5, duration=1491.77s, wer=0.0000
+2026-06-19 21:13:21,307 | INFO     | app.main:285 | File received: name=freesound_community-nem_070725-60173.mp3, content_type=audio/mpeg
+2026-06-19 21:13:21,316 | INFO     | app.main:301 | File spooled: name=freesound_community-nem_070725-60173.mp3, size=11934144 bytes
+2026-06-19 21:13:21,316 | INFO     | app.preprocessor:205 | Preprocessing started: freesound_community-nem_070725-60173.mp3
+2026-06-19 21:13:22,060 | INFO     | app.preprocessor:227 | Preprocessing complete: file=freesound_community-nem_070725-60173.mp3, duration=1491.77s, preprocessing_time=0.744s, output=preprocessed_freesound_community-nem_070725-60173.wav
+2026-06-19 21:13:22,063 | INFO     | app.transcriber:557 | Transcription dispatched: backend=mock, file=freesound_community-nem_070725-60173.mp3, duration=1491.77s
+2026-06-19 21:13:22,063 | INFO     | app.transcriber:435 | Using mock transcription backend for file=freesound_community-nem_070725-60173.mp3
+2026-06-19 21:13:22,064 | INFO     | app.main:369 | Transcription complete: job_id=4de0954f-3f88-44a8-a50f-934da21f773e, segments=5, duration=1491.77s, wer=0.0000
+2026-06-19 21:21:54,598 | INFO     | app.main:285 | File received: name=freesound_community-nem_070725-60173.mp3, content_type=audio/mpeg
+2026-06-19 21:21:54,606 | INFO     | app.main:301 | File spooled: name=freesound_community-nem_070725-60173.mp3, size=11934144 bytes
+2026-06-19 21:21:54,607 | INFO     | app.preprocessor:205 | Preprocessing started: freesound_community-nem_070725-60173.mp3
+2026-06-19 21:21:55,356 | INFO     | app.preprocessor:227 | Preprocessing complete: file=freesound_community-nem_070725-60173.mp3, duration=1491.77s, preprocessing_time=0.750s, output=preprocessed_freesound_community-nem_070725-60173.wav
+2026-06-19 21:21:55,359 | INFO     | app.transcriber:557 | Transcription dispatched: backend=mock, file=freesound_community-nem_070725-60173.mp3, duration=1491.77s
+2026-06-19 21:21:55,359 | INFO     | app.transcriber:435 | Using mock transcription backend for file=freesound_community-nem_070725-60173.mp3
+2026-06-19 21:21:55,359 | INFO     | app.main:369 | Transcription complete: job_id=d0963af4-4359-49eb-9d88-73a500bd642d, segments=4, duration=1491.77s, wer=N/A
+2026-06-19 21:34:30,736 | INFO     | app.main:285 | File received: name=freesound_community-nem_070725-60173.mp3, content_type=audio/mpeg
+2026-06-19 21:34:30,746 | INFO     | app.main:301 | File spooled: name=freesound_community-nem_070725-60173.mp3, size=11934144 bytes
+2026-06-19 21:34:30,746 | INFO     | app.preprocessor:205 | Preprocessing started: freesound_community-nem_070725-60173.mp3
+2026-06-19 21:34:31,631 | INFO     | app.preprocessor:227 | Preprocessing complete: file=freesound_community-nem_070725-60173.mp3, duration=1491.77s, preprocessing_time=0.885s, output=preprocessed_freesound_community-nem_070725-60173.wav
+2026-06-19 21:34:31,633 | INFO     | app.transcriber:557 | Transcription dispatched: backend=mock, file=freesound_community-nem_070725-60173.mp3, duration=1491.77s
+2026-06-19 21:34:31,634 | INFO     | app.transcriber:435 | Using mock transcription backend for file=freesound_community-nem_070725-60173.mp3
+2026-06-19 21:34:31,634 | INFO     | app.main:369 | Transcription complete: job_id=b617ee57-f386-4fc4-ac95-946e509ef845, segments=4, duration=1491.77s, wer=N/A
+2026-06-19 21:35:51,175 | INFO     | app.main:114 | VoiceOps Sentinel shutting down…
+2026-06-19 21:35:51,833 | INFO     | root:80 | Logging initialised: level=20, file=logs/transcription_20260619.log
+2026-06-19 21:35:51,833 | INFO     | app.main:108 | VoiceOps Sentinel starting up | ASR_BACKEND=mock | MAX_FILE_SIZE=26214400 bytes
+2026-06-19 21:35:57,796 | INFO     | app.main:114 | VoiceOps Sentinel shutting down…
+2026-06-19 21:35:58,517 | INFO     | root:80 | Logging initialised: level=20, file=logs/transcription_20260619.log
+2026-06-19 21:35:58,518 | INFO     | app.main:108 | VoiceOps Sentinel starting up | ASR_BACKEND=mock | MAX_FILE_SIZE=26214400 bytes
+2026-06-19 21:36:14,592 | INFO     | app.main:114 | VoiceOps Sentinel shutting down…
+2026-06-19 21:36:15,226 | INFO     | root:80 | Logging initialised: level=20, file=logs/transcription_20260619.log
+2026-06-19 21:36:15,226 | INFO     | app.main:108 | VoiceOps Sentinel starting up | ASR_BACKEND=mock | MAX_FILE_SIZE=26214400 bytes
+2026-06-19 21:36:25,127 | INFO     | app.main:114 | VoiceOps Sentinel shutting down…
+2026-06-19 21:36:25,720 | INFO     | root:80 | Logging initialised: level=20, file=logs/transcription_20260619.log
+2026-06-19 21:36:25,720 | INFO     | app.main:108 | VoiceOps Sentinel starting up | ASR_BACKEND=mock | MAX_FILE_SIZE=26214400 bytes
+2026-06-19 21:36:37,037 | INFO     | app.main:114 | VoiceOps Sentinel shutting down…
+2026-06-19 21:36:37,646 | INFO     | root:80 | Logging initialised: level=20, file=logs/transcription_20260619.log
+2026-06-19 21:36:37,646 | INFO     | app.main:108 | VoiceOps Sentinel starting up | ASR_BACKEND=mock | MAX_FILE_SIZE=26214400 bytes
+2026-06-19 21:37:38,932 | INFO     | app.main:114 | VoiceOps Sentinel shutting down…
+2026-06-19 21:37:39,330 | INFO     | root:80 | Logging initialised: level=20, file=logs/transcription_20260619.log
+2026-06-19 21:37:39,330 | INFO     | app.main:108 | VoiceOps Sentinel starting up | ASR_BACKEND=mock | MAX_FILE_SIZE=26214400 bytes
+2026-06-19 21:38:01,855 | INFO     | app.main:114 | VoiceOps Sentinel shutting down…
+2026-06-19 21:38:02,496 | INFO     | root:80 | Logging initialised: level=20, file=logs/transcription_20260619.log
+2026-06-19 21:38:02,496 | INFO     | app.main:108 | VoiceOps Sentinel starting up | ASR_BACKEND=mock | MAX_FILE_SIZE=26214400 bytes
+2026-06-19 21:38:07,545 | INFO     | app.main:114 | VoiceOps Sentinel shutting down…
+2026-06-19 21:38:07,943 | INFO     | root:80 | Logging initialised: level=20, file=logs/transcription_20260619.log
+2026-06-19 21:38:07,943 | INFO     | app.main:108 | VoiceOps Sentinel starting up | ASR_BACKEND=mock | MAX_FILE_SIZE=26214400 bytes
+2026-06-19 21:38:14,916 | INFO     | app.main:114 | VoiceOps Sentinel shutting down…
+2026-06-19 21:38:15,427 | INFO     | root:80 | Logging initialised: level=20, file=logs/transcription_20260619.log
+2026-06-19 21:38:15,427 | INFO     | app.main:108 | VoiceOps Sentinel starting up | ASR_BACKEND=mock | MAX_FILE_SIZE=26214400 bytes
+2026-06-19 21:38:21,085 | INFO     | app.main:114 | VoiceOps Sentinel shutting down…
+2026-06-19 21:38:21,464 | INFO     | root:80 | Logging initialised: level=20, file=logs/transcription_20260619.log
+2026-06-19 21:38:21,464 | INFO     | app.main:108 | VoiceOps Sentinel starting up | ASR_BACKEND=mock | MAX_FILE_SIZE=26214400 bytes
+2026-06-19 21:38:29,745 | INFO     | app.main:114 | VoiceOps Sentinel shutting down…
+2026-06-19 21:38:30,241 | INFO     | root:80 | Logging initialised: level=20, file=logs/transcription_20260619.log
+2026-06-19 21:38:30,241 | INFO     | app.main:108 | VoiceOps Sentinel starting up | ASR_BACKEND=mock | MAX_FILE_SIZE=26214400 bytes
+2026-06-19 21:45:04,219 | INFO     | app.main:285 | File received: name=freesound_community-nem_070725-60173.mp3, content_type=audio/mpeg
+2026-06-19 21:45:04,228 | INFO     | app.main:301 | File spooled: name=freesound_community-nem_070725-60173.mp3, size=11934144 bytes
+2026-06-19 21:45:04,229 | INFO     | app.preprocessor:205 | Preprocessing started: freesound_community-nem_070725-60173.mp3
+2026-06-19 21:45:05,168 | INFO     | app.preprocessor:227 | Preprocessing complete: file=freesound_community-nem_070725-60173.mp3, duration=1491.77s, preprocessing_time=0.939s, output=preprocessed_freesound_community-nem_070725-60173.wav
+2026-06-19 21:45:05,172 | INFO     | app.transcriber:607 | Transcription dispatched: backend=mock, file=freesound_community-nem_070725-60173.mp3, duration=1491.77s
+2026-06-19 21:45:05,172 | INFO     | app.transcriber:445 | Using mock transcription backend for file=freesound_community-nem_070725-60173.mp3
+2026-06-19 21:45:05,176 | INFO     | app.main:369 | Transcription complete: job_id=42263bc7-d9d8-4dc1-8c6b-66a22594c7b9, segments=4, duration=1491.77s, wer=N/A
+2026-06-19 21:48:57,776 | INFO     | app.main:114 | VoiceOps Sentinel shutting down…
+2026-06-19 21:48:58,579 | INFO     | root:80 | Logging initialised: level=20, file=logs/transcription_20260619.log
+2026-06-19 21:48:58,579 | INFO     | app.main:108 | VoiceOps Sentinel starting up | ASR_BACKEND=mock | MAX_FILE_SIZE=26214400 bytes
+2026-06-19 21:49:07,594 | INFO     | app.main:114 | VoiceOps Sentinel shutting down…
+2026-06-19 21:49:08,032 | INFO     | root:80 | Logging initialised: level=20, file=logs/transcription_20260619.log
+2026-06-19 21:49:08,032 | INFO     | app.main:108 | VoiceOps Sentinel starting up | ASR_BACKEND=mock | MAX_FILE_SIZE=26214400 bytes
+2026-06-19 21:49:15,855 | INFO     | app.main:114 | VoiceOps Sentinel shutting down…
+2026-06-19 21:49:16,460 | INFO     | root:80 | Logging initialised: level=20, file=logs/transcription_20260619.log
+2026-06-19 21:49:16,460 | INFO     | app.main:108 | VoiceOps Sentinel starting up | ASR_BACKEND=mock | MAX_FILE_SIZE=26214400 bytes
+2026-06-19 21:50:14,436 | INFO     | app.main:114 | VoiceOps Sentinel shutting down…
+2026-06-19 21:50:15,116 | INFO     | root:80 | Logging initialised: level=20, file=logs/transcription_20260619.log
+2026-06-19 21:50:15,116 | INFO     | app.main:108 | VoiceOps Sentinel starting up | ASR_BACKEND=mock | MAX_FILE_SIZE=26214400 bytes
+2026-06-19 21:50:25,115 | INFO     | app.main:114 | VoiceOps Sentinel shutting down…
+2026-06-19 21:50:25,746 | INFO     | root:80 | Logging initialised: level=20, file=logs/transcription_20260619.log
+2026-06-19 21:50:25,746 | INFO     | app.main:108 | VoiceOps Sentinel starting up | ASR_BACKEND=mock | MAX_FILE_SIZE=26214400 bytes
+2026-06-19 21:51:11,501 | INFO     | app.main:285 | File received: name=freesound_community-nem_070725-60173.mp3, content_type=audio/mpeg
+2026-06-19 21:51:11,506 | INFO     | app.main:301 | File spooled: name=freesound_community-nem_070725-60173.mp3, size=11934144 bytes
+2026-06-19 21:51:11,506 | INFO     | app.preprocessor:205 | Preprocessing started: freesound_community-nem_070725-60173.mp3
+2026-06-19 21:51:12,394 | INFO     | app.preprocessor:227 | Preprocessing complete: file=freesound_community-nem_070725-60173.mp3, duration=1491.77s, preprocessing_time=0.887s, output=preprocessed_freesound_community-nem_070725-60173.wav
+2026-06-19 21:51:12,396 | INFO     | app.transcriber:607 | Transcription dispatched: backend=mock, file=freesound_community-nem_070725-60173.mp3, duration=1491.77s
+2026-06-19 21:51:12,396 | INFO     | app.transcriber:445 | Using mock transcription backend for file=freesound_community-nem_070725-60173.mp3
+2026-06-19 21:51:12,404 | INFO     | app.main:369 | Transcription complete: job_id=fd3d0282-e3e7-4ffc-89f0-c1d604a89ac6, segments=4, duration=1491.77s, wer=N/A
+2026-06-20 10:13:29,250 | INFO     | app.main:114 | VoiceOps Sentinel shutting down…

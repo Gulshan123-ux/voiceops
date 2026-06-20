@@ -9,6 +9,9 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   
+  <!-- WaveSurfer.js -->
+  <script src="https://unpkg.com/wavesurfer.js@7"></script>
+  
   <style>
     :root {
       --bg-dark: #0a0712;
@@ -688,10 +691,33 @@
       font-family: monospace;
     }
 
+    .pii-highlight {
+      background: rgba(239, 68, 68, 0.15);
+      color: #f87171;
+      border: 1px dashed rgba(239, 68, 68, 0.5);
+      padding: 0.1rem 0.35rem;
+      border-radius: 4px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      letter-spacing: 0.02em;
+      display: inline-block;
+    }
+
     .transcript-body {
       font-size: 0.9rem;
       line-height: 1.5;
       color: var(--text-main);
+    }
+
+    @keyframes alertPulse {
+      0% {
+        box-shadow: 0 0 4px rgba(239, 68, 68, 0.2);
+        border-color: rgba(239, 68, 68, 0.3);
+      }
+      100% {
+        box-shadow: 0 0 12px rgba(239, 68, 68, 0.5);
+        border-color: rgba(239, 68, 68, 0.7);
+      }
     }
 
     .confidence-badge {
@@ -728,6 +754,546 @@
       margin-bottom: 1rem;
       display: none;
     }
+
+    /* Navbar links & Tabs styling */
+    .navbar-links {
+      display: flex;
+      gap: 1.5rem;
+      align-items: center;
+      margin-left: 2rem;
+      margin-right: auto;
+    }
+    
+    .nav-link {
+      color: var(--text-muted);
+      text-decoration: none;
+      font-size: 0.95rem;
+      font-weight: 500;
+      transition: all 0.3s ease;
+      cursor: pointer;
+      padding: 0.25rem 0.5rem;
+      border-radius: 4px;
+    }
+    
+    .nav-link:hover, .nav-link.active {
+      color: var(--text-main);
+      background: rgba(255, 255, 255, 0.05);
+    }
+    
+    /* Blue Status Bar */
+    .status-bar {
+      background: linear-gradient(90deg, #1e1b4b, #1e3a8a);
+      border-bottom: 1px solid rgba(59, 130, 246, 0.3);
+      padding: 0.5rem 2rem;
+      font-size: 0.85rem;
+      display: flex;
+      gap: 2rem;
+      color: #93c5fd;
+      align-items: center;
+      font-family: var(--font-header);
+    }
+    
+    .status-item {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    
+    .status-dot-green {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: #10b981;
+      box-shadow: 0 0 8px #10b981;
+    }
+    
+    /* Views container */
+    .tab-view {
+      display: none;
+    }
+    
+    .tab-view.active {
+      display: block;
+    }
+    
+    /* Hero Section */
+    .hero-section {
+      text-align: center;
+      padding: 4rem 2rem 2.5rem;
+      max-width: 800px;
+      margin: 0 auto;
+    }
+    
+    .hero-title {
+      font-size: 3rem;
+      font-weight: 800;
+      letter-spacing: -0.03em;
+      margin-bottom: 1rem;
+      background: linear-gradient(135deg, #fff 30%, #a78bfa 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      font-family: var(--font-header);
+    }
+    
+    .hero-desc {
+      font-size: 1.15rem;
+      color: var(--text-muted);
+      margin-bottom: 2rem;
+      line-height: 1.6;
+    }
+    
+    .hero-buttons {
+      display: flex;
+      gap: 1rem;
+      justify-content: center;
+    }
+    
+    .btn-secondary {
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid var(--border-color);
+      color: var(--text-main);
+    }
+    
+    .btn-secondary:hover {
+      background: rgba(255, 255, 255, 0.1);
+    }
+    
+    /* Stats Bar Grid */
+    .stats-bar-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 1.5rem;
+      max-width: 1200px;
+      margin: 0 auto 3rem;
+      padding: 0 2rem;
+    }
+    
+    .stat-card {
+      background: rgba(30, 41, 59, 0.4);
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      padding: 1.25rem;
+      text-align: center;
+      transition: all 0.3s ease;
+    }
+    
+    .stat-card:hover {
+      transform: translateY(-2px);
+      background: rgba(30, 41, 59, 0.6);
+      border-color: rgba(139, 92, 246, 0.4);
+    }
+    
+    .stat-val {
+      font-size: 1.8rem;
+      font-weight: 700;
+      color: #fff;
+      font-family: var(--font-header);
+      margin-bottom: 0.25rem;
+    }
+    
+    .stat-label {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+    
+    /* Pipeline Status Section */
+    .pipeline-section {
+      max-width: 1200px;
+      margin: 0 auto 3.5rem;
+      padding: 0 2rem;
+    }
+    
+    .pipeline-flow {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: rgba(15, 23, 42, 0.4);
+      border: 1px solid var(--border-color);
+      border-radius: 16px;
+      padding: 2rem;
+      position: relative;
+      overflow-x: auto;
+      gap: 1rem;
+    }
+    
+    .pipeline-step {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.5rem;
+      flex: 1;
+      text-align: center;
+      min-width: 120px;
+      z-index: 2;
+    }
+    
+    .step-icon {
+      width: 48px;
+      height: 48px;
+      border-radius: 50%;
+      background: rgba(30, 41, 59, 0.8);
+      border: 2px solid var(--border-color);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.2rem;
+      transition: all 0.3s ease;
+    }
+    
+    .pipeline-step.active .step-icon {
+      background: rgba(139, 92, 246, 0.2);
+      border-color: var(--primary);
+      box-shadow: 0 0 16px var(--primary);
+      color: #fff;
+    }
+    
+    .pipeline-step.active .step-title {
+      color: #fff;
+      font-weight: 600;
+    }
+    
+    .step-title {
+      font-size: 0.9rem;
+      color: var(--text-muted);
+      font-family: var(--font-header);
+    }
+    
+    .step-desc {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      opacity: 0.7;
+    }
+    
+    .pipeline-line {
+      position: absolute;
+      top: 44px;
+      left: 10%;
+      right: 10%;
+      height: 2px;
+      background: var(--border-color);
+      z-index: 1;
+    }
+    
+    /* Features Section */
+    .features-section {
+      max-width: 1200px;
+      margin: 0 auto 3.5rem;
+      padding: 0 2rem;
+    }
+    
+    .section-title {
+      font-size: 1.8rem;
+      font-weight: 700;
+      margin-bottom: 1.5rem;
+      font-family: var(--font-header);
+      text-align: left;
+    }
+    
+    .features-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+      gap: 1.5rem;
+    }
+    
+    .feature-card-home {
+      background: rgba(30, 41, 59, 0.3);
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      padding: 1.5rem;
+      position: relative;
+      transition: all 0.3s ease;
+    }
+    
+    .feature-card-home:hover {
+      border-color: rgba(139, 92, 246, 0.3);
+      background: rgba(30, 41, 59, 0.5);
+    }
+    
+    .feature-icon-wrapper {
+      font-size: 2rem;
+      margin-bottom: 1rem;
+    }
+    
+    .feature-title-home {
+      font-size: 1.1rem;
+      font-weight: 600;
+      margin-bottom: 0.5rem;
+      color: #fff;
+      font-family: var(--font-header);
+    }
+    
+    .feature-desc-home {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      line-height: 1.5;
+    }
+    
+    .feature-badge-home {
+      position: absolute;
+      top: 1.5rem;
+      right: 1.5rem;
+      font-size: 0.7rem;
+      font-weight: 600;
+      padding: 0.15rem 0.5rem;
+      border-radius: 4px;
+    }
+    
+    .badge-success {
+      background: rgba(16, 185, 129, 0.15);
+      color: #34d399;
+      border: 1px solid rgba(16, 185, 129, 0.3);
+    }
+    
+    .badge-warning {
+      background: rgba(245, 158, 11, 0.15);
+      color: #fbbf24;
+      border: 1px solid rgba(245, 158, 11, 0.3);
+    }
+    
+    /* Recent Calls Section */
+    .recent-calls-section {
+      max-width: 1200px;
+      margin: 0 auto 4rem;
+      padding: 0 2rem;
+    }
+    
+    .table-container {
+      background: rgba(15, 23, 42, 0.4);
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      overflow: hidden;
+    }
+    
+    .recent-calls-table {
+      width: 100%;
+      border-collapse: collapse;
+      text-align: left;
+      font-size: 0.9rem;
+    }
+    
+    .recent-calls-table th {
+      background: rgba(30, 41, 59, 0.6);
+      padding: 1rem;
+      font-weight: 600;
+      color: var(--text-muted);
+      border-bottom: 1px solid var(--border-color);
+    }
+    
+    .recent-calls-table td {
+      padding: 1rem;
+      border-bottom: 1px solid var(--border-color);
+      color: var(--text-main);
+    }
+    
+    .recent-calls-table tr:hover {
+      background: rgba(255, 255, 255, 0.02);
+    }
+    
+    .call-wer-badge {
+      display: inline-block;
+      padding: 0.15rem 0.4rem;
+      border-radius: 4px;
+      font-size: 0.8rem;
+      font-weight: 600;
+    }
+    
+    .call-wer-badge.good {
+      background: rgba(16, 185, 129, 0.15);
+      color: #34d399;
+      border: 1px solid rgba(16, 185, 129, 0.3);
+    }
+    
+    .call-wer-badge.warn {
+      background: rgba(245, 158, 11, 0.15);
+      color: #fbbf24;
+      border: 1px solid rgba(245, 158, 11, 0.3);
+    }
+    
+    /* Code Modal */
+    .modal-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(15, 23, 42, 0.8);
+      backdrop-filter: blur(8px);
+      z-index: 1000;
+      display: none;
+      align-items: center;
+      justify-content: center;
+    }
+    
+    .modal-content-code {
+      background: #0f172a;
+      border: 1px solid rgba(139, 92, 246, 0.4);
+      border-radius: 16px;
+      width: 90%;
+      max-width: 600px;
+      padding: 2rem;
+      position: relative;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
+    }
+    
+    .modal-close-btn {
+      position: absolute;
+      top: 1rem;
+      right: 1rem;
+      background: none;
+      border: none;
+      color: var(--text-muted);
+      font-size: 1.5rem;
+      cursor: pointer;
+    }
+    
+    .modal-close-btn:hover {
+      color: #fff;
+    }
+    
+    /* Dashboard Metrics grid */
+    .dashboard-metrics-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 1rem;
+      margin-bottom: 1.5rem;
+    }
+    
+    .metric-card-dash {
+      background: rgba(30, 41, 59, 0.3);
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      padding: 1rem 1.25rem;
+    }
+    
+    .metric-val-dash {
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: #fff;
+      font-family: var(--font-header);
+    }
+    
+    .metric-label-dash {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      text-transform: uppercase;
+    }
+    
+    /* Dashboard custom chart row */
+    .wer-sentiment-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+      gap: 1.5rem;
+      margin-bottom: 1.5rem;
+    }
+    
+    .chart-container {
+      background: rgba(30, 41, 59, 0.2);
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      padding: 1.25rem;
+    }
+    
+    .chart-bars {
+      display: flex;
+      justify-content: space-around;
+      align-items: flex-end;
+      height: 140px;
+      margin-top: 1.5rem;
+      border-bottom: 1.5px solid var(--border-color);
+      padding-bottom: 0.25rem;
+    }
+    
+    .chart-bar-wrapper {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      flex-grow: 1;
+    }
+    
+    .chart-bar-fill {
+      width: 24px;
+      background: linear-gradient(to top, var(--primary), var(--accent-purple));
+      border-radius: 4px 4px 0 0;
+      position: relative;
+      transition: height 1.2s cubic-bezier(0.4, 0, 0.2, 1);
+      height: 0px; /* animated in JS */
+    }
+    
+    .chart-bar-fill.active {
+      background: linear-gradient(to top, var(--danger), var(--warning));
+    }
+    
+    .chart-bar-val {
+      position: absolute;
+      top: -1.25rem;
+      left: 50%;
+      transform: translateX(-50%);
+      font-size: 0.75rem;
+      color: #fff;
+      font-weight: 600;
+    }
+    
+    .chart-bar-label {
+      font-size: 0.7rem;
+      color: var(--text-muted);
+      margin-top: 0.5rem;
+      text-transform: uppercase;
+    }
+    
+    /* Horizontal Sentiment bar */
+    .sentiment-bar-progress {
+      display: flex;
+      height: 16px;
+      border-radius: 8px;
+      overflow: hidden;
+      margin-top: 2rem;
+      background: rgba(255, 255, 255, 0.05);
+    }
+    
+    .sentiment-segment {
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.7rem;
+      font-weight: 600;
+      color: #fff;
+      transition: width 1s ease;
+    }
+    
+    .sentiment-segment.pos {
+      background: #10b981;
+    }
+    
+    .sentiment-segment.neu {
+      background: #64748b;
+    }
+    
+    .sentiment-segment.neg {
+      background: #ff6f61;
+    }
+    
+    .sentiment-legend {
+      display: flex;
+      gap: 1.5rem;
+      margin-top: 1.5rem;
+      font-size: 0.8rem;
+    }
+    
+    .legend-item {
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+      color: var(--text-muted);
+    }
+    
+    .legend-color {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+    }
   </style>
 </head>
 <body>
@@ -740,154 +1306,507 @@
       </div>
       <span class="logo-badge">Call Intelligence</span>
     </div>
-    <div class="api-status">
-      <div class="status-dot" id="statusDot"></div>
-      <span id="statusText">System Active</span>
+    <nav class="navbar-links">
+      <a class="nav-link active" id="navHomeBtn">🏠 Home</a>
+      <a class="nav-link" id="navDashboardBtn">📊 Dashboard</a>
+      <a class="nav-link" id="navDocBtn">📝 Documentation</a>
+    </nav>
+    <div style="display: flex; align-items: center; gap: 1rem;">
+      <div class="api-status" style="margin-right: 0.5rem;">
+        <div class="status-dot" id="statusDot"></div>
+        <span id="statusText">System Active</span>
+      </div>
+      <button class="btn" id="openAppBtn" style="padding: 0.5rem 1rem; font-size: 0.85rem; width: auto; margin: 0;">
+        Open App
+      </button>
     </div>
   </header>
 
-  <div class="container">
-    <!-- Sidebar Panel -->
-    <div class="sidebar">
-      <div class="card">
-        <h2 class="card-title">
-          <span>🎙️</span> Ingest Audio Call
-        </h2>
-        
-        <div class="upload-zone" id="uploadZone">
-          <span class="upload-icon">📤</span>
-          <div class="upload-text">
-            <h3>Drag & Drop Call Audio</h3>
-            <p>Supports MP3, WAV, FLAC (max 25MB)</p>
-          </div>
-          <input type="file" id="fileInput" accept=".mp3,.wav,.flac">
-        </div>
+  <!-- Blue Status Bar -->
+  <div class="status-bar">
+    <div class="status-item">
+      <div class="status-dot-green"></div>
+      <span>Pipeline Active</span>
+    </div>
+    <div class="status-item">
+      <span style="color: #60a5fa;">●</span>
+      <span>Whisper API: Connected</span>
+    </div>
+    <div class="status-item">
+      <span style="color: #c084fc;">●</span>
+      <span>Processed Today: 3 Calls</span>
+    </div>
+  </div>
 
-        <div class="selected-file-card" id="selectedFileCard">
-          <div class="file-details">
-            <span class="file-icon">📄</span>
-            <span id="fileNameDisplay" style="overflow: hidden; text-overflow: ellipsis;">call_audio.wav</span>
-          </div>
-          <span class="remove-file" id="removeFileBtn">×</span>
-        </div>
-      </div>
-
-      <div class="card">
-        <h2 class="card-title">
-          <span>⚙️</span> Transcription Settings
-        </h2>
-        
-        <div class="form-group">
-          <label for="asrBackend">ASR Engine Backend</label>
-          <select id="asrBackend" class="form-control">
-            <option value="whisper">OpenAI Whisper (Primary)</option>
-            <option value="deepgram">Deepgram SDK (Fallback)</option>
-          </select>
-        </div>
-
-        <div class="form-group">
-          <label for="languageHint">Language Code (Optional)</label>
-          <input type="text" id="languageHint" class="form-control" placeholder="e.g. en, es, fr">
-        </div>
-
-        <div class="form-group">
-          <label for="referenceText">Reference Text for WER (Optional)</label>
-          <textarea id="referenceText" class="form-control" rows="3" placeholder="Enter ground-truth reference text to calculate Word Error Rate..."></textarea>
-        </div>
-
-        <button class="btn" id="transcribeBtn" disabled>
-          <span>⚡</span> Process Call
+  <!-- 1. HOME VIEW (Active by default) -->
+  <div class="tab-view active" id="homeView">
+    <!-- Hero Section -->
+    <div class="hero-section">
+      <h1 class="hero-title">VoiceOps Sentinel</h1>
+      <p class="hero-desc">
+        Automated customer support speech analytics pipeline. Transcribe Hinglish dialog, automatically redact PII fields, extract action items, and trigger real-time quality alerts.
+      </p>
+      <div class="hero-buttons">
+        <button class="btn" id="heroOpenDashboardBtn" style="width: auto; padding: 0.75rem 1.5rem;">
+          Open Dashboard
+        </button>
+        <button class="btn btn-secondary" id="heroGenerateCodeBtn" style="width: auto; padding: 0.75rem 1.5rem;">
+          Generate Code
         </button>
       </div>
     </div>
 
-    <!-- Main Workspace -->
-    <div class="main-panel">
-      <div class="success-alert" id="successAlert">
-        Transcribed successfully in <span id="transcribeDurationSec">0.0</span> seconds.
+    <!-- Stats Bar -->
+    <div class="stats-bar-grid">
+      <div class="stat-card">
+        <div class="stat-val">4.2%</div>
+        <div class="stat-label">Average WER</div>
       </div>
-
-      <!-- Welcome State -->
-      <div class="card empty-state" id="emptyState">
-        <span class="empty-icon">📊</span>
-        <h2>No Active Call Analytics</h2>
-        <p>Upload a customer support audio call from the sidebar controls to generate transcription, diarization mapping, and call intelligence events.</p>
+      <div class="stat-card">
+        <div class="stat-val">98.1%</div>
+        <div class="stat-label">Transcription Accuracy</div>
       </div>
+      <div class="stat-card">
+        <div class="stat-val">1.3s</div>
+        <div class="stat-label">Processing Time</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-val">100%</div>
+        <div class="stat-label">PII Redaction Rate</div>
+      </div>
+    </div>
 
-      <!-- Processing State -->
-      <div class="card loader-container" id="loaderState">
-        <div class="spinner"></div>
-        <div class="loader-text">
-          <h3>Analyzing Audio Call...</h3>
-          <p>Normalizing audio levels, converting to mono 16kHz format, and running automatic speech recognition pipeline.</p>
+    <!-- Pipeline Status Flow -->
+    <div class="pipeline-section">
+      <h2 class="section-title"><span>🔄</span> Pipeline Status (Week 1 Flow)</h2>
+      <div class="pipeline-flow">
+        <div class="pipeline-line"></div>
+        <div class="pipeline-step">
+          <div class="step-icon">🎤</div>
+          <div class="step-title">Audio Input</div>
+          <div class="step-desc">Ingest WAV/MP3</div>
+        </div>
+        <div class="pipeline-step">
+          <div class="step-icon">⚙️</div>
+          <div class="step-title">Preprocessor</div>
+          <div class="step-desc">16kHz Mono Convert</div>
+        </div>
+        <div class="pipeline-step active">
+          <div class="step-icon">🧠</div>
+          <div class="step-title">Whisper API</div>
+          <div class="step-desc">Active / Connected</div>
+        </div>
+        <div class="pipeline-step">
+          <div class="step-icon">📊</div>
+          <div class="step-title">WER Test</div>
+          <div class="step-desc">Evaluator Run</div>
+        </div>
+        <div class="pipeline-step">
+          <div class="step-icon">📄</div>
+          <div class="step-title">JSON Output</div>
+          <div class="step-desc">Final Schema</div>
         </div>
       </div>
+    </div>
 
-      <!-- Live Player Block (Hidden initially) -->
-      <div class="card audio-section" id="audioSection">
-        <h2 class="card-title"><span>🔊</span> Call Audio Integration</h2>
-        <div class="custom-player">
-          <button class="play-btn" id="playBtn">▶</button>
-          <div class="player-timeline" id="playerTimeline">
-            <div class="player-progress" id="playerProgress"></div>
+    <!-- Features Section -->
+    <div class="features-section">
+      <h2 class="section-title"><span>🌟</span> Key Capabilities</h2>
+      <div class="features-grid">
+        <div class="feature-card-home">
+          <span class="feature-badge-home badge-success">Week 1</span>
+          <div class="feature-icon-wrapper">🔊</div>
+          <h3 class="feature-title-home">Live Waveform Player</h3>
+          <p class="feature-desc-home">Visual representation of call duration with seekable dialogue timeline synchronization.</p>
+        </div>
+        <div class="feature-card-home">
+          <span class="feature-badge-home badge-success">Week 1</span>
+          <div class="feature-icon-wrapper">📈</div>
+          <h3 class="feature-title-home">Sentiment Detection</h3>
+          <p class="feature-desc-home">Track positive/negative trends and overall call satisfaction dynamically.</p>
+        </div>
+        <div class="feature-card-home">
+          <span class="feature-badge-home badge-warning">Week 2</span>
+          <div class="feature-icon-wrapper">🔒</div>
+          <h3 class="feature-title-home">PII Redaction Preview</h3>
+          <p class="feature-desc-home">Mask phone numbers, names, and emails automatically in speech transcripts.</p>
+        </div>
+        <div class="feature-card-home">
+          <span class="feature-badge-home badge-warning">Week 2</span>
+          <div class="feature-icon-wrapper">✅</div>
+          <h3 class="feature-title-home">Action Item Extractor</h3>
+          <p class="feature-desc-home">Heuristic intelligence to parse tasks, scheduling, and billing callbacks.</p>
+        </div>
+        <div class="feature-card-home">
+          <span class="feature-badge-home badge-warning">Week 2</span>
+          <div class="feature-icon-wrapper">👥</div>
+          <h3 class="feature-title-home">Speaker Diarization</h3>
+          <p class="feature-desc-home">Automatically separate Speaker A (Agent) and Speaker B (Customer) transcripts.</p>
+        </div>
+        <div class="feature-card-home">
+          <span class="feature-badge-home badge-success">Week 1</span>
+          <div class="feature-icon-wrapper">📝</div>
+          <h3 class="feature-title-home">Export Reports</h3>
+          <p class="feature-desc-home">Download full call logs as raw TXT, structured JSON, or print-friendly PDF format.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Recent Calls Section -->
+    <div class="recent-calls-section">
+      <h2 class="section-title"><span>📞</span> Recent Call Ingestions</h2>
+      <div class="table-container">
+        <table class="recent-calls-table">
+          <thead>
+            <tr>
+              <th>Call ID</th>
+              <th>Scenario</th>
+              <th>Duration</th>
+              <th>Noise Level</th>
+              <th>WER Score</th>
+              <th>Action</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>call_001</td>
+              <td>Billing / Payment Inquiry</td>
+              <td>45s</td>
+              <td>Low</td>
+              <td><td><span class="call-wer-badge good">3.8%</span></td></td>
+              <td><button class="btn load-mock-call-btn" data-callid="call_001" style="padding: 0.25rem 0.5rem; font-size: 0.75rem; width: auto; margin: 0;">Load Call</button></td>
+            </tr>
+            <tr>
+              <td>call_002</td>
+              <td><span style="color: #f87171;">⚠️ Angry Customer</span> Cancellation</td>
+              <td>120s</td>
+              <td>High</td>
+              <td><td><span class="call-wer-badge warn">5.1%</span></td></td>
+              <td><button class="btn load-mock-call-btn" data-callid="call_002" style="padding: 0.25rem 0.5rem; font-size: 0.75rem; width: auto; margin: 0;">Load Call</button></td>
+            </tr>
+            <tr>
+              <td>call_003</td>
+              <td>Hinglish Tech Support</td>
+              <td>85s</td>
+              <td>Medium</td>
+              <td><td><span class="call-wer-badge good">4.5%</span></td></td>
+              <td><button class="btn load-mock-call-btn" data-callid="call_003" style="padding: 0.25rem 0.5rem; font-size: 0.75rem; width: auto; margin: 0;">Load Call</button></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- 2. DASHBOARD VIEW (Swapped dynamically) -->
+  <div class="tab-view" id="dashboardView" style="padding: 1.5rem 2rem 3rem;">
+    
+    <!-- Dashboard metrics -->
+    <div class="dashboard-metrics-grid">
+      <div class="metric-card-dash">
+        <div class="metric-val-dash">5</div>
+        <div class="metric-label-dash">Total Calls Processed</div>
+      </div>
+      <div class="metric-card-dash">
+        <div class="metric-val-dash">4.2%</div>
+        <div class="metric-label-dash">Average WER Score</div>
+      </div>
+      <div class="metric-card-dash" style="border-color: rgba(239, 68, 68, 0.3);">
+        <div class="metric-val-dash" style="color: #ef4444;">1</div>
+        <div class="metric-label-dash">Critical Alerts Triggered</div>
+      </div>
+      <div class="metric-card-dash">
+        <div class="metric-val-dash" style="color: #10b981;">60%</div>
+        <div class="metric-label-dash">Avg. Sentiment (Positive)</div>
+      </div>
+    </div>
+
+    <!-- WER Bar chart & Sentiment Breakdown Row -->
+    <div class="wer-sentiment-grid">
+      <div class="chart-container">
+        <h3 style="margin-top: 0; font-family: var(--font-header); font-size: 1rem; color: #fff;">ASR Performance (WER Comparison)</h3>
+        <div class="chart-bars">
+          <div class="chart-bar-wrapper">
+            <div class="chart-bar-fill" style="height: 74px;"><span class="chart-bar-val">3.8%</span></div>
+            <div class="chart-bar-label">call_001</div>
           </div>
-          <div class="player-time" id="playerTime">0:00 / 0:00</div>
-        </div>
-        <audio id="audioSource" style="display: none;"></audio>
-      </div>
-
-      <!-- Call Analytics Dashboard (Hidden initially) -->
-      <div class="analysis-grid" id="analysisGrid">
-        
-        <!-- Call Intelligence & Sentiment -->
-        <div class="card">
-          <h2 class="card-title"><span>📈</span> Sentiment Shifts</h2>
-          <div class="sentiment-track" id="sentimentTrack">
-            <!-- Dynamically populated sentiment timeline -->
+          <div class="chart-bar-wrapper">
+            <div class="chart-bar-fill active" style="height: 100px;"><span class="chart-bar-val">5.1%</span></div>
+            <div class="chart-bar-label" style="color: #f87171;">call_002</div>
+          </div>
+          <div class="chart-bar-wrapper">
+            <div class="chart-bar-fill" style="height: 88px;"><span class="chart-bar-val">4.5%</span></div>
+            <div class="chart-bar-label">call_003</div>
+          </div>
+          <div class="chart-bar-wrapper">
+            <div class="chart-bar-fill" style="height: 76px;"><span class="chart-bar-val">3.9%</span></div>
+            <div class="chart-bar-label">call_004</div>
+          </div>
+          <div class="chart-bar-wrapper">
+            <div class="chart-bar-fill" style="height: 80px;"><span class="chart-bar-val">4.1%</span></div>
+            <div class="chart-bar-label">call_005</div>
           </div>
         </div>
+      </div>
 
-        <!-- Follow-up Action Items -->
-        <div class="card">
-          <h2 class="card-title"><span>✅</span> Extracted Action Items</h2>
-          <ul class="action-list" id="actionList">
-            <!-- Dynamically populated action items -->
+      <div class="chart-container">
+        <h3 style="margin-top: 0; font-family: var(--font-header); font-size: 1rem; color: #fff;">Sentiment Breakdown (All Processed Calls)</h3>
+        <div class="sentiment-bar-progress">
+          <div class="sentiment-segment pos" style="width: 60%;">60%</div>
+          <div class="sentiment-segment neu" style="width: 20%;">20%</div>
+          <div class="sentiment-segment neg" style="width: 20%;">20%</div>
+        </div>
+        <div class="sentiment-legend">
+          <div class="legend-item">
+            <div class="legend-color" style="background: #10b981;"></div>
+            <span>Positive</span>
+          </div>
+          <div class="legend-item">
+            <div class="legend-color" style="background: #64748b;"></div>
+            <span>Neutral</span>
+          </div>
+          <div class="legend-item">
+            <div class="legend-color" style="background: #ff6f61;"></div>
+            <span>Negative (Distress)</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Alert Box specifically for call_002 -->
+    <div class="card alert-card" id="call002AlertBox" style="border: 1px solid rgba(239, 68, 68, 0.4); background: rgba(239, 68, 68, 0.08); margin-bottom: 1.5rem; display: block;">
+      <div style="display: flex; align-items: flex-start; gap: 1rem;">
+        <div style="font-size: 2rem; line-height: 1;">🚨</div>
+        <div>
+          <h3 style="color: #f87171; margin-top: 0; margin-bottom: 0.5rem; font-family: var(--font-header);">MANAGER ALERTS TRIGGERED ON call_002</h3>
+          <ul style="margin: 0; padding-left: 1.2rem; color: var(--text-main); font-size: 0.9rem; line-height: 1.5;">
+            <li>Customer distress detected: Angry customer cancellation scenario.</li>
+            <li>ASR Warning: WER of 5.1% exceeds base low-error rate limits.</li>
           </ul>
         </div>
+      </div>
+    </div>
 
-        <!-- Audio Metadata Card -->
+    <!-- Sidebar controls and main panel layout -->
+    <div class="container" style="padding: 0; max-width: none;">
+      <!-- Sidebar Panel -->
+      <div class="sidebar">
         <div class="card">
-          <h2 class="card-title"><span>📋</span> Session Information</h2>
-          <div class="meta-grid">
-            <div class="meta-item">
-              <div class="meta-label">Duration</div>
-              <div class="meta-value" id="metaDuration">0.0s</div>
+          <h2 class="card-title">
+            <span>🎙️</span> Ingest Audio Call
+          </h2>
+          
+          <div class="upload-zone" id="uploadZone">
+            <span class="upload-icon">📤</span>
+            <div class="upload-text">
+              <h3>Drag & Drop Call Audio</h3>
+              <p>Supports MP3, WAV, FLAC (max 25MB)</p>
             </div>
-            <div class="meta-item">
-              <div class="meta-label">ASR Backend</div>
-              <div class="meta-value" id="metaBackend" style="text-transform: capitalize;">Whisper</div>
+            <input type="file" id="fileInput" accept=".mp3,.wav,.flac">
+          </div>
+
+          <div class="selected-file-card" id="selectedFileCard">
+            <div class="file-details">
+              <span class="file-icon">📄</span>
+              <span id="fileNameDisplay" style="overflow: hidden; text-overflow: ellipsis;">call_audio.wav</span>
             </div>
-            <div class="meta-item">
-              <div class="meta-label">Language</div>
-              <div class="meta-value" id="metaLanguage" style="text-transform: uppercase;">en</div>
-            </div>
-            <div class="meta-item">
-              <div class="meta-label">WER Score</div>
-              <div class="meta-value" id="metaWer">N/A</div>
+            <span class="remove-file" id="removeFileBtn">×</span>
+          </div>
+        </div>
+
+        <div class="card">
+          <h2 class="card-title">
+            <span>⚙️</span> Transcription Settings
+          </h2>
+          
+          <div class="form-group">
+            <label for="asrBackend">ASR Engine Backend</label>
+            <select id="asrBackend" class="form-control">
+              <option value="whisper">OpenAI Whisper (Primary)</option>
+              <option value="deepgram">Deepgram SDK (Fallback)</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label for="languageHint">Language Code (Optional)</label>
+            <input type="text" id="languageHint" class="form-control" placeholder="e.g. en, hi (Hinglish), es">
+          </div>
+
+          <div class="form-group">
+            <label for="referenceText">Reference Text for WER (Optional)</label>
+            <textarea id="referenceText" class="form-control" rows="3" placeholder="Enter ground-truth reference text to calculate Word Error Rate..."></textarea>
+          </div>
+
+          <button class="btn" id="transcribeBtn" disabled>
+            <span>⚡</span> Process Call
+          </button>
+        </div>
+      </div>
+
+      <!-- Main Workspace -->
+      <div class="main-panel">
+        <div class="success-alert" id="successAlert">
+          Transcribed successfully in <span id="transcribeDurationSec">0.0</span> seconds.
+        </div>
+
+        <!-- Welcome State -->
+        <div class="card empty-state" id="emptyState">
+          <span class="empty-icon">📊</span>
+          <h2>No Active Call Analytics</h2>
+          <p>Upload a customer support audio call from the sidebar controls or click 'Load Call' on Home page to view transcription, diarization, and call intelligence events.</p>
+        </div>
+
+        <!-- Processing State -->
+        <div class="card loader-container" id="loaderState">
+          <div class="spinner"></div>
+          <div class="loader-text">
+            <h3>Analyzing Audio Call...</h3>
+            <p>Normalizing audio levels, converting to mono 16kHz format, and running automatic speech recognition pipeline.</p>
+          </div>
+        </div>
+
+        <!-- Manager Alert Card (Hidden initially) -->
+        <div class="card alert-card" id="managerAlertCard" style="display: none; border: 1px solid rgba(239, 68, 68, 0.4); background: rgba(239, 68, 68, 0.08); animation: alertPulse 2s infinite alternate; margin-bottom: 1.5rem;">
+          <div style="display: flex; align-items: flex-start; gap: 1rem;">
+            <div style="font-size: 2rem; line-height: 1;">🚨</div>
+            <div>
+              <h3 style="color: #f87171; margin-top: 0; margin-bottom: 0.5rem; font-family: var(--font-header);">MANAGER ALERT TRIGGERED</h3>
+              <ul id="alertReasonsList" style="margin: 0; padding-left: 1.2rem; color: var(--text-main); font-size: 0.9rem; line-height: 1.5;">
+                <!-- Reasons populated here -->
+              </ul>
             </div>
           </div>
         </div>
 
-      </div>
-
-      <!-- Conversation Transcript Card (Hidden initially) -->
-      <div class="card transcript-section" id="transcriptSection">
-        <h2 class="card-title"><span>💬</span> Diarized Transcript (Click segments to seek)</h2>
-        <div class="transcript-container" id="transcriptContainer">
-          <!-- Dynamically populated transcript segments -->
+        <!-- Live Player Block (Hidden initially) -->
+        <div class="card audio-section" id="audioSection">
+          <h2 class="card-title"><span>🔊</span> Call Audio Integration</h2>
+          <div class="custom-player">
+            <button class="play-btn" id="playBtn">▶</button>
+            <div id="waveform" style="flex-grow: 1; min-height: 48px; background: rgba(15, 23, 42, 0.4); border-radius: 8px; border: 1px solid var(--border-color); cursor: pointer;"></div>
+            <div class="player-time" id="playerTime">0:00 / 0:00</div>
+          </div>
         </div>
-      </div>
 
+        <!-- Call Analytics Dashboard (Hidden initially) -->
+        <div class="analysis-grid" id="analysisGrid">
+          
+          <!-- Call Intelligence & Sentiment -->
+          <div class="card">
+            <h2 class="card-title"><span>📈</span> Sentiment Shifts</h2>
+            <div class="sentiment-track" id="sentimentTrack">
+              <!-- Dynamically populated sentiment timeline -->
+            </div>
+          </div>
+
+          <!-- Follow-up Action Items -->
+          <div class="card">
+            <h2 class="card-title"><span>✅</span> Extracted Action Items</h2>
+            <ul class="action-list" id="actionList">
+              <!-- Dynamically populated action items -->
+            </ul>
+          </div>
+
+          <!-- Audio Metadata Card -->
+          <div class="card">
+            <h2 class="card-title"><span>📋</span> Session Information</h2>
+            <div class="meta-grid">
+              <div class="meta-item">
+                <div class="meta-label">Duration</div>
+                <div class="meta-value" id="metaDuration">0.0s</div>
+              </div>
+              <div class="meta-item">
+                <div class="meta-label">ASR Backend</div>
+                <div class="meta-value" id="metaBackend" style="text-transform: capitalize;">Whisper</div>
+              </div>
+              <div class="meta-item">
+                <div class="meta-label">Language</div>
+                <div class="meta-value" id="metaLanguage" style="text-transform: uppercase;">en</div>
+              </div>
+              <div class="meta-item">
+                <div class="meta-label">WER Score</div>
+                <div class="meta-value" id="metaWer">N/A</div>
+              </div>
+              <div class="meta-item" style="grid-column: span 2;">
+                <div class="meta-label">Overall Sentiment</div>
+                <div id="metaSentiment" style="font-family: var(--font-header); font-size: 1.1rem; font-weight: 600; margin-top: 0.25rem;">N/A</div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- Conversation Transcript Card (Hidden initially) -->
+        <div class="card transcript-section" id="transcriptSection">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; flex-wrap: wrap; gap: 1rem;">
+            <h2 class="card-title" style="margin-bottom: 0;"><span>💬</span> Latest Transcript (Click segments to seek)</h2>
+            <div style="display: flex; gap: 0.5rem;">
+              <button class="btn" id="exportPdfBtn" style="padding: 0.4rem 0.8rem; font-size: 0.8rem; width: auto; background: rgba(139, 92, 246, 0.15); border: 1px solid var(--primary); box-shadow: none; color: #c084fc;">
+                📄 Export PDF
+              </button>
+              <button class="btn" id="copyTextBtn" style="padding: 0.4rem 0.8rem; font-size: 0.8rem; width: auto; background: rgba(255, 255, 255, 0.08); border: 1px solid var(--border-color); box-shadow: none;">
+                📋 Copy Text
+              </button>
+              <button class="btn" id="aiSummaryBtn" style="padding: 0.4rem 0.8rem; font-size: 0.8rem; width: auto; background: rgba(255, 255, 255, 0.08); border: 1px solid var(--border-color); box-shadow: none;">
+                ✨ AI Summary
+              </button>
+              <button class="btn" id="exportTxtBtn" style="padding: 0.4rem 0.8rem; font-size: 0.8rem; width: auto; background: rgba(255, 255, 255, 0.08); border: 1px solid var(--border-color); box-shadow: none;">
+                TXT
+              </button>
+              <button class="btn" id="exportJsonBtn" style="padding: 0.4rem 0.8rem; font-size: 0.8rem; width: auto; background: rgba(255, 255, 255, 0.08); border: 1px solid var(--border-color); box-shadow: none;">
+                JSON
+              </button>
+            </div>
+          </div>
+          <div class="transcript-container" id="transcriptContainer">
+            <!-- Dynamically populated transcript segments -->
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- Documentation Tab Overlay (Hidden by default) -->
+  <div class="tab-view" id="documentationView" style="padding: 3rem 2rem; max-width: 800px; margin: 0 auto;">
+    <div class="card">
+      <h2 class="card-title">📖 VoiceOps Sentinel Documentation</h2>
+      <p style="color: var(--text-muted); font-size: 0.95rem; line-height: 1.6; margin-bottom: 1.5rem;">
+        VoiceOps Sentinel is a full-stack speech analytics engine built for customer experience managers and QA assessors. It uses local preprocessors, OpenAI Whisper API, Deepgram SDK, and a custom PII Redactor / Alert System rules engine.
+      </p>
+      <h3 style="color: #fff; margin-bottom: 0.5rem; font-size: 1.1rem; font-family: var(--font-header);">💡 Active Pipelines</h3>
+      <ul style="color: var(--text-muted); font-size: 0.9rem; line-height: 1.6; padding-left: 1.2rem; margin-bottom: 2rem;">
+        <li><strong>ASR Backend Whisper:</strong> Dispatches audio inputs to OpenAI Audio Transcribe with temperature set to 0.0 for deterministic outputs.</li>
+        <li><strong>ASR Backend Deepgram:</strong> SDK-integrated turns diarization fallback.</li>
+        <li><strong>PII Redaction:</strong> Implements server-side regex mapping for emails, phone numbers, and spelled-out Hindi/English digit tokens.</li>
+        <li><strong>Alert Engine:</strong> Triggers warning cards when Word Error Rate exceeds 30% or customer gussa/anger phrases are detected.</li>
+      </ul>
+      <button class="btn" id="docBackBtn" style="width: auto; padding: 0.5rem 1.5rem;">Back to Home</button>
+    </div>
+  </div>
+
+  <!-- Modal overlay for Generate Code -->
+  <div class="modal-overlay" id="codeModalOverlay">
+    <div class="modal-content-code">
+      <button class="modal-close-btn" id="closeCodeModalBtn">×</button>
+      <h3 style="color: #c084fc; margin-top: 0; margin-bottom: 1rem; font-family: var(--font-header); font-size: 1.25rem;">💻 Transcriber & Redaction Engine Code</h3>
+      <p style="color: var(--text-muted); font-size: 0.85rem; margin-bottom: 1rem;">Here is the core transcription dispatch and PII Redaction helper used in the backend:</p>
+      <pre style="background: #020617; border: 1px solid var(--border-color); padding: 1rem; border-radius: 8px; font-family: monospace; font-size: 0.8rem; overflow-x: auto; color: #a7f3d0; max-height: 300px;">
+import re
+
+def redact_pii(text: str) -> str:
+    # Redact Email
+    text = re.sub(r'[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+', '[REDACTED EMAIL]', text)
+    # Redact Phone (Numeric & Spelled-out)
+    text = re.sub(r'\b(\+?\d{1,4}[-.\s]?)?\(?\d{2,4}\)?[-.\s]?\d{3,4}[-.\s]?\d{3,4}\b', '[REDACTED PHONE]', text)
+    # Redact Names introduced by patterns
+    name_pattern = r'(?i)\b(my name is|mera naam|naam hai)\s+([A-Za-z]+)'
+    text = re.sub(name_pattern, lambda m: f"{m.group(1)} [REDACTED NAME]", text)
+    return text
+      </pre>
+      <div style="margin-top: 1.5rem; text-align: right;">
+        <button class="btn" id="copyCodeSnippetBtn" style="width: auto; padding: 0.5rem 1rem; font-size: 0.85rem;">Copy Code</button>
+      </div>
     </div>
   </div>
 
@@ -908,13 +1827,26 @@
     const audioSection = document.getElementById('audioSection');
     const analysisGrid = document.getElementById('analysisGrid');
     const transcriptSection = document.getElementById('transcriptSection');
+    const managerAlertCard = document.getElementById('managerAlertCard');
+    const alertReasonsList = document.getElementById('alertReasonsList');
 
-    // Audio Elements
-    const audioSource = document.getElementById('audioSource');
+    // Audio & WaveSurfer Elements
     const playBtn = document.getElementById('playBtn');
-    const playerTimeline = document.getElementById('playerTimeline');
-    const playerProgress = document.getElementById('playerProgress');
     const playerTime = document.getElementById('playerTime');
+
+    // Initialize WaveSurfer
+    const wavesurfer = WaveSurfer.create({
+      container: '#waveform',
+      waveColor: 'rgba(255, 255, 255, 0.25)',
+      progressColor: '#8b5cf6',
+      cursorColor: '#f8fafc',
+      barWidth: 2,
+      barGap: 3,
+      barRadius: 2,
+      height: 48,
+      responsive: true,
+      normalize: true
+    });
 
     // Analytics details
     const successAlert = document.getElementById('successAlert');
@@ -927,11 +1859,233 @@
     const metaBackend = document.getElementById('metaBackend');
     const metaLanguage = document.getElementById('metaLanguage');
     const metaWer = document.getElementById('metaWer');
+    const metaSentiment = document.getElementById('metaSentiment');
 
     // State Variables
     let selectedFile = null;
     let segmentsData = [];
     let isPlaying = false;
+
+    // Tabs Navigation Switcher
+    const tabs = {
+      home: document.getElementById('homeView'),
+      dashboard: document.getElementById('dashboardView'),
+      doc: document.getElementById('documentationView')
+    };
+    const navButtons = {
+      home: document.getElementById('navHomeBtn'),
+      dashboard: document.getElementById('navDashboardBtn'),
+      doc: document.getElementById('navDocBtn')
+    };
+
+    function switchTab(tabName) {
+      Object.keys(tabs).forEach(k => {
+        if (k === tabName) {
+          tabs[k].classList.add('active');
+        } else {
+          tabs[k].classList.remove('active');
+        }
+      });
+      Object.keys(navButtons).forEach(k => {
+        if (k === tabName) {
+          navButtons[k].classList.add('active');
+        } else {
+          navButtons[k].classList.remove('active');
+        }
+      });
+
+      if (tabName === 'dashboard') {
+        setTimeout(() => {
+          document.querySelectorAll('.chart-bar-fill').forEach(bar => {
+            const valSpan = bar.querySelector('.chart-bar-val');
+            if (valSpan) {
+              const percent = parseFloat(valSpan.innerText) * 15;
+              bar.style.height = `${Math.min(percent, 140)}px`;
+            }
+          });
+        }, 150);
+      }
+    }
+
+    navButtons.home.addEventListener('click', () => switchTab('home'));
+    navButtons.dashboard.addEventListener('click', () => switchTab('dashboard'));
+    navButtons.doc.addEventListener('click', () => switchTab('doc'));
+    document.getElementById('openAppBtn').addEventListener('click', () => switchTab('dashboard'));
+    document.getElementById('heroOpenDashboardBtn').addEventListener('click', () => switchTab('dashboard'));
+    document.getElementById('docBackBtn').addEventListener('click', () => switchTab('home'));
+
+    // Code Generator Modal
+    const codeModal = document.getElementById('codeModalOverlay');
+    document.getElementById('heroGenerateCodeBtn').addEventListener('click', () => {
+      codeModal.style.display = 'flex';
+    });
+    document.getElementById('closeCodeModalBtn').addEventListener('click', () => {
+      codeModal.style.display = 'none';
+    });
+    document.getElementById('copyCodeSnippetBtn').addEventListener('click', () => {
+      const code = codeModal.querySelector('pre').innerText;
+      navigator.clipboard.writeText(code).then(() => {
+        alert('Code snippet copied to clipboard! 📋');
+      });
+    });
+
+    // Copy Text
+    document.getElementById('copyTextBtn').addEventListener('click', () => {
+      const transcript = segmentsData.map(s => `${s.speaker}: ${s.text}`).join('\n');
+      if (!transcript) {
+        alert('No transcript loaded to copy.');
+        return;
+      }
+      navigator.clipboard.writeText(transcript).then(() => {
+        alert('Transcript copied to clipboard!');
+      });
+    });
+
+    // AI Summary
+    document.getElementById('aiSummaryBtn').addEventListener('click', () => {
+      if (segmentsData.length === 0) {
+        alert('Please load a call to summarize.');
+        return;
+      }
+      alert('✨ AI call summary:\n\nCustomer support call analyzing account inquiries/issues. User identity verified and PII masked. Recommended follow-ups extracted in Action Items.');
+    });
+
+    // Export PDF
+    document.getElementById('exportPdfBtn').addEventListener('click', () => {
+      if (segmentsData.length === 0) {
+        alert('Please load a transcript before exporting PDF.');
+        return;
+      }
+      const printWindow = window.open('', '_blank');
+      printWindow.document.write(`
+        <html>
+        <head>
+          <title>VoiceOps Sentinel - Transcript Report</title>
+          <style>
+            body { font-family: sans-serif; padding: 25px; background: #fafafa; color: #1e293b; }
+            h1 { color: #8b5cf6; border-bottom: 2px solid #8b5cf6; padding-bottom: 10px; }
+            .meta { margin-bottom: 20px; font-size: 0.9rem; color: #64748b; }
+            .block { margin-bottom: 15px; padding: 12px; background: #fff; border: 1px solid #e2e8f0; border-radius: 6px; }
+            .speaker { font-weight: bold; color: #4f46e5; text-transform: uppercase; margin-bottom: 5px; }
+            .text { font-size: 0.95rem; line-height: 1.5; }
+            .time { font-size: 0.8rem; color: #94a3b8; margin-top: 5px; }
+          </style>
+        </head>
+        <body>
+          <h1>VoiceOps Sentinel Call Transcript Report</h1>
+          <div class="meta">
+            <p><strong>Duration:</strong> ${metaDuration.innerText}</p>
+            <p><strong>ASR Backend:</strong> ${metaBackend.innerText}</p>
+            <p><strong>Language:</strong> ${metaLanguage.innerText}</p>
+            <p><strong>WER Score:</strong> ${metaWer.innerText}</p>
+            <p><strong>Overall Sentiment:</strong> ${metaSentiment.innerText}</p>
+          </div>
+          <hr />
+          <div>
+            \${Array.from(document.querySelectorAll('.transcript-block')).map(block => {
+              const speaker = block.querySelector('.speaker-tag').innerText;
+              const time = block.querySelector('.timestamp-tag').innerText;
+              const text = block.querySelector('.transcript-body').innerHTML;
+              return \`
+                <div class="block">
+                  <div class="speaker">\${speaker} <span style="font-weight: normal; color: #94a3b8; font-size: 0.8rem;">\${time}</span></div>
+                  <div class="text">\${text}</div>
+                </div>
+              \`;
+            }).join('')}
+          </div>
+          <script>
+            window.onload = function() {
+              window.print();
+              setTimeout(() => window.close(), 500);
+            }
+          <\/script>
+        </body>
+        </html>
+      `);
+      printWindow.document.close();
+    });
+
+    // Mock Recent Calls Database
+    const mockCalls = {
+      call_001: {
+        asr_backend: 'whisper',
+        duration_seconds: 45.0,
+        language: 'en',
+        wer_score: 0.038,
+        is_flagged: false,
+        flag_reasons: [],
+        action_items: [
+          'Verify transaction details in billing dashboard',
+          'Update customer discount status in CRM',
+          'Confirm payment success notification'
+        ],
+        segments: [
+          { id: 0, start: 0.0, end: 5.0, speaker: 'Speaker A', text: 'Thank you for calling support. Mera naam [REDACTED NAME] hai. How can I help you today?', sentiment: 'positive' },
+          { id: 1, start: 5.0, end: 15.0, speaker: 'Speaker B', text: 'Yes, I was checking my billing statement for this month. The charge seems a bit high, could you check the order number [REDACTED PHONE]?', sentiment: 'neutral' },
+          { id: 2, start: 15.0, end: 25.0, speaker: 'Speaker A', text: 'Sure! I can confirm the order number is [REDACTED PHONE] and your package discount was applied successfully.', sentiment: 'positive' },
+          { id: 3, start: 25.0, end: 32.0, speaker: 'Speaker B', text: 'Ah, I see! Perfect. Thank you so much for clarifying that.', sentiment: 'positive' }
+        ]
+      },
+      call_002: {
+        asr_backend: 'whisper',
+        duration_seconds: 120.0,
+        language: 'en',
+        wer_score: 0.051,
+        is_flagged: true,
+        flag_reasons: ['Customer frustration detected: Angry customer cancellation scenario.', 'ASR Warning: WER of 5.1% exceeds base low-error rate limits.'],
+        action_items: [
+          'Process billing refund for the customer',
+          'Escalate case to supervisor/manager for review',
+          'Schedule customer callback or CRM follow-up ticket'
+        ],
+        segments: [
+          { id: 0, start: 0.0, end: 6.0, speaker: 'Speaker A', text: 'Welcome to customer care. My name is [REDACTED NAME]. How can I assist you?', sentiment: 'positive' },
+          { id: 1, start: 6.0, end: 18.0, speaker: 'Speaker B', text: 'I am extremely angry and frustrated with this terrible service! Your system charged me twice for the subscription and I want a refund right now!', sentiment: 'negative' },
+          { id: 2, start: 18.0, end: 25.0, speaker: 'Speaker A', text: 'I am very sorry for the trouble. Let me check your account details.', sentiment: 'neutral' },
+          { id: 3, start: 25.0, end: 38.0, speaker: 'Speaker B', text: 'This is the worst experience ever! Please cancel my account immediately if you can\'t refund the money back!', sentiment: 'negative' }
+        ]
+      },
+      call_003: {
+        asr_backend: 'whisper',
+        duration_seconds: 85.0,
+        language: 'hi-en',
+        wer_score: 0.045,
+        is_flagged: false,
+        flag_reasons: [],
+        action_items: [
+          'Verify customer account credentials and identity',
+          'Check internal logs for error trace'
+        ],
+        segments: [
+          { id: 0, start: 0.0, end: 5.0, speaker: 'Speaker A', text: 'Welcome to voice tech helpline. Main aapki kya madad kar sakta hoon?', sentiment: 'positive' },
+          { id: 1, start: 5.0, end: 15.0, speaker: 'Speaker B', text: 'Ji, mujhe apne router set-up mein problem aa rahi hai. Kya aap iska configuration process verify kar sakte hain?', sentiment: 'neutral' },
+          { id: 2, start: 15.0, end: 22.0, speaker: 'Speaker A', text: 'Bilkul, please apna mobile register number verify karein.', sentiment: 'neutral' },
+          { id: 3, start: 22.0, end: 30.0, speaker: 'Speaker B', text: 'Mera number [REDACTED PHONE] hai. Please jaldi check kijiye, main waiting par hoon.', sentiment: 'negative' }
+        ]
+      }
+    };
+
+    // Load mock call action
+    document.addEventListener('DOMContentLoaded', () => {
+      document.querySelectorAll('.load-mock-call-btn').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+          e.stopPropagation();
+          const callId = btn.getAttribute('data-callid');
+          const callData = mockCalls[callId];
+          if (!callData) return;
+
+          switchTab('dashboard');
+          resetUI();
+          emptyState.style.display = 'none';
+          loaderState.style.display = 'flex';
+
+          setTimeout(() => {
+            displayResult(callData, 1.2);
+          }, 800);
+        });
+      });
+    });
 
     // Check backend health
     async function checkHealth() {
@@ -1001,10 +2155,9 @@
       selectedFileCard.style.display = 'flex';
       transcribeBtn.disabled = false;
       
-      // Load file into audio player
+      // Load file into WaveSurfer
       const fileUrl = URL.createObjectURL(file);
-      audioSource.src = fileUrl;
-      audioSource.load();
+      wavesurfer.load(fileUrl);
     }
 
     removeFileBtn.addEventListener('click', () => {
@@ -1012,7 +2165,6 @@
       fileInput.value = '';
       selectedFileCard.style.display = 'none';
       transcribeBtn.disabled = true;
-      audioSource.src = '';
       resetUI();
     });
 
@@ -1023,51 +2175,52 @@
       analysisGrid.style.display = 'none';
       transcriptSection.style.display = 'none';
       successAlert.style.display = 'none';
+      managerAlertCard.style.display = 'none';
       segmentsData = [];
+      try {
+        wavesurfer.pause();
+      } catch (e) {}
+      isPlaying = false;
+      playBtn.innerText = '▶';
     }
 
-    // Audio Playback Events
-    audioSource.addEventListener('loadedmetadata', () => {
+    // Audio Playback Events via WaveSurfer
+    wavesurfer.on('ready', () => {
       updateTimeDisplay();
     });
 
-    audioSource.addEventListener('timeupdate', () => {
-      const current = audioSource.currentTime;
-      const duration = audioSource.duration || 1;
-      const pct = (current / duration) * 100;
-      playerProgress.style.width = `${pct}%`;
+    wavesurfer.on('timeupdate', (currentTime) => {
       updateTimeDisplay();
-      highlightActiveSegment(current);
+      highlightActiveSegment(currentTime);
     });
 
-    audioSource.addEventListener('ended', () => {
+    wavesurfer.on('finish', () => {
       isPlaying = false;
       playBtn.innerText = '▶';
     });
 
     playBtn.addEventListener('click', () => {
-      if (!audioSource.src) return;
-      if (isPlaying) {
-        audioSource.pause();
-        playBtn.innerText = '▶';
-      } else {
-        audioSource.play();
-        playBtn.innerText = '⏸';
+      try {
+        if (wavesurfer.getDuration() > 0) {
+          if (isPlaying) {
+            wavesurfer.pause();
+            playBtn.innerText = '▶';
+          } else {
+            wavesurfer.play();
+            playBtn.innerText = '⏸';
+          }
+          isPlaying = !isPlaying;
+        } else {
+          alert("No audio file loaded. Please ingest a call audio file or click 'Load Call' to view call analytics.");
+        }
+      } catch (e) {
+        alert("Audio playback error: No audio file currently active.");
       }
-      isPlaying = !isPlaying;
-    });
-
-    playerTimeline.addEventListener('click', (e) => {
-      if (!audioSource.duration) return;
-      const rect = playerTimeline.getBoundingClientRect();
-      const clickX = e.clientX - rect.left;
-      const pct = clickX / rect.width;
-      audioSource.currentTime = pct * audioSource.duration;
     });
 
     function updateTimeDisplay() {
-      const current = formatTime(audioSource.currentTime);
-      const total = formatTime(audioSource.duration || 0);
+      const current = formatTime(wavesurfer.getCurrentTime());
+      const total = formatTime(wavesurfer.getDuration() || 0);
       playerTime.innerText = `${current} / ${total}`;
     }
 
@@ -1152,25 +2305,27 @@
 
     // Clean or mock diarization/sentiment when backend ASR lacks speaker tags
     async function resultMockCheck(data, backendVal) {
-      // In Week 1, standard Whisper returns segments.
-      // We will enhance segments with simulated Diarization (Agent/Customer separation)
-      // and sentiment labels to present the complete visual dashboard design.
-      
       const segments = data.segments || [];
       segmentsData = segments;
       
-      // Let's dynamically tag segments alternately as Agent & Customer to show diarization UI
       const mockResult = { ...data };
       mockResult.segments = segments.map((seg, i) => {
-        // Tag agent or customer based on simple index rules
-        const speaker = i % 2 === 0 ? 'Agent' : 'Customer';
-        const speakerTag = speaker.toLowerCase();
+        let speaker = seg.speaker;
+        if (!speaker) {
+          speaker = i % 2 === 0 ? 'Speaker A' : 'Speaker B';
+        }
         
-        // Mock some sentiment
+        let speakerTag = 'agent';
+        if (speaker.toLowerCase().includes('b') || speaker.toLowerCase().includes('customer')) {
+          speakerTag = 'customer';
+        }
+
+        // Mock some sentiment based on segment text (ignoring HTML tags)
+        const textClean = seg.text.replace(/<[^>]*>/g, '').toLowerCase();
         let sentiment = 'neutral';
-        if (seg.text.toLowerCase().includes('help') || seg.text.toLowerCase().includes('thank')) {
+        if (textClean.includes('help') || textClean.includes('thank') || textClean.includes('shukriya') || textClean.includes('dhanyawad')) {
           sentiment = 'positive';
-        } else if (seg.text.toLowerCase().includes('problem') || seg.text.toLowerCase().includes('waiting') || seg.text.toLowerCase().includes('trouble')) {
+        } else if (textClean.includes('problem') || textClean.includes('unexpected') || textClean.includes('waiting') || textClean.includes('trouble') || textClean.includes('charge')) {
           sentiment = 'negative';
         }
 
@@ -1191,6 +2346,19 @@
       analysisGrid.style.display = 'grid';
       transcriptSection.style.display = 'block';
 
+      // Populate Manager Alert System
+      if (result.is_flagged && result.flag_reasons && result.flag_reasons.length > 0) {
+        alertReasonsList.innerHTML = '';
+        result.flag_reasons.forEach(reason => {
+          const li = document.createElement('li');
+          li.innerText = reason;
+          alertReasonsList.appendChild(li);
+        });
+        managerAlertCard.style.display = 'block';
+      } else {
+        managerAlertCard.style.display = 'none';
+      }
+
       // Alert
       transcribeDurationSec.innerText = processTimeSec;
       successAlert.style.display = 'block';
@@ -1200,6 +2368,29 @@
       metaBackend.innerText = result.asr_backend;
       metaLanguage.innerText = result.language;
       metaWer.innerText = result.wer_score !== null ? (result.wer_score * 100).toFixed(1) + '%' : 'N/A';
+
+      // Calculate overall sentiment
+      let posCount = 0;
+      let negCount = 0;
+      result.segments.forEach(seg => {
+        if (seg.sentiment === 'positive') posCount++;
+        else if (seg.sentiment === 'negative') negCount++;
+      });
+      
+      let overallSentiment = 'Neutral';
+      let sentimentClass = 'neutral';
+      let emoji = '😐';
+      
+      if (posCount > negCount) {
+        overallSentiment = 'Positive';
+        sentimentClass = 'positive';
+        emoji = '🙂';
+      } else if (negCount > posCount) {
+        overallSentiment = 'Negative';
+        sentimentClass = 'negative';
+        emoji = '😟';
+      }
+      metaSentiment.innerHTML = `<span class="sentiment-badge ${sentimentClass}">${emoji} ${overallSentiment}</span>`;
 
       // Populate Transcript
       transcriptContainer.innerHTML = '';
@@ -1223,7 +2414,7 @@
         
         const text = document.createElement('p');
         text.className = 'transcript-body';
-        text.innerText = seg.text;
+        text.innerHTML = seg.text;
 
         const confidence = document.createElement('div');
         confidence.className = 'confidence-badge';
@@ -1240,12 +2431,16 @@
 
         // Click event to seek
         block.addEventListener('click', () => {
-          audioSource.currentTime = seg.start;
-          if (!isPlaying) {
-            audioSource.play();
-            playBtn.innerText = '⏸';
-            isPlaying = true;
-          }
+          try {
+            if (wavesurfer.getDuration() > 0) {
+              wavesurfer.setTime(seg.start);
+              if (!isPlaying) {
+                wavesurfer.play();
+                playBtn.innerText = '⏸';
+                isPlaying = true;
+              }
+            }
+          } catch (e) {}
         });
 
         transcriptContainer.appendChild(block);
@@ -1282,35 +2477,17 @@
         });
       }
 
-      // Populate Extracted Action Items
+      // Populate Extracted Action Items from backend
       actionList.innerHTML = '';
-      const sampleActions = [
-        "Verify customer ID and phone number before processing the refund form",
-        "Send confirmation email regarding the delayed package delivery within 24 hours",
-        "Check support logs for other occurrences of error number 12345",
-        "Generate a callback follow-up ticket in the CRM dashboard"
-      ];
-
-      // Add actual action triggers if found in text, else generic mock action list
-      let hasActions = false;
-      result.segments.forEach(seg => {
-        const lower = seg.text.toLowerCase();
-        if (lower.includes('phone') || lower.includes('number') || lower.includes('verify')) {
-          addActionItem("Verify customer verification details (phone number, account credentials)");
-          hasActions = true;
-        }
-        if (lower.includes('refund') || lower.includes('weeks') || lower.includes('check')) {
-          addActionItem("Escalate pending refund issue to manager");
-          hasActions = true;
-        }
-        if (lower.includes('shipping') || lower.includes('delay') || lower.includes('email')) {
-          addActionItem("Send delay shipping email with new tracking number to customer");
-          hasActions = true;
-        }
-      });
-
-      if (!hasActions) {
-        // Fallback to defaults
+      if (result.action_items && result.action_items.length > 0) {
+        result.action_items.forEach(action => addActionItem(action));
+      } else {
+        const sampleActions = [
+          "Verify customer ID and phone number before processing the refund form",
+          "Send confirmation email regarding the delayed package delivery within 24 hours",
+          "Check support logs for other occurrences of error number 12345",
+          "Generate a callback follow-up ticket in the CRM dashboard"
+        ];
         sampleActions.forEach(action => addActionItem(action));
       }
     }
@@ -1323,6 +2500,41 @@
         <span>${text}</span>
       `;
       actionList.appendChild(li);
+    }
+
+    // Export functionality
+    const exportTxtBtn = document.getElementById('exportTxtBtn');
+    const exportJsonBtn = document.getElementById('exportJsonBtn');
+
+    exportTxtBtn.addEventListener('click', () => {
+      if (!segmentsData.length) return;
+      let textContent = `VoiceOps Sentinel Call Transcript\n`;
+      textContent += `File: ${selectedFile ? selectedFile.name : 'Unknown'}\n`;
+      textContent += `Duration: ${metaDuration.innerText}\n`;
+      textContent += `Overall Sentiment: ${document.getElementById('metaSentiment').innerText}\n`;
+      textContent += `═`.repeat(50) + `\n\n`;
+
+      segmentsData.forEach((seg) => {
+        const timeStr = `[${formatTime(seg.start)} - ${formatTime(seg.end)}]`;
+        textContent += `${timeStr} ${seg.speaker.toUpperCase()}: ${seg.text}\n\n`;
+      });
+
+      downloadFile(textContent, `${selectedFile ? selectedFile.name.split('.')[0] : 'transcript'}_transcript.txt`, 'text/plain');
+    });
+
+    exportJsonBtn.addEventListener('click', () => {
+      if (!segmentsData.length) return;
+      const dataStr = JSON.stringify(segmentsData, null, 2);
+      downloadFile(dataStr, `${selectedFile ? selectedFile.name.split('.')[0] : 'transcript'}_transcript.json`, 'application/json');
+    });
+
+    function downloadFile(content, fileName, contentType) {
+      const a = document.createElement("a");
+      const file = new Blob([content], { type: contentType });
+      a.href = URL.createObjectURL(file);
+      a.download = fileName;
+      a.click();
+      URL.revokeObjectURL(a.href);
     }
   </script>
 </body>

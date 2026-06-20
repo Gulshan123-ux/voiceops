@@ -21,7 +21,6 @@ from __future__ import annotations
 import pytest
 
 from app.wer_evaluator import (
-    WER_THRESHOLD_CLEAN,
     WER_THRESHOLD_NOISY,
     _simulate_accented_speech,
     _simulate_office_noise,
