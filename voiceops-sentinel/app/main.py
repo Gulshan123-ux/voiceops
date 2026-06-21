@@ -38,6 +38,7 @@ from dotenv import load_dotenv
 from fastapi import FastAPI, File, Form, HTTPException, UploadFile, status
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import HTMLResponse
+from fastapi.staticfiles import StaticFiles
 
 from app.preprocessor import preprocess_audio
 from app.schemas import ErrorResponse, TranscriptionResult
@@ -105,6 +106,8 @@ _executor = ThreadPoolExecutor(max_workers=4, thread_name_prefix="voiceops")
 async def lifespan(app: FastAPI):
     """Initialise logging and thread pool lifespan events."""
     _configure_logging()
+    from app.database import init_db
+    init_db()
     logger.info(
         "VoiceOps Sentinel starting up | ASR_BACKEND=%s | MAX_FILE_SIZE=%d bytes",
         os.getenv("ASR_BACKEND", "whisper"),
@@ -141,6 +144,11 @@ app.add_middleware(
     allow_methods=["GET", "POST"],
     allow_headers=["*"],
 )
+
+# Mount static files from frontend directory (create if it doesn't exist)
+import os
+os.makedirs("frontend", exist_ok=True)
+app.mount("/static", StaticFiles(directory="frontend"), name="static")
 
 
 # ─────────────────────────────────────────────────────────────────────────────
@@ -196,18 +204,37 @@ def _validate_upload(file: UploadFile) -> None:
 @app.get(
     "/",
     response_class=HTMLResponse,
-    summary="Dashboard UI",
-    tags=["Dashboard"],
+    summary="Home Page",
+    tags=["UI"],
 )
-async def serve_dashboard() -> HTMLResponse:
-    """Serve the VoiceOps Sentinel Dashboard UI."""
-    index_path = Path(__file__).parent / "static" / "index.html"
+async def serve_home() -> HTMLResponse:
+    """Serve the VoiceOps Sentinel Landing/Home Page UI."""
+    index_path = Path("frontend/index.html")
+    if not index_path.exists():
+        index_path = Path(__file__).parent / "static" / "index.html"
     if not index_path.exists():
         return HTMLResponse(
-            content="<h1>Dashboard index.html not found</h1>",
+            content="<h1>index.html not found</h1>",
             status_code=status.HTTP_404_NOT_FOUND
         )
     return HTMLResponse(content=index_path.read_text(encoding="utf-8"))
+
+
+@app.get(
+    "/dashboard",
+    response_class=HTMLResponse,
+    summary="Main Dashboard Page",
+    tags=["UI"],
+)
+async def serve_dashboard_page() -> HTMLResponse:
+    """Serve the VoiceOps Sentinel Main Dashboard Page UI."""
+    dash_path = Path("frontend/dashboard.html")
+    if not dash_path.exists():
+        return HTMLResponse(
+            content="<h1>dashboard.html not found. Please verify the frontend files exist.</h1>",
+            status_code=status.HTTP_404_NOT_FOUND
+        )
+    return HTMLResponse(content=dash_path.read_text(encoding="utf-8"))
 
 
 @app.get(
@@ -380,3 +407,63 @@ async def transcribe_audio(
         if tmp_dir.exists():
             shutil.rmtree(tmp_dir, ignore_errors=True)
             logger.debug("Temp directory cleaned up: %s", tmp_dir)
+
+
+# ─────────────────────────────────────────────────────────────────────────────
+# Calls & Stats Endpoints
+# ─────────────────────────────────────────────────────────────────────────────
+
+@app.get(
+    "/calls",
+    summary="Get all processed call records",
+    tags=["Calls"],
+)
+async def list_calls() -> list[dict]:
+    """Retrieve all processed call records stored in SQLite database."""
+    from app.database import get_all_calls
+    return get_all_calls()
+
+
+@app.get(
+    "/calls/{job_id}",
+    summary="Get details of a single call record",
+    tags=["Calls"],
+)
+async def get_call(job_id: str) -> dict:
+    """Retrieve the full details of a specific call record by ID."""
+    from app.database import get_call_by_id
+    call_record = get_call_by_id(job_id)
+    if not call_record:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail=f"Call record with ID '{job_id}' not found."
+        )
+    return call_record
+
+
+@app.get(
+    "/stats",
+    summary="Get aggregated call statistics",
+    tags=["Calls"],
+)
+async def get_stats() -> dict:
+    """Compute and return overall dashboard metrics across all calls."""
+    from app.database import get_call_stats
+    return get_call_stats()
+
+
+@app.delete(
+    "/calls/{job_id}",
+    summary="Delete a call record",
+    tags=["Calls"],
+)
+async def delete_call(job_id: str) -> dict:
+    """Delete a call record from database by ID."""
+    from app.database import delete_call_by_id
+    deleted = delete_call_by_id(job_id)
+    if not deleted:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail=f"Call record with ID '{job_id}' not found."
+        )
+    return {"status": "deleted", "job_id": job_id}

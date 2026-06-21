@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VoiceOps Sentinel — Real-Time Call Intelligence System</title>
+    <meta name="description" content="VoiceOps Sentinel automatically transcribes, redact PII, segments speakers, extracts action items and evaluates WER from customer calls.">
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+
+    <!-- Navbar -->
+    <nav class="navbar">
+        <div class="logo-container">
+            <div class="logo-icon">VS</div>
+            <span class="logo-text">VoiceOps Sentinel</span>
+        </div>
+        <ul class="nav-links">
+            <li><a href="/" class="active">Home</a></li>
+            <li><a href="/dashboard">Dashboard</a></li>
+        </ul>
+        <a href="/dashboard" class="nav-btn">Open App</a>
+    </nav>
+
+    <!-- Status Bar -->
+    <div class="status-bar">
+        <div class="status-indicator">
+            <span class="status-dot"></span>
+            <span>ASR Pipeline: ACTIVE</span>
+        </div>
+        <div>Whisper Engine: Connected</div>
+        <div id="today-calls-count">Processed Today: 0 calls</div>
+    </div>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <h1>Real-Time Call Intelligence & Quality Assurance</h1>
+        <p>Analyze support conversations instantly. Ingest Audio Call files, separate speakers, redact sensitive PII, extract action items, compute Word Error Rate, and trigger instant quality alerts.</p>
+        <div class="hero-actions">
+            <a href="/dashboard" class="nav-btn">Open Dashboard</a>
+            <button class="btn-secondary" onclick="window.location.href='/docs'">API Reference</button>
+        </div>
+    </section>
+
+    <!-- Stats Bar -->
+    <section class="stats-grid">
+        <div class="stat-card">
+            <div class="stat-val" id="avg-wer-val">--%</div>
+            <div class="stat-label">Average WER</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-val" id="accuracy-val">98.1%</div>
+            <div class="stat-label">Transcription Accuracy</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-val" id="processing-time-val">1.2s</div>
+            <div class="stat-label">Processing Speed</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-val" id="redaction-rate-val">100%</div>
+            <div class="stat-label">PII Redacted</div>
+        </div>
+    </section>
+
+    <!-- Pipeline Flow Visualizer -->
+    <section class="pipeline-section">
+        <h2 class="section-title">Pipeline Status</h2>
+        <div class="pipeline-flow">
+            <div class="pipeline-step active" id="step-audio">
+                <h3>Audio Input</h3>
+                <p>WAV/MP3/FLAC</p>
+            </div>
+            <div class="pipeline-arrow">➔</div>
+            <div class="pipeline-step active" id="step-pre">
+                <h3>Preprocessor</h3>
+                <p>16kHz WAV, Mono</p>
+            </div>
+            <div class="pipeline-arrow">➔</div>
+            <div class="pipeline-step active" id="step-asr">
+                <h3>ASR Backend</h3>
+                <p>Whisper / Deepgram</p>
+            </div>
+            <div class="pipeline-arrow">➔</div>
+            <div class="pipeline-step active" id="step-wer">
+                <h3>WER Test</h3>
+                <p>Error Evaluation</p>
+            </div>
+            <div class="pipeline-arrow">➔</div>
+            <div class="pipeline-step active" id="step-smart">
+                <h3>Smart Analysis</h3>
+                <p>PII & Sentiment</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features Grid -->
+    <section class="pipeline-section">
+        <h2 class="section-title">Core Intelligence Capabilities</h2>
+        <div class="features-grid">
+            <div class="feature-card">
+                <div class="feature-icon">👥</div>
+                <h3>Speaker Labels</h3>
+                <p>Automatically separates agent and customer dialogue channels for clear transaction review.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">🔒</div>
+                <h3>PII Redaction</h3>
+                <p>Presidio-powered mask replaces names, phone numbers, cards and emails in real time.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">📋</div>
+                <h3>Action Item Extractor</h3>
+                <p>Extracts follow-ups like refunds, schedules, and callbacks automatically.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">🌐</div>
+                <h3>Hindi + English Mix</h3>
+                <p>Transcribes Hinglish code-switching seamlessly and accurately.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">📊</div>
+                <h3>Call Quality Report</h3>
+                <p>Consolidates duration, sentiment trends, WER scores and follow-ups in a downloadable layout.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">🚨</div>
+                <h3>Alert System</h3>
+                <p>Instantly flags frustrated customers, agent friction, or transcription degradation.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Recent Calls Section -->
+    <section class="pipeline-section">
+        <h2 class="section-title">Recent Call Records</h2>
+        <div class="table-controls">
+            <input type="text" id="recent-search" class="search-input" placeholder="Search filename or status..." oninput="filterRecentCalls()">
+            <a href="/dashboard" class="btn-secondary">View History Table</a>
+        </div>
+        <div class="table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Date & Time</th>
+                        <th>Filename</th>
+                        <th>Duration</th>
+                        <th>ASR Backend</th>
+                        <th>WER</th>
+                        <th>Sentiment</th>
+                        <th>Alerts</th>
+                    </tr>
+                </thead>
+                <tbody id="recent-calls-body">
+                    <tr>
+                        <td colspan="7" style="text-align: center; color: var(--text-secondary);">Loading recent calls...</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </section>
+
+    <footer>
+        <p>© 2026 VoiceOps Sentinel. All rights reserved.</p>
+    </footer>
+
+    <script src="/static/app.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            loadHomeStats();
+        });
+    </script>
+</body>
+</html>

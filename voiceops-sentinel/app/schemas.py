@@ -8,8 +8,8 @@ FastAPI can auto-generate rich OpenAPI documentation.
 
 from __future__ import annotations
 
-from datetime import datetime
-from typing import List, Optional
+from datetime import datetime, timezone
+from typing import List, Optional, Union
 from uuid import UUID
 
 from pydantic import BaseModel, Field
@@ -42,7 +42,7 @@ class TranscriptSegment(BaseModel):
 class TranscriptionResult(BaseModel):
     """Full transcription response envelope."""
 
-    job_id: str = Field(..., description="Unique job identifier (UUIDv4)")
+    job_id: Union[UUID, str] = Field(..., description="Unique job identifier (UUIDv4)")
     audio_file: str = Field(..., description="Original uploaded filename")
     duration_seconds: float = Field(
         ..., ge=0.0, description="Audio duration in seconds"
@@ -57,13 +57,13 @@ class TranscriptionResult(BaseModel):
         ..., description="Concatenated plain-text transcript"
     )
     redacted_transcript: str = Field(
-        ..., description="PII-redacted transcript"
+        default="", description="PII-redacted transcript"
     )
     sentiment: str = Field(
-        ..., description="Overall sentiment (Positive / Negative / Neutral)"
+        default="Neutral", description="Overall sentiment (Positive / Negative / Neutral)"
     )
     sentiment_score: float = Field(
-        ..., description="Sentiment confidence score (0-100)"
+        default=0.0, description="Sentiment confidence score (0-100)"
     )
     wer_score: Optional[float] = Field(
         None,
@@ -79,8 +79,18 @@ class TranscriptionResult(BaseModel):
     flagged: bool = Field(
         default=False, description="Whether the call triggered manager alerts"
     )
-    processed_at: str = Field(
-        ..., description="ISO timestamp when processing completed"
+    is_flagged: bool = Field(
+        default=False, description="Whether the call triggered manager alerts (legacy)"
+    )
+    flag_reasons: List[str] = Field(
+        default_factory=list, description="Reasons for flagging the call"
+    )
+    processed_at: Union[datetime, str] = Field(
+        default_factory=lambda: datetime.now(timezone.utc).isoformat().replace("+00:00", "Z"),
+        description="ISO timestamp when processing completed"
+    )
+    asr_backend: str = Field(
+        default="whisper", description="ASR engine used ('whisper', 'deepgram', 'mock')"
     )
 
 

@@ -671,19 +671,83 @@ def transcribe(
         )
 
     # Post-process with Smart Features
-    from app.smart_features import redact_pii, extract_action_items, evaluate_alerts
+    from app.smart_features import evaluate_alerts
+    from app.pii_redactor import PIIRedactor
+    from app.sentiment import SentimentAnalyzer
+    from app.action_extractor import ActionExtractor
+    from app.database import insert_call
 
-    # 1. Action Item Extraction (run before redacting PII to avoid missing keywords)
-    result.action_items = extract_action_items(result.segments)
+    # Initialize smart processing instances
+    redactor = PIIRedactor()
+    sentiment_analyzer = SentimentAnalyzer()
+    action_extractor = ActionExtractor()
 
-    # 2. Evaluate Manager Alerts
+    # 1. Action Item Extraction (using GPT-3.5 or keyword rules)
+    result.action_items = action_extractor.extract(result.full_transcript)
+
+    # 2. Map Speaker turns & Perform Sentiment Analysis on segments
+    agent_segs = []
+    customer_segs = []
+    seg_dicts = []
+    
+    for seg in result.segments:
+        # Heuristic: First speaker (e.g. A) is Agent, B is Customer
+        spk = seg.speaker or "Speaker A"
+        mapped_spk = "Agent" if "a" in spk.lower() else "Customer"
+        seg.speaker = mapped_spk
+        
+        # Collect for sentiment analysis
+        lbl, score = sentiment_analyzer.analyze_text(seg.text)
+        seg_dicts.append({"text": seg.text, "speaker": mapped_spk, "sentiment": lbl})
+        
+        if mapped_spk == "Agent":
+            agent_segs.append(seg)
+        else:
+            customer_segs.append(seg)
+
+    # Group speakers
+    result.speakers = {
+        "Agent": agent_segs,
+        "Customer": customer_segs
+    }
+
+    # Aggregate Sentiment Analysis
+    overall_sentiment, avg_conf, flagged_sentiment = sentiment_analyzer.analyze_call_sentiment(seg_dicts)
+    result.sentiment = overall_sentiment
+    result.sentiment_score = avg_conf
+
+    # 3. Evaluate Alerts (high WER, angry phrases, or bad sentiment ratio)
     flagged, reasons = evaluate_alerts(result.wer_score, result.segments)
-    result.is_flagged = flagged
+    final_flagged = flagged or flagged_sentiment
+    result.flagged = final_flagged
+    result.is_flagged = final_flagged
     result.flag_reasons = reasons
 
-    # 3. PII Redaction
+    # 4. PII Redaction
+    # Keep result.full_transcript as original, result.redacted_transcript as redacted
+    original_transcript = result.full_transcript
+    redacted_transcript = redactor.redact(original_transcript)
+    result.redacted_transcript = redacted_transcript
+
+    # Mask the segments text
     for seg in result.segments:
-        seg.text = redact_pii(seg.text)
-    result.full_transcript = redact_pii(result.full_transcript)
+        seg.text = redactor.redact(seg.text)
+        
+    # Also redact result.full_transcript to match tests that verify redact_pii is called on it
+    result.full_transcript = redacted_transcript
+
+    # 5. Insert call record into SQLite database
+    insert_call(
+        job_id=str(result.job_id),
+        filename=result.audio_file,
+        duration=result.duration_seconds,
+        transcript=original_transcript,
+        redacted_transcript=redacted_transcript,
+        sentiment=result.sentiment,
+        sentiment_score=result.sentiment_score,
+        wer_score=result.wer_score,
+        action_items=result.action_items,
+        flagged=result.flagged
+    )
 
     return result

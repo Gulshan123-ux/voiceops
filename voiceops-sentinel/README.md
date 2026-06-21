@@ -356,4 +356,4 @@ flake8 app/ tests/ --max-line-length=99
 
 ---
 
-*Built by VoiceOps Sentinel Team | Infotact Solutions AI R&D Wing*
+

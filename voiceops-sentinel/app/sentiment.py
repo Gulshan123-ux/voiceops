@@ -29,14 +29,15 @@ class SentimentAnalyzer:
         self.pipeline = None
         if _HAS_TRANSFORMERS:
             try:
+                # Force local files only to prevent downloading during unit tests or runtime hangs
                 model_name = "cardiffnlp/twitter-roberta-base-sentiment"
-                tokenizer = AutoTokenizer.from_pretrained(model_name)
-                model = AutoModelForSequenceClassification.from_pretrained(model_name)
+                tokenizer = AutoTokenizer.from_pretrained(model_name, local_files_only=True)
+                model = AutoModelForSequenceClassification.from_pretrained(model_name, local_files_only=True)
                 # Use CPU by default to avoid CUDA setup issues
                 self.pipeline = pipeline("sentiment-analysis", model=model, tokenizer=tokenizer)
                 logger.info("Loaded RoBERTa sentiment analysis pipeline successfully.")
             except Exception as e:
-                logger.error(f"Failed to load transformers pipeline: {e}. Falling back to lexical engine.")
+                logger.warning(f"Could not load RoBERTa pipeline locally: {e}. Falling back to lexical engine.")
 
     def analyze_text(self, text: str) -> tuple[str, float]:
         """

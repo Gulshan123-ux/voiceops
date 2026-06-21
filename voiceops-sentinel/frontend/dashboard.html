@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VoiceOps Sentinel — Operations Dashboard</title>
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+
+    <!-- Navbar -->
+    <nav class="navbar">
+        <div class="logo-container">
+            <div class="logo-icon">VS</div>
+            <span class="logo-text">VoiceOps Sentinel</span>
+        </div>
+        <ul class="nav-links">
+            <li><a href="/">Home</a></li>
+            <li><a href="/dashboard" class="active">Dashboard</a></li>
+        </ul>
+        <a href="/" class="btn-secondary">← Back to Home</a>
+    </nav>
+
+    <!-- Top Dashboard Header -->
+    <div style="padding: 2rem 2rem 0; max-width: 1400px; margin: 0 auto; width: 100%;">
+        <h1 style="font-size: 2.25rem; font-weight: 700;">Operations Dashboard</h1>
+        <p style="color: var(--text-secondary);">Upload audio support files, visualize pipeline stats, and drill down on call logs.</p>
+    </div>
+
+    <!-- Quick Stats Row -->
+    <section class="stats-grid" style="padding-bottom: 1rem;">
+        <div class="stat-card">
+            <div class="stat-val" id="card-total-calls">0</div>
+            <div class="stat-label">Total Calls</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-val" id="card-avg-wer">--%</div>
+            <div class="stat-label">Average WER</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-val" id="card-flagged-calls">0</div>
+            <div class="stat-label">Flagged Alerts</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-val" id="card-sentiment-ratio">--</div>
+            <div class="stat-label">Pos / Neg / Neu</div>
+        </div>
+    </section>
+
+    <!-- Charts Row -->
+    <section style="padding: 0 2rem 1.5rem; max-width: 1400px; margin: 0 auto; width: 100%;">
+        <div class="charts-container">
+            <div class="chart-card">
+                <h3 style="font-size: 1.125rem; font-weight: 600; width: 100%;">Word Error Rate (WER) Distribution</h3>
+                <canvas id="werChart" class="chart-canvas" height="200"></canvas>
+            </div>
+            <div class="chart-card">
+                <h3 style="font-size: 1.125rem; font-weight: 600; width: 100%;">Sentiment Distribution</h3>
+                <canvas id="sentimentChart" class="chart-canvas" height="200"></canvas>
+            </div>
+        </div>
+    </section>
+
+    <!-- Alert Banner (hidden if no alert) -->
+    <div style="padding: 0 2rem; max-width: 1400px; margin: 0 auto; width: 100%;">
+        <div id="manager-alert-banner" class="alert-banner" style="display: none;">
+            <span>🚨</span>
+            <div>
+                <strong>Manager Alert:</strong> High negative sentiment or extreme WER degradation detected on active call!
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Dashboard Split View -->
+    <div class="dashboard-grid">
+        
+        <!-- Left Side: Upload & Call Logs Table -->
+        <div class="dashboard-card">
+            <h2 style="font-size: 1.5rem; font-weight: 600;">Ingest & History</h2>
+            
+            <!-- Upload Area -->
+            <div class="upload-container" id="upload-zone" onclick="triggerFileInput()">
+                <div class="upload-icon">📥</div>
+                <h3 style="margin-bottom: 0.5rem;">Upload Audio Call File</h3>
+                <p style="color: var(--text-secondary); font-size: 0.875rem;">Drag and drop or click to browse. WAV, MP3, or FLAC supported (max 25MB).</p>
+                <input type="file" id="audio-file-input" style="display: none;" accept=".wav,.mp3,.flac" onchange="handleFileSelect(event)">
+                <div id="upload-status" style="margin-top: 1rem; font-weight: 600; display: none;"></div>
+            </div>
+
+            <!-- Interactive Settings (Hinglish, Reference Text) -->
+            <div style="display: flex; flex-direction: column; gap: 0.75rem; background: rgba(0,0,0,0.2); padding: 1rem; border-radius: 0.5rem; border: 1px solid var(--border-color);">
+                <div style="display: flex; justify-content: space-between; align-items: center;">
+                    <label for="hint-language" style="font-size: 0.875rem; font-weight: 500;">Language Model Hint:</label>
+                    <select id="hint-language" class="search-input" style="max-width: 180px; padding: 0.25rem 0.5rem;">
+                        <option value="">Auto-Detect</option>
+                        <option value="en">English (en)</option>
+                        <option value="hi">Hinglish / Hindi (hi)</option>
+                    </select>
+                </div>
+                <div style="display: flex; flex-direction: column; gap: 0.25rem;">
+                    <label for="reference-text-input" style="font-size: 0.875rem; font-weight: 500;">Reference Text (Ground Truth for WER):</label>
+                    <textarea id="reference-text-input" class="search-input" style="max-width: 100%; height: 60px; font-size: 0.8125rem;" placeholder="Optional ground-truth transcript..."></textarea>
+                </div>
+            </div>
+
+            <!-- Call logs table controls -->
+            <div class="table-controls" style="margin-top: 1.5rem;">
+                <input type="text" id="db-search" class="search-input" placeholder="Search filename..." oninput="filterCallHistory()">
+                <div style="display: flex; gap: 0.5rem;">
+                    <select id="sort-selector" class="search-input" style="max-width: 150px;" onchange="sortCallHistory()">
+                        <option value="date-desc">Newest First</option>
+                        <option value="date-asc">Oldest First</option>
+                        <option value="wer-desc">Highest WER</option>
+                        <option value="wer-asc">Lowest WER</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- Call Logs Table -->
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Filename</th>
+                            <th>WER</th>
+                            <th>Sentiment</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="call-history-body">
+                        <tr>
+                            <td colspan="5" style="text-align: center; color: var(--text-secondary);">Loading call log database...</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Right Side: Call Intelligence Drill Down -->
+        <div class="dashboard-card" id="details-pane">
+            <div style="text-align: center; padding: 4rem 2rem; color: var(--text-secondary);">
+                <div style="font-size: 3rem; margin-bottom: 1rem;">🔍</div>
+                <h3>No Call Selected</h3>
+                <p>Click on any call record from the history table or upload a new file to display the real-time transcription and intelligence report.</p>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Modal for showing text export/report -->
+    <div class="modal" id="report-modal">
+        <div class="modal-content">
+            <h2 id="modal-title" style="font-size: 1.5rem; font-weight: 600;">Report Details</h2>
+            <div id="modal-body" style="background: rgba(0,0,0,0.3); border: 1px solid var(--border-color); padding: 1rem; border-radius: 0.5rem; max-height: 300px; overflow-y: auto; font-family: monospace; font-size: 0.8125rem; white-space: pre-wrap;"></div>
+            <div style="display: flex; justify-content: flex-end; gap: 0.5rem;">
+                <button class="btn-secondary" onclick="closeModal()">Close</button>
+                <button id="modal-copy-btn" class="nav-btn" style="padding: 0.5rem 1rem;">Copy to Clipboard</button>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        <p>© 2026 VoiceOps Sentinel. All rights reserved.</p>
+    </footer>
+
+    <script src="/static/app.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            initDashboard();
+        });
+    </script>
+</body>
+</html>
