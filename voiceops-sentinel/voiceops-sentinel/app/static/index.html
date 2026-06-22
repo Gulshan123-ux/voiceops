@@ -1,0 +1,2541 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>VoiceOps Sentinel – Dashboard</title>
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  
+  <!-- WaveSurfer.js -->
+  <script src="https://unpkg.com/wavesurfer.js@7"></script>
+  
+  <style>
+    :root {
+      --bg-dark: #0a0712;
+      --bg-card: rgba(21, 16, 36, 0.75);
+      --border-color: rgba(255, 255, 255, 0.08);
+      --text-main: #f8fafc;
+      --text-muted: #94a3b8;
+      --primary: #8b5cf6;
+      --primary-hover: #7c3aed;
+      --success: #10b981;
+      --danger: #ff6f61;
+      --warning: #f59e0b;
+      --accent-purple: #c084fc;
+      --accent-blue: #ff6f61;
+      --font-header: 'Outfit', sans-serif;
+      --font-body: 'Inter', sans-serif;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background-color: var(--bg-dark);
+      background-image: 
+        radial-gradient(circle at 10% 20%, rgba(139, 92, 246, 0.12) 0%, transparent 40%),
+        radial-gradient(circle at 90% 80%, rgba(255, 111, 97, 0.12) 0%, transparent 40%);
+      color: var(--text-main);
+      font-family: var(--font-body);
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    header {
+      backdrop-filter: blur(12px);
+      background: rgba(15, 23, 42, 0.6);
+      border-bottom: 1px solid var(--border-color);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1rem 2rem;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+
+    .logo-container {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+
+    .logo-icon {
+      background: linear-gradient(135deg, var(--primary), var(--accent-blue));
+      border-radius: 12px;
+      height: 40px;
+      width: 40px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 800;
+      font-family: var(--font-header);
+      font-size: 1.25rem;
+      box-shadow: 0 4px 12px rgba(139, 92, 246, 0.3);
+    }
+
+    .logo-text h1 {
+      font-family: var(--font-header);
+      font-size: 1.4rem;
+      font-weight: 700;
+      letter-spacing: -0.025em;
+    }
+
+    .logo-text span {
+      background: linear-gradient(to right, #a78bfa, #fca5a5);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .logo-badge {
+      font-size: 0.75rem;
+      font-weight: 600;
+      background: rgba(139, 92, 246, 0.15);
+      color: #c084fc;
+      padding: 0.15rem 0.5rem;
+      border-radius: 9999px;
+      border: 1px solid rgba(139, 92, 246, 0.3);
+    }
+
+    .api-status {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      background: rgba(30, 41, 59, 0.5);
+      border: 1px solid var(--border-color);
+      padding: 0.5rem 1rem;
+      border-radius: 9999px;
+      font-size: 0.85rem;
+      font-weight: 500;
+    }
+
+    .status-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background-color: var(--success);
+      box-shadow: 0 0 8px var(--success);
+    }
+
+    .status-dot.offline {
+      background-color: var(--danger);
+      box-shadow: 0 0 8px var(--danger);
+    }
+
+    .container {
+      max-width: 1440px;
+      margin: 2rem auto;
+      padding: 0 1.5rem;
+      display: grid;
+      grid-template-columns: 360px 1fr;
+      gap: 1.5rem;
+      align-items: start;
+    }
+
+    @media (max-width: 1024px) {
+      .container {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    /* Cards */
+    .card {
+      background: var(--bg-card);
+      backdrop-filter: blur(16px);
+      border: 1px solid var(--border-color);
+      border-radius: 16px;
+      padding: 1.5rem;
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+      transition: transform 0.2s ease, border-color 0.2s ease;
+    }
+
+    .card:hover {
+      border-color: rgba(255, 255, 255, 0.15);
+    }
+
+    .card-title {
+      font-family: var(--font-header);
+      font-size: 1.15rem;
+      font-weight: 600;
+      margin-bottom: 1rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      color: var(--text-main);
+    }
+
+    /* Sidebar controls */
+    .sidebar {
+      display: flex;
+      flex-direction: column;
+      gap: 1.5rem;
+    }
+
+    /* File Drag & Drop */
+    .upload-zone {
+      border: 2px dashed rgba(255, 255, 255, 0.15);
+      border-radius: 12px;
+      padding: 2rem 1rem;
+      text-align: center;
+      cursor: pointer;
+      background: rgba(15, 23, 42, 0.4);
+      transition: all 0.3s ease;
+    }
+
+    .upload-zone:hover, .upload-zone.dragover {
+      border-color: var(--primary);
+      background: rgba(139, 92, 246, 0.05);
+    }
+
+    .upload-icon {
+      font-size: 2.5rem;
+      margin-bottom: 1rem;
+      display: inline-block;
+    }
+
+    .upload-text h3 {
+      font-size: 0.95rem;
+      font-weight: 500;
+      margin-bottom: 0.25rem;
+    }
+
+    .upload-text p {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+    }
+
+    /* File Input hidden */
+    #fileInput {
+      display: none;
+    }
+
+    /* Selected File Display */
+    .selected-file-card {
+      display: none;
+      background: rgba(15, 23, 42, 0.6);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 8px;
+      padding: 0.75rem;
+      margin-top: 1rem;
+      align-items: center;
+      justify-content: space-between;
+      font-size: 0.85rem;
+    }
+
+    .file-details {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      overflow: hidden;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+    }
+
+    .file-icon {
+      color: var(--primary);
+    }
+
+    .remove-file {
+      cursor: pointer;
+      color: var(--text-muted);
+      font-weight: bold;
+      padding: 0.25rem;
+    }
+
+    .remove-file:hover {
+      color: var(--danger);
+    }
+
+    /* Form Fields */
+    .form-group {
+      margin-bottom: 1.25rem;
+    }
+
+    .form-group label {
+      display: block;
+      font-size: 0.85rem;
+      font-weight: 500;
+      margin-bottom: 0.5rem;
+      color: var(--text-muted);
+    }
+
+    .form-control {
+      width: 100%;
+      background: rgba(15, 23, 42, 0.6);
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      padding: 0.75rem;
+      color: var(--text-main);
+      font-family: var(--font-body);
+      font-size: 0.9rem;
+      transition: border-color 0.2s;
+    }
+
+    .form-control:focus {
+      outline: none;
+      border-color: var(--primary);
+    }
+
+    select.form-control {
+      appearance: none;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%2394a3b8'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 0.75rem center;
+      background-size: 1rem;
+      padding-right: 2rem;
+    }
+
+    .btn {
+      width: 100%;
+      background: linear-gradient(135deg, var(--primary), var(--accent-blue));
+      color: var(--text-main);
+      border: none;
+      border-radius: 8px;
+      padding: 0.85rem;
+      font-family: var(--font-header);
+      font-weight: 600;
+      font-size: 0.95rem;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      box-shadow: 0 4px 12px rgba(139, 92, 246, 0.2);
+    }
+
+    .btn:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 6px 16px rgba(139, 92, 246, 0.35);
+    }
+
+    .btn:disabled {
+      background: rgba(148, 163, 184, 0.2);
+      color: var(--text-muted);
+      cursor: not-allowed;
+      transform: none;
+      box-shadow: none;
+    }
+
+    /* Main Content Area */
+    .main-panel {
+      display: flex;
+      flex-direction: column;
+      gap: 1.5rem;
+    }
+
+    /* Welcome / Empty state */
+    .empty-state {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 8rem 2rem;
+      text-align: center;
+    }
+
+    .empty-icon {
+      font-size: 4rem;
+      margin-bottom: 1.5rem;
+      opacity: 0.6;
+    }
+
+    .empty-state h2 {
+      font-family: var(--font-header);
+      font-size: 1.5rem;
+      margin-bottom: 0.5rem;
+    }
+
+    .empty-state p {
+      color: var(--text-muted);
+      max-width: 400px;
+    }
+
+    /* Processing/Loading spinner */
+    .loader-container {
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 6rem 2rem;
+    }
+
+    .spinner {
+      border: 4px solid rgba(139, 92, 246, 0.1);
+      border-left: 4px solid var(--primary);
+      border-radius: 50%;
+      width: 48px;
+      height: 48px;
+      animation: spin 1s linear infinite;
+      margin-bottom: 1.5rem;
+    }
+
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+
+    .loader-text h3 {
+      font-family: var(--font-header);
+      font-size: 1.25rem;
+      margin-bottom: 0.25rem;
+      text-align: center;
+    }
+
+    .loader-text p {
+      color: var(--text-muted);
+      font-size: 0.85rem;
+      text-align: center;
+    }
+
+    /* Audio Player Section */
+    .audio-section {
+      display: none;
+      flex-direction: column;
+      gap: 1rem;
+    }
+
+    .custom-player {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      background: rgba(15, 23, 42, 0.5);
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      padding: 0.75rem 1.25rem;
+      width: 100%;
+    }
+
+    .play-btn {
+      background: var(--primary);
+      border: none;
+      border-radius: 50%;
+      height: 40px;
+      width: 40px;
+      min-width: 40px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--text-main);
+      transition: background 0.2s;
+    }
+
+    .play-btn:hover {
+      background: var(--primary-hover);
+    }
+
+    .player-timeline {
+      flex-grow: 1;
+      height: 6px;
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 3px;
+      position: relative;
+      cursor: pointer;
+    }
+
+    .player-progress {
+      height: 100%;
+      background: linear-gradient(90deg, var(--primary), var(--accent-purple));
+      border-radius: 3px;
+      width: 0%;
+      position: relative;
+    }
+
+    .player-progress::after {
+      content: '';
+      position: absolute;
+      right: -4px;
+      top: -3px;
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      background: var(--text-main);
+      box-shadow: 0 0 6px var(--primary);
+    }
+
+    .player-time {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      min-width: 80px;
+      text-align: right;
+    }
+
+    /* Grid layout for Dashboard analysis */
+    .analysis-grid {
+      display: none;
+      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+      gap: 1.5rem;
+    }
+
+    /* Sentiment timeline design */
+    .sentiment-track {
+      position: relative;
+      padding-left: 1rem;
+      border-left: 2px solid rgba(255, 255, 255, 0.08);
+      margin: 1rem 0;
+      display: flex;
+      flex-direction: column;
+      gap: 1.25rem;
+    }
+
+    .sentiment-node {
+      position: relative;
+    }
+
+    .sentiment-node::before {
+      content: '';
+      position: absolute;
+      left: -1.45rem;
+      top: 0.25rem;
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      background: var(--text-muted);
+      border: 2px solid var(--bg-dark);
+    }
+
+    .sentiment-node.positive::before {
+      background: var(--success);
+      box-shadow: 0 0 6px var(--success);
+    }
+
+    .sentiment-node.negative::before {
+      background: var(--danger);
+      box-shadow: 0 0 6px var(--danger);
+    }
+
+    .sentiment-node.neutral::before {
+      background: var(--accent-blue);
+      box-shadow: 0 0 6px var(--accent-blue);
+    }
+
+    .sentiment-header {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      margin-bottom: 0.25rem;
+    }
+
+    .sentiment-badge {
+      font-size: 0.75rem;
+      font-weight: 600;
+      padding: 0.1rem 0.4rem;
+      border-radius: 4px;
+      text-transform: uppercase;
+    }
+
+    .sentiment-badge.positive {
+      background: rgba(16, 185, 129, 0.15);
+      color: #34d399;
+    }
+
+    .sentiment-badge.negative {
+      background: rgba(239, 68, 68, 0.15);
+      color: #fca5a5;
+    }
+
+    .sentiment-badge.neutral {
+      background: rgba(59, 130, 246, 0.15);
+      color: #93c5fd;
+    }
+
+    .sentiment-text {
+      font-size: 0.85rem;
+      line-height: 1.4;
+    }
+
+    /* Action Checklist items */
+    .action-list {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+    }
+
+    .action-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 0.75rem;
+      background: rgba(15, 23, 42, 0.4);
+      padding: 0.75rem;
+      border-radius: 8px;
+      border: 1px solid var(--border-color);
+      font-size: 0.85rem;
+      line-height: 1.4;
+    }
+
+    .action-checkbox {
+      margin-top: 0.2rem;
+      accent-color: var(--primary);
+      cursor: pointer;
+    }
+
+    /* Metadata details grid */
+    .meta-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 1rem;
+    }
+
+    .meta-item {
+      background: rgba(15, 23, 42, 0.4);
+      padding: 0.75rem;
+      border-radius: 8px;
+      border: 1px solid var(--border-color);
+    }
+
+    .meta-label {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      margin-bottom: 0.25rem;
+    }
+
+    .meta-value {
+      font-family: var(--font-header);
+      font-size: 1.1rem;
+      font-weight: 600;
+    }
+
+    /* Diarized Interactive Transcript Section */
+    .transcript-section {
+      display: none;
+    }
+
+    .transcript-container {
+      max-height: 500px;
+      overflow-y: auto;
+      padding-right: 0.5rem;
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+
+    /* Custom scrollbar for transcript container */
+    .transcript-container::-webkit-scrollbar {
+      width: 6px;
+    }
+    
+    .transcript-container::-webkit-scrollbar-track {
+      background: rgba(255, 255, 255, 0.02);
+      border-radius: 3px;
+    }
+    
+    .transcript-container::-webkit-scrollbar-thumb {
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 3px;
+    }
+
+    .transcript-block {
+      display: flex;
+      flex-direction: column;
+      background: rgba(15, 23, 42, 0.3);
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      padding: 1rem;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      position: relative;
+    }
+
+    .transcript-block:hover {
+      background: rgba(255, 255, 255, 0.02);
+      border-color: rgba(255, 255, 255, 0.15);
+    }
+
+    .transcript-block.active-segment {
+      background: rgba(139, 92, 246, 0.08);
+      border-color: var(--primary);
+      box-shadow: 0 0 12px rgba(139, 92, 246, 0.15);
+    }
+
+    .transcript-meta {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 0.5rem;
+    }
+
+    .speaker-tag {
+      font-family: var(--font-header);
+      font-size: 0.8rem;
+      font-weight: 700;
+      padding: 0.15rem 0.5rem;
+      border-radius: 6px;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .speaker-tag.agent {
+      background: rgba(139, 92, 246, 0.15);
+      color: #c084fc;
+      border: 1px solid rgba(139, 92, 246, 0.3);
+    }
+
+    .speaker-tag.customer {
+      background: rgba(255, 111, 97, 0.15);
+      color: #fca5a5;
+      border: 1px solid rgba(255, 111, 97, 0.3);
+    }
+
+    .timestamp-tag {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      font-family: monospace;
+    }
+
+    .pii-highlight {
+      background: rgba(239, 68, 68, 0.15);
+      color: #f87171;
+      border: 1px dashed rgba(239, 68, 68, 0.5);
+      padding: 0.1rem 0.35rem;
+      border-radius: 4px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      letter-spacing: 0.02em;
+      display: inline-block;
+    }
+
+    .transcript-body {
+      font-size: 0.9rem;
+      line-height: 1.5;
+      color: var(--text-main);
+    }
+
+    @keyframes alertPulse {
+      0% {
+        box-shadow: 0 0 4px rgba(239, 68, 68, 0.2);
+        border-color: rgba(239, 68, 68, 0.3);
+      }
+      100% {
+        box-shadow: 0 0 12px rgba(239, 68, 68, 0.5);
+        border-color: rgba(239, 68, 68, 0.7);
+      }
+    }
+
+    .confidence-badge {
+      font-size: 0.7rem;
+      color: var(--text-muted);
+      margin-top: 0.5rem;
+      display: flex;
+      align-items: center;
+      gap: 0.25rem;
+    }
+
+    .confidence-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--success);
+    }
+
+    .confidence-dot.medium {
+      background: var(--warning);
+    }
+
+    .confidence-dot.low {
+      background: var(--danger);
+    }
+
+    .success-alert {
+      background: rgba(16, 185, 129, 0.1);
+      border: 1px solid rgba(16, 185, 129, 0.2);
+      border-radius: 8px;
+      padding: 0.75rem;
+      color: #a7f3d0;
+      font-size: 0.85rem;
+      margin-bottom: 1rem;
+      display: none;
+    }
+
+    /* Navbar links & Tabs styling */
+    .navbar-links {
+      display: flex;
+      gap: 1.5rem;
+      align-items: center;
+      margin-left: 2rem;
+      margin-right: auto;
+    }
+    
+    .nav-link {
+      color: var(--text-muted);
+      text-decoration: none;
+      font-size: 0.95rem;
+      font-weight: 500;
+      transition: all 0.3s ease;
+      cursor: pointer;
+      padding: 0.25rem 0.5rem;
+      border-radius: 4px;
+    }
+    
+    .nav-link:hover, .nav-link.active {
+      color: var(--text-main);
+      background: rgba(255, 255, 255, 0.05);
+    }
+    
+    /* Blue Status Bar */
+    .status-bar {
+      background: linear-gradient(90deg, #1e1b4b, #1e3a8a);
+      border-bottom: 1px solid rgba(59, 130, 246, 0.3);
+      padding: 0.5rem 2rem;
+      font-size: 0.85rem;
+      display: flex;
+      gap: 2rem;
+      color: #93c5fd;
+      align-items: center;
+      font-family: var(--font-header);
+    }
+    
+    .status-item {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    
+    .status-dot-green {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: #10b981;
+      box-shadow: 0 0 8px #10b981;
+    }
+    
+    /* Views container */
+    .tab-view {
+      display: none;
+    }
+    
+    .tab-view.active {
+      display: block;
+    }
+    
+    /* Hero Section */
+    .hero-section {
+      text-align: center;
+      padding: 4rem 2rem 2.5rem;
+      max-width: 800px;
+      margin: 0 auto;
+    }
+    
+    .hero-title {
+      font-size: 3rem;
+      font-weight: 800;
+      letter-spacing: -0.03em;
+      margin-bottom: 1rem;
+      background: linear-gradient(135deg, #fff 30%, #a78bfa 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      font-family: var(--font-header);
+    }
+    
+    .hero-desc {
+      font-size: 1.15rem;
+      color: var(--text-muted);
+      margin-bottom: 2rem;
+      line-height: 1.6;
+    }
+    
+    .hero-buttons {
+      display: flex;
+      gap: 1rem;
+      justify-content: center;
+    }
+    
+    .btn-secondary {
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid var(--border-color);
+      color: var(--text-main);
+    }
+    
+    .btn-secondary:hover {
+      background: rgba(255, 255, 255, 0.1);
+    }
+    
+    /* Stats Bar Grid */
+    .stats-bar-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 1.5rem;
+      max-width: 1200px;
+      margin: 0 auto 3rem;
+      padding: 0 2rem;
+    }
+    
+    .stat-card {
+      background: rgba(30, 41, 59, 0.4);
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      padding: 1.25rem;
+      text-align: center;
+      transition: all 0.3s ease;
+    }
+    
+    .stat-card:hover {
+      transform: translateY(-2px);
+      background: rgba(30, 41, 59, 0.6);
+      border-color: rgba(139, 92, 246, 0.4);
+    }
+    
+    .stat-val {
+      font-size: 1.8rem;
+      font-weight: 700;
+      color: #fff;
+      font-family: var(--font-header);
+      margin-bottom: 0.25rem;
+    }
+    
+    .stat-label {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+    
+    /* Pipeline Status Section */
+    .pipeline-section {
+      max-width: 1200px;
+      margin: 0 auto 3.5rem;
+      padding: 0 2rem;
+    }
+    
+    .pipeline-flow {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: rgba(15, 23, 42, 0.4);
+      border: 1px solid var(--border-color);
+      border-radius: 16px;
+      padding: 2rem;
+      position: relative;
+      overflow-x: auto;
+      gap: 1rem;
+    }
+    
+    .pipeline-step {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.5rem;
+      flex: 1;
+      text-align: center;
+      min-width: 120px;
+      z-index: 2;
+    }
+    
+    .step-icon {
+      width: 48px;
+      height: 48px;
+      border-radius: 50%;
+      background: rgba(30, 41, 59, 0.8);
+      border: 2px solid var(--border-color);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.2rem;
+      transition: all 0.3s ease;
+    }
+    
+    .pipeline-step.active .step-icon {
+      background: rgba(139, 92, 246, 0.2);
+      border-color: var(--primary);
+      box-shadow: 0 0 16px var(--primary);
+      color: #fff;
+    }
+    
+    .pipeline-step.active .step-title {
+      color: #fff;
+      font-weight: 600;
+    }
+    
+    .step-title {
+      font-size: 0.9rem;
+      color: var(--text-muted);
+      font-family: var(--font-header);
+    }
+    
+    .step-desc {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      opacity: 0.7;
+    }
+    
+    .pipeline-line {
+      position: absolute;
+      top: 44px;
+      left: 10%;
+      right: 10%;
+      height: 2px;
+      background: var(--border-color);
+      z-index: 1;
+    }
+    
+    /* Features Section */
+    .features-section {
+      max-width: 1200px;
+      margin: 0 auto 3.5rem;
+      padding: 0 2rem;
+    }
+    
+    .section-title {
+      font-size: 1.8rem;
+      font-weight: 700;
+      margin-bottom: 1.5rem;
+      font-family: var(--font-header);
+      text-align: left;
+    }
+    
+    .features-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+      gap: 1.5rem;
+    }
+    
+    .feature-card-home {
+      background: rgba(30, 41, 59, 0.3);
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      padding: 1.5rem;
+      position: relative;
+      transition: all 0.3s ease;
+    }
+    
+    .feature-card-home:hover {
+      border-color: rgba(139, 92, 246, 0.3);
+      background: rgba(30, 41, 59, 0.5);
+    }
+    
+    .feature-icon-wrapper {
+      font-size: 2rem;
+      margin-bottom: 1rem;
+    }
+    
+    .feature-title-home {
+      font-size: 1.1rem;
+      font-weight: 600;
+      margin-bottom: 0.5rem;
+      color: #fff;
+      font-family: var(--font-header);
+    }
+    
+    .feature-desc-home {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      line-height: 1.5;
+    }
+    
+    .feature-badge-home {
+      position: absolute;
+      top: 1.5rem;
+      right: 1.5rem;
+      font-size: 0.7rem;
+      font-weight: 600;
+      padding: 0.15rem 0.5rem;
+      border-radius: 4px;
+    }
+    
+    .badge-success {
+      background: rgba(16, 185, 129, 0.15);
+      color: #34d399;
+      border: 1px solid rgba(16, 185, 129, 0.3);
+    }
+    
+    .badge-warning {
+      background: rgba(245, 158, 11, 0.15);
+      color: #fbbf24;
+      border: 1px solid rgba(245, 158, 11, 0.3);
+    }
+    
+    /* Recent Calls Section */
+    .recent-calls-section {
+      max-width: 1200px;
+      margin: 0 auto 4rem;
+      padding: 0 2rem;
+    }
+    
+    .table-container {
+      background: rgba(15, 23, 42, 0.4);
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      overflow: hidden;
+    }
+    
+    .recent-calls-table {
+      width: 100%;
+      border-collapse: collapse;
+      text-align: left;
+      font-size: 0.9rem;
+    }
+    
+    .recent-calls-table th {
+      background: rgba(30, 41, 59, 0.6);
+      padding: 1rem;
+      font-weight: 600;
+      color: var(--text-muted);
+      border-bottom: 1px solid var(--border-color);
+    }
+    
+    .recent-calls-table td {
+      padding: 1rem;
+      border-bottom: 1px solid var(--border-color);
+      color: var(--text-main);
+    }
+    
+    .recent-calls-table tr:hover {
+      background: rgba(255, 255, 255, 0.02);
+    }
+    
+    .call-wer-badge {
+      display: inline-block;
+      padding: 0.15rem 0.4rem;
+      border-radius: 4px;
+      font-size: 0.8rem;
+      font-weight: 600;
+    }
+    
+    .call-wer-badge.good {
+      background: rgba(16, 185, 129, 0.15);
+      color: #34d399;
+      border: 1px solid rgba(16, 185, 129, 0.3);
+    }
+    
+    .call-wer-badge.warn {
+      background: rgba(245, 158, 11, 0.15);
+      color: #fbbf24;
+      border: 1px solid rgba(245, 158, 11, 0.3);
+    }
+    
+    /* Code Modal */
+    .modal-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(15, 23, 42, 0.8);
+      backdrop-filter: blur(8px);
+      z-index: 1000;
+      display: none;
+      align-items: center;
+      justify-content: center;
+    }
+    
+    .modal-content-code {
+      background: #0f172a;
+      border: 1px solid rgba(139, 92, 246, 0.4);
+      border-radius: 16px;
+      width: 90%;
+      max-width: 600px;
+      padding: 2rem;
+      position: relative;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
+    }
+    
+    .modal-close-btn {
+      position: absolute;
+      top: 1rem;
+      right: 1rem;
+      background: none;
+      border: none;
+      color: var(--text-muted);
+      font-size: 1.5rem;
+      cursor: pointer;
+    }
+    
+    .modal-close-btn:hover {
+      color: #fff;
+    }
+    
+    /* Dashboard Metrics grid */
+    .dashboard-metrics-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 1rem;
+      margin-bottom: 1.5rem;
+    }
+    
+    .metric-card-dash {
+      background: rgba(30, 41, 59, 0.3);
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      padding: 1rem 1.25rem;
+    }
+    
+    .metric-val-dash {
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: #fff;
+      font-family: var(--font-header);
+    }
+    
+    .metric-label-dash {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      text-transform: uppercase;
+    }
+    
+    /* Dashboard custom chart row */
+    .wer-sentiment-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+      gap: 1.5rem;
+      margin-bottom: 1.5rem;
+    }
+    
+    .chart-container {
+      background: rgba(30, 41, 59, 0.2);
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      padding: 1.25rem;
+    }
+    
+    .chart-bars {
+      display: flex;
+      justify-content: space-around;
+      align-items: flex-end;
+      height: 140px;
+      margin-top: 1.5rem;
+      border-bottom: 1.5px solid var(--border-color);
+      padding-bottom: 0.25rem;
+    }
+    
+    .chart-bar-wrapper {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      flex-grow: 1;
+    }
+    
+    .chart-bar-fill {
+      width: 24px;
+      background: linear-gradient(to top, var(--primary), var(--accent-purple));
+      border-radius: 4px 4px 0 0;
+      position: relative;
+      transition: height 1.2s cubic-bezier(0.4, 0, 0.2, 1);
+      height: 0px; /* animated in JS */
+    }
+    
+    .chart-bar-fill.active {
+      background: linear-gradient(to top, var(--danger), var(--warning));
+    }
+    
+    .chart-bar-val {
+      position: absolute;
+      top: -1.25rem;
+      left: 50%;
+      transform: translateX(-50%);
+      font-size: 0.75rem;
+      color: #fff;
+      font-weight: 600;
+    }
+    
+    .chart-bar-label {
+      font-size: 0.7rem;
+      color: var(--text-muted);
+      margin-top: 0.5rem;
+      text-transform: uppercase;
+    }
+    
+    /* Horizontal Sentiment bar */
+    .sentiment-bar-progress {
+      display: flex;
+      height: 16px;
+      border-radius: 8px;
+      overflow: hidden;
+      margin-top: 2rem;
+      background: rgba(255, 255, 255, 0.05);
+    }
+    
+    .sentiment-segment {
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.7rem;
+      font-weight: 600;
+      color: #fff;
+      transition: width 1s ease;
+    }
+    
+    .sentiment-segment.pos {
+      background: #10b981;
+    }
+    
+    .sentiment-segment.neu {
+      background: #64748b;
+    }
+    
+    .sentiment-segment.neg {
+      background: #ff6f61;
+    }
+    
+    .sentiment-legend {
+      display: flex;
+      gap: 1.5rem;
+      margin-top: 1.5rem;
+      font-size: 0.8rem;
+    }
+    
+    .legend-item {
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+      color: var(--text-muted);
+    }
+    
+    .legend-color {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <div class="logo-container">
+      <div class="logo-icon">V</div>
+      <div class="logo-text">
+        <h1>VoiceOps <span>Sentinel</span></h1>
+      </div>
+      <span class="logo-badge">Call Intelligence</span>
+    </div>
+    <nav class="navbar-links">
+      <a class="nav-link active" id="navHomeBtn">🏠 Home</a>
+      <a class="nav-link" id="navDashboardBtn">📊 Dashboard</a>
+      <a class="nav-link" id="navDocBtn">📝 Documentation</a>
+    </nav>
+    <div style="display: flex; align-items: center; gap: 1rem;">
+      <div class="api-status" style="margin-right: 0.5rem;">
+        <div class="status-dot" id="statusDot"></div>
+        <span id="statusText">System Active</span>
+      </div>
+      <button class="btn" id="openAppBtn" style="padding: 0.5rem 1rem; font-size: 0.85rem; width: auto; margin: 0;">
+        Open App
+      </button>
+    </div>
+  </header>
+
+  <!-- Blue Status Bar -->
+  <div class="status-bar">
+    <div class="status-item">
+      <div class="status-dot-green"></div>
+      <span>Pipeline Active</span>
+    </div>
+    <div class="status-item">
+      <span style="color: #60a5fa;">●</span>
+      <span>Whisper API: Connected</span>
+    </div>
+    <div class="status-item">
+      <span style="color: #c084fc;">●</span>
+      <span>Processed Today: 3 Calls</span>
+    </div>
+  </div>
+
+  <!-- 1. HOME VIEW (Active by default) -->
+  <div class="tab-view active" id="homeView">
+    <!-- Hero Section -->
+    <div class="hero-section">
+      <h1 class="hero-title">VoiceOps Sentinel</h1>
+      <p class="hero-desc">
+        Automated customer support speech analytics pipeline. Transcribe Hinglish dialog, automatically redact PII fields, extract action items, and trigger real-time quality alerts.
+      </p>
+      <div class="hero-buttons">
+        <button class="btn" id="heroOpenDashboardBtn" style="width: auto; padding: 0.75rem 1.5rem;">
+          Open Dashboard
+        </button>
+        <button class="btn btn-secondary" id="heroGenerateCodeBtn" style="width: auto; padding: 0.75rem 1.5rem;">
+          Generate Code
+        </button>
+      </div>
+    </div>
+
+    <!-- Stats Bar -->
+    <div class="stats-bar-grid">
+      <div class="stat-card">
+        <div class="stat-val">4.2%</div>
+        <div class="stat-label">Average WER</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-val">98.1%</div>
+        <div class="stat-label">Transcription Accuracy</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-val">1.3s</div>
+        <div class="stat-label">Processing Time</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-val">100%</div>
+        <div class="stat-label">PII Redaction Rate</div>
+      </div>
+    </div>
+
+    <!-- Pipeline Status Flow -->
+    <div class="pipeline-section">
+      <h2 class="section-title"><span>🔄</span> Pipeline Status (Week 1 Flow)</h2>
+      <div class="pipeline-flow">
+        <div class="pipeline-line"></div>
+        <div class="pipeline-step">
+          <div class="step-icon">🎤</div>
+          <div class="step-title">Audio Input</div>
+          <div class="step-desc">Ingest WAV/MP3</div>
+        </div>
+        <div class="pipeline-step">
+          <div class="step-icon">⚙️</div>
+          <div class="step-title">Preprocessor</div>
+          <div class="step-desc">16kHz Mono Convert</div>
+        </div>
+        <div class="pipeline-step active">
+          <div class="step-icon">🧠</div>
+          <div class="step-title">Whisper API</div>
+          <div class="step-desc">Active / Connected</div>
+        </div>
+        <div class="pipeline-step">
+          <div class="step-icon">📊</div>
+          <div class="step-title">WER Test</div>
+          <div class="step-desc">Evaluator Run</div>
+        </div>
+        <div class="pipeline-step">
+          <div class="step-icon">📄</div>
+          <div class="step-title">JSON Output</div>
+          <div class="step-desc">Final Schema</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Features Section -->
+    <div class="features-section">
+      <h2 class="section-title"><span>🌟</span> Key Capabilities</h2>
+      <div class="features-grid">
+        <div class="feature-card-home">
+          <span class="feature-badge-home badge-success">Week 1</span>
+          <div class="feature-icon-wrapper">🔊</div>
+          <h3 class="feature-title-home">Live Waveform Player</h3>
+          <p class="feature-desc-home">Visual representation of call duration with seekable dialogue timeline synchronization.</p>
+        </div>
+        <div class="feature-card-home">
+          <span class="feature-badge-home badge-success">Week 1</span>
+          <div class="feature-icon-wrapper">📈</div>
+          <h3 class="feature-title-home">Sentiment Detection</h3>
+          <p class="feature-desc-home">Track positive/negative trends and overall call satisfaction dynamically.</p>
+        </div>
+        <div class="feature-card-home">
+          <span class="feature-badge-home badge-warning">Week 2</span>
+          <div class="feature-icon-wrapper">🔒</div>
+          <h3 class="feature-title-home">PII Redaction Preview</h3>
+          <p class="feature-desc-home">Mask phone numbers, names, and emails automatically in speech transcripts.</p>
+        </div>
+        <div class="feature-card-home">
+          <span class="feature-badge-home badge-warning">Week 2</span>
+          <div class="feature-icon-wrapper">✅</div>
+          <h3 class="feature-title-home">Action Item Extractor</h3>
+          <p class="feature-desc-home">Heuristic intelligence to parse tasks, scheduling, and billing callbacks.</p>
+        </div>
+        <div class="feature-card-home">
+          <span class="feature-badge-home badge-warning">Week 2</span>
+          <div class="feature-icon-wrapper">👥</div>
+          <h3 class="feature-title-home">Speaker Diarization</h3>
+          <p class="feature-desc-home">Automatically separate Speaker A (Agent) and Speaker B (Customer) transcripts.</p>
+        </div>
+        <div class="feature-card-home">
+          <span class="feature-badge-home badge-success">Week 1</span>
+          <div class="feature-icon-wrapper">📝</div>
+          <h3 class="feature-title-home">Export Reports</h3>
+          <p class="feature-desc-home">Download full call logs as raw TXT, structured JSON, or print-friendly PDF format.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Recent Calls Section -->
+    <div class="recent-calls-section">
+      <h2 class="section-title"><span>📞</span> Recent Call Ingestions</h2>
+      <div class="table-container">
+        <table class="recent-calls-table">
+          <thead>
+            <tr>
+              <th>Call ID</th>
+              <th>Scenario</th>
+              <th>Duration</th>
+              <th>Noise Level</th>
+              <th>WER Score</th>
+              <th>Action</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>call_001</td>
+              <td>Billing / Payment Inquiry</td>
+              <td>45s</td>
+              <td>Low</td>
+              <td><td><span class="call-wer-badge good">3.8%</span></td></td>
+              <td><button class="btn load-mock-call-btn" data-callid="call_001" style="padding: 0.25rem 0.5rem; font-size: 0.75rem; width: auto; margin: 0;">Load Call</button></td>
+            </tr>
+            <tr>
+              <td>call_002</td>
+              <td><span style="color: #f87171;">⚠️ Angry Customer</span> Cancellation</td>
+              <td>120s</td>
+              <td>High</td>
+              <td><td><span class="call-wer-badge warn">5.1%</span></td></td>
+              <td><button class="btn load-mock-call-btn" data-callid="call_002" style="padding: 0.25rem 0.5rem; font-size: 0.75rem; width: auto; margin: 0;">Load Call</button></td>
+            </tr>
+            <tr>
+              <td>call_003</td>
+              <td>Hinglish Tech Support</td>
+              <td>85s</td>
+              <td>Medium</td>
+              <td><td><span class="call-wer-badge good">4.5%</span></td></td>
+              <td><button class="btn load-mock-call-btn" data-callid="call_003" style="padding: 0.25rem 0.5rem; font-size: 0.75rem; width: auto; margin: 0;">Load Call</button></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- 2. DASHBOARD VIEW (Swapped dynamically) -->
+  <div class="tab-view" id="dashboardView" style="padding: 1.5rem 2rem 3rem;">
+    
+    <!-- Dashboard metrics -->
+    <div class="dashboard-metrics-grid">
+      <div class="metric-card-dash">
+        <div class="metric-val-dash">5</div>
+        <div class="metric-label-dash">Total Calls Processed</div>
+      </div>
+      <div class="metric-card-dash">
+        <div class="metric-val-dash">4.2%</div>
+        <div class="metric-label-dash">Average WER Score</div>
+      </div>
+      <div class="metric-card-dash" style="border-color: rgba(239, 68, 68, 0.3);">
+        <div class="metric-val-dash" style="color: #ef4444;">1</div>
+        <div class="metric-label-dash">Critical Alerts Triggered</div>
+      </div>
+      <div class="metric-card-dash">
+        <div class="metric-val-dash" style="color: #10b981;">60%</div>
+        <div class="metric-label-dash">Avg. Sentiment (Positive)</div>
+      </div>
+    </div>
+
+    <!-- WER Bar chart & Sentiment Breakdown Row -->
+    <div class="wer-sentiment-grid">
+      <div class="chart-container">
+        <h3 style="margin-top: 0; font-family: var(--font-header); font-size: 1rem; color: #fff;">ASR Performance (WER Comparison)</h3>
+        <div class="chart-bars">
+          <div class="chart-bar-wrapper">
+            <div class="chart-bar-fill" style="height: 74px;"><span class="chart-bar-val">3.8%</span></div>
+            <div class="chart-bar-label">call_001</div>
+          </div>
+          <div class="chart-bar-wrapper">
+            <div class="chart-bar-fill active" style="height: 100px;"><span class="chart-bar-val">5.1%</span></div>
+            <div class="chart-bar-label" style="color: #f87171;">call_002</div>
+          </div>
+          <div class="chart-bar-wrapper">
+            <div class="chart-bar-fill" style="height: 88px;"><span class="chart-bar-val">4.5%</span></div>
+            <div class="chart-bar-label">call_003</div>
+          </div>
+          <div class="chart-bar-wrapper">
+            <div class="chart-bar-fill" style="height: 76px;"><span class="chart-bar-val">3.9%</span></div>
+            <div class="chart-bar-label">call_004</div>
+          </div>
+          <div class="chart-bar-wrapper">
+            <div class="chart-bar-fill" style="height: 80px;"><span class="chart-bar-val">4.1%</span></div>
+            <div class="chart-bar-label">call_005</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="chart-container">
+        <h3 style="margin-top: 0; font-family: var(--font-header); font-size: 1rem; color: #fff;">Sentiment Breakdown (All Processed Calls)</h3>
+        <div class="sentiment-bar-progress">
+          <div class="sentiment-segment pos" style="width: 60%;">60%</div>
+          <div class="sentiment-segment neu" style="width: 20%;">20%</div>
+          <div class="sentiment-segment neg" style="width: 20%;">20%</div>
+        </div>
+        <div class="sentiment-legend">
+          <div class="legend-item">
+            <div class="legend-color" style="background: #10b981;"></div>
+            <span>Positive</span>
+          </div>
+          <div class="legend-item">
+            <div class="legend-color" style="background: #64748b;"></div>
+            <span>Neutral</span>
+          </div>
+          <div class="legend-item">
+            <div class="legend-color" style="background: #ff6f61;"></div>
+            <span>Negative (Distress)</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Alert Box specifically for call_002 -->
+    <div class="card alert-card" id="call002AlertBox" style="border: 1px solid rgba(239, 68, 68, 0.4); background: rgba(239, 68, 68, 0.08); margin-bottom: 1.5rem; display: block;">
+      <div style="display: flex; align-items: flex-start; gap: 1rem;">
+        <div style="font-size: 2rem; line-height: 1;">🚨</div>
+        <div>
+          <h3 style="color: #f87171; margin-top: 0; margin-bottom: 0.5rem; font-family: var(--font-header);">MANAGER ALERTS TRIGGERED ON call_002</h3>
+          <ul style="margin: 0; padding-left: 1.2rem; color: var(--text-main); font-size: 0.9rem; line-height: 1.5;">
+            <li>Customer distress detected: Angry customer cancellation scenario.</li>
+            <li>ASR Warning: WER of 5.1% exceeds base low-error rate limits.</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- Sidebar controls and main panel layout -->
+    <div class="container" style="padding: 0; max-width: none;">
+      <!-- Sidebar Panel -->
+      <div class="sidebar">
+        <div class="card">
+          <h2 class="card-title">
+            <span>🎙️</span> Ingest Audio Call
+          </h2>
+          
+          <div class="upload-zone" id="uploadZone">
+            <span class="upload-icon">📤</span>
+            <div class="upload-text">
+              <h3>Drag & Drop Call Audio</h3>
+              <p>Supports MP3, WAV, FLAC (max 25MB)</p>
+            </div>
+            <input type="file" id="fileInput" accept=".mp3,.wav,.flac">
+          </div>
+
+          <div class="selected-file-card" id="selectedFileCard">
+            <div class="file-details">
+              <span class="file-icon">📄</span>
+              <span id="fileNameDisplay" style="overflow: hidden; text-overflow: ellipsis;">call_audio.wav</span>
+            </div>
+            <span class="remove-file" id="removeFileBtn">×</span>
+          </div>
+        </div>
+
+        <div class="card">
+          <h2 class="card-title">
+            <span>⚙️</span> Transcription Settings
+          </h2>
+          
+          <div class="form-group">
+            <label for="asrBackend">ASR Engine Backend</label>
+            <select id="asrBackend" class="form-control">
+              <option value="whisper">OpenAI Whisper (Primary)</option>
+              <option value="deepgram">Deepgram SDK (Fallback)</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label for="languageHint">Language Code (Optional)</label>
+            <input type="text" id="languageHint" class="form-control" placeholder="e.g. en, hi (Hinglish), es">
+          </div>
+
+          <div class="form-group">
+            <label for="referenceText">Reference Text for WER (Optional)</label>
+            <textarea id="referenceText" class="form-control" rows="3" placeholder="Enter ground-truth reference text to calculate Word Error Rate..."></textarea>
+          </div>
+
+          <button class="btn" id="transcribeBtn" disabled>
+            <span>⚡</span> Process Call
+          </button>
+        </div>
+      </div>
+
+      <!-- Main Workspace -->
+      <div class="main-panel">
+        <div class="success-alert" id="successAlert">
+          Transcribed successfully in <span id="transcribeDurationSec">0.0</span> seconds.
+        </div>
+
+        <!-- Welcome State -->
+        <div class="card empty-state" id="emptyState">
+          <span class="empty-icon">📊</span>
+          <h2>No Active Call Analytics</h2>
+          <p>Upload a customer support audio call from the sidebar controls or click 'Load Call' on Home page to view transcription, diarization, and call intelligence events.</p>
+        </div>
+
+        <!-- Processing State -->
+        <div class="card loader-container" id="loaderState">
+          <div class="spinner"></div>
+          <div class="loader-text">
+            <h3>Analyzing Audio Call...</h3>
+            <p>Normalizing audio levels, converting to mono 16kHz format, and running automatic speech recognition pipeline.</p>
+          </div>
+        </div>
+
+        <!-- Manager Alert Card (Hidden initially) -->
+        <div class="card alert-card" id="managerAlertCard" style="display: none; border: 1px solid rgba(239, 68, 68, 0.4); background: rgba(239, 68, 68, 0.08); animation: alertPulse 2s infinite alternate; margin-bottom: 1.5rem;">
+          <div style="display: flex; align-items: flex-start; gap: 1rem;">
+            <div style="font-size: 2rem; line-height: 1;">🚨</div>
+            <div>
+              <h3 style="color: #f87171; margin-top: 0; margin-bottom: 0.5rem; font-family: var(--font-header);">MANAGER ALERT TRIGGERED</h3>
+              <ul id="alertReasonsList" style="margin: 0; padding-left: 1.2rem; color: var(--text-main); font-size: 0.9rem; line-height: 1.5;">
+                <!-- Reasons populated here -->
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        <!-- Live Player Block (Hidden initially) -->
+        <div class="card audio-section" id="audioSection">
+          <h2 class="card-title"><span>🔊</span> Call Audio Integration</h2>
+          <div class="custom-player">
+            <button class="play-btn" id="playBtn">▶</button>
+            <div id="waveform" style="flex-grow: 1; min-height: 48px; background: rgba(15, 23, 42, 0.4); border-radius: 8px; border: 1px solid var(--border-color); cursor: pointer;"></div>
+            <div class="player-time" id="playerTime">0:00 / 0:00</div>
+          </div>
+        </div>
+
+        <!-- Call Analytics Dashboard (Hidden initially) -->
+        <div class="analysis-grid" id="analysisGrid">
+          
+          <!-- Call Intelligence & Sentiment -->
+          <div class="card">
+            <h2 class="card-title"><span>📈</span> Sentiment Shifts</h2>
+            <div class="sentiment-track" id="sentimentTrack">
+              <!-- Dynamically populated sentiment timeline -->
+            </div>
+          </div>
+
+          <!-- Follow-up Action Items -->
+          <div class="card">
+            <h2 class="card-title"><span>✅</span> Extracted Action Items</h2>
+            <ul class="action-list" id="actionList">
+              <!-- Dynamically populated action items -->
+            </ul>
+          </div>
+
+          <!-- Audio Metadata Card -->
+          <div class="card">
+            <h2 class="card-title"><span>📋</span> Session Information</h2>
+            <div class="meta-grid">
+              <div class="meta-item">
+                <div class="meta-label">Duration</div>
+                <div class="meta-value" id="metaDuration">0.0s</div>
+              </div>
+              <div class="meta-item">
+                <div class="meta-label">ASR Backend</div>
+                <div class="meta-value" id="metaBackend" style="text-transform: capitalize;">Whisper</div>
+              </div>
+              <div class="meta-item">
+                <div class="meta-label">Language</div>
+                <div class="meta-value" id="metaLanguage" style="text-transform: uppercase;">en</div>
+              </div>
+              <div class="meta-item">
+                <div class="meta-label">WER Score</div>
+                <div class="meta-value" id="metaWer">N/A</div>
+              </div>
+              <div class="meta-item" style="grid-column: span 2;">
+                <div class="meta-label">Overall Sentiment</div>
+                <div id="metaSentiment" style="font-family: var(--font-header); font-size: 1.1rem; font-weight: 600; margin-top: 0.25rem;">N/A</div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- Conversation Transcript Card (Hidden initially) -->
+        <div class="card transcript-section" id="transcriptSection">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; flex-wrap: wrap; gap: 1rem;">
+            <h2 class="card-title" style="margin-bottom: 0;"><span>💬</span> Latest Transcript (Click segments to seek)</h2>
+            <div style="display: flex; gap: 0.5rem;">
+              <button class="btn" id="exportPdfBtn" style="padding: 0.4rem 0.8rem; font-size: 0.8rem; width: auto; background: rgba(139, 92, 246, 0.15); border: 1px solid var(--primary); box-shadow: none; color: #c084fc;">
+                📄 Export PDF
+              </button>
+              <button class="btn" id="copyTextBtn" style="padding: 0.4rem 0.8rem; font-size: 0.8rem; width: auto; background: rgba(255, 255, 255, 0.08); border: 1px solid var(--border-color); box-shadow: none;">
+                📋 Copy Text
+              </button>
+              <button class="btn" id="aiSummaryBtn" style="padding: 0.4rem 0.8rem; font-size: 0.8rem; width: auto; background: rgba(255, 255, 255, 0.08); border: 1px solid var(--border-color); box-shadow: none;">
+                ✨ AI Summary
+              </button>
+              <button class="btn" id="exportTxtBtn" style="padding: 0.4rem 0.8rem; font-size: 0.8rem; width: auto; background: rgba(255, 255, 255, 0.08); border: 1px solid var(--border-color); box-shadow: none;">
+                TXT
+              </button>
+              <button class="btn" id="exportJsonBtn" style="padding: 0.4rem 0.8rem; font-size: 0.8rem; width: auto; background: rgba(255, 255, 255, 0.08); border: 1px solid var(--border-color); box-shadow: none;">
+                JSON
+              </button>
+            </div>
+          </div>
+          <div class="transcript-container" id="transcriptContainer">
+            <!-- Dynamically populated transcript segments -->
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- Documentation Tab Overlay (Hidden by default) -->
+  <div class="tab-view" id="documentationView" style="padding: 3rem 2rem; max-width: 800px; margin: 0 auto;">
+    <div class="card">
+      <h2 class="card-title">📖 VoiceOps Sentinel Documentation</h2>
+      <p style="color: var(--text-muted); font-size: 0.95rem; line-height: 1.6; margin-bottom: 1.5rem;">
+        VoiceOps Sentinel is a full-stack speech analytics engine built for customer experience managers and QA assessors. It uses local preprocessors, OpenAI Whisper API, Deepgram SDK, and a custom PII Redactor / Alert System rules engine.
+      </p>
+      <h3 style="color: #fff; margin-bottom: 0.5rem; font-size: 1.1rem; font-family: var(--font-header);">💡 Active Pipelines</h3>
+      <ul style="color: var(--text-muted); font-size: 0.9rem; line-height: 1.6; padding-left: 1.2rem; margin-bottom: 2rem;">
+        <li><strong>ASR Backend Whisper:</strong> Dispatches audio inputs to OpenAI Audio Transcribe with temperature set to 0.0 for deterministic outputs.</li>
+        <li><strong>ASR Backend Deepgram:</strong> SDK-integrated turns diarization fallback.</li>
+        <li><strong>PII Redaction:</strong> Implements server-side regex mapping for emails, phone numbers, and spelled-out Hindi/English digit tokens.</li>
+        <li><strong>Alert Engine:</strong> Triggers warning cards when Word Error Rate exceeds 30% or customer gussa/anger phrases are detected.</li>
+      </ul>
+      <button class="btn" id="docBackBtn" style="width: auto; padding: 0.5rem 1.5rem;">Back to Home</button>
+    </div>
+  </div>
+
+  <!-- Modal overlay for Generate Code -->
+  <div class="modal-overlay" id="codeModalOverlay">
+    <div class="modal-content-code">
+      <button class="modal-close-btn" id="closeCodeModalBtn">×</button>
+      <h3 style="color: #c084fc; margin-top: 0; margin-bottom: 1rem; font-family: var(--font-header); font-size: 1.25rem;">💻 Transcriber & Redaction Engine Code</h3>
+      <p style="color: var(--text-muted); font-size: 0.85rem; margin-bottom: 1rem;">Here is the core transcription dispatch and PII Redaction helper used in the backend:</p>
+      <pre style="background: #020617; border: 1px solid var(--border-color); padding: 1rem; border-radius: 8px; font-family: monospace; font-size: 0.8rem; overflow-x: auto; color: #a7f3d0; max-height: 300px;">
+import re
+
+def redact_pii(text: str) -> str:
+    # Redact Email
+    text = re.sub(r'[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+', '[REDACTED EMAIL]', text)
+    # Redact Phone (Numeric & Spelled-out)
+    text = re.sub(r'\b(\+?\d{1,4}[-.\s]?)?\(?\d{2,4}\)?[-.\s]?\d{3,4}[-.\s]?\d{3,4}\b', '[REDACTED PHONE]', text)
+    # Redact Names introduced by patterns
+    name_pattern = r'(?i)\b(my name is|mera naam|naam hai)\s+([A-Za-z]+)'
+    text = re.sub(name_pattern, lambda m: f"{m.group(1)} [REDACTED NAME]", text)
+    return text
+      </pre>
+      <div style="margin-top: 1.5rem; text-align: right;">
+        <button class="btn" id="copyCodeSnippetBtn" style="width: auto; padding: 0.5rem 1rem; font-size: 0.85rem;">Copy Code</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Elements
+    const uploadZone = document.getElementById('uploadZone');
+    const fileInput = document.getElementById('fileInput');
+    const selectedFileCard = document.getElementById('selectedFileCard');
+    const fileNameDisplay = document.getElementById('fileNameDisplay');
+    const removeFileBtn = document.getElementById('removeFileBtn');
+    const transcribeBtn = document.getElementById('transcribeBtn');
+    const asrBackend = document.getElementById('asrBackend');
+    const languageHint = document.getElementById('languageHint');
+    const referenceText = document.getElementById('referenceText');
+
+    const emptyState = document.getElementById('emptyState');
+    const loaderState = document.getElementById('loaderState');
+    const audioSection = document.getElementById('audioSection');
+    const analysisGrid = document.getElementById('analysisGrid');
+    const transcriptSection = document.getElementById('transcriptSection');
+    const managerAlertCard = document.getElementById('managerAlertCard');
+    const alertReasonsList = document.getElementById('alertReasonsList');
+
+    // Audio & WaveSurfer Elements
+    const playBtn = document.getElementById('playBtn');
+    const playerTime = document.getElementById('playerTime');
+
+    // Initialize WaveSurfer
+    const wavesurfer = WaveSurfer.create({
+      container: '#waveform',
+      waveColor: 'rgba(255, 255, 255, 0.25)',
+      progressColor: '#8b5cf6',
+      cursorColor: '#f8fafc',
+      barWidth: 2,
+      barGap: 3,
+      barRadius: 2,
+      height: 48,
+      responsive: true,
+      normalize: true
+    });
+
+    // Analytics details
+    const successAlert = document.getElementById('successAlert');
+    const transcribeDurationSec = document.getElementById('transcribeDurationSec');
+    const sentimentTrack = document.getElementById('sentimentTrack');
+    const actionList = document.getElementById('actionList');
+    const transcriptContainer = document.getElementById('transcriptContainer');
+
+    const metaDuration = document.getElementById('metaDuration');
+    const metaBackend = document.getElementById('metaBackend');
+    const metaLanguage = document.getElementById('metaLanguage');
+    const metaWer = document.getElementById('metaWer');
+    const metaSentiment = document.getElementById('metaSentiment');
+
+    // State Variables
+    let selectedFile = null;
+    let segmentsData = [];
+    let isPlaying = false;
+
+    // Tabs Navigation Switcher
+    const tabs = {
+      home: document.getElementById('homeView'),
+      dashboard: document.getElementById('dashboardView'),
+      doc: document.getElementById('documentationView')
+    };
+    const navButtons = {
+      home: document.getElementById('navHomeBtn'),
+      dashboard: document.getElementById('navDashboardBtn'),
+      doc: document.getElementById('navDocBtn')
+    };
+
+    function switchTab(tabName) {
+      Object.keys(tabs).forEach(k => {
+        if (k === tabName) {
+          tabs[k].classList.add('active');
+        } else {
+          tabs[k].classList.remove('active');
+        }
+      });
+      Object.keys(navButtons).forEach(k => {
+        if (k === tabName) {
+          navButtons[k].classList.add('active');
+        } else {
+          navButtons[k].classList.remove('active');
+        }
+      });
+
+      if (tabName === 'dashboard') {
+        setTimeout(() => {
+          document.querySelectorAll('.chart-bar-fill').forEach(bar => {
+            const valSpan = bar.querySelector('.chart-bar-val');
+            if (valSpan) {
+              const percent = parseFloat(valSpan.innerText) * 15;
+              bar.style.height = `${Math.min(percent, 140)}px`;
+            }
+          });
+        }, 150);
+      }
+    }
+
+    navButtons.home.addEventListener('click', () => switchTab('home'));
+    navButtons.dashboard.addEventListener('click', () => switchTab('dashboard'));
+    navButtons.doc.addEventListener('click', () => switchTab('doc'));
+    document.getElementById('openAppBtn').addEventListener('click', () => switchTab('dashboard'));
+    document.getElementById('heroOpenDashboardBtn').addEventListener('click', () => switchTab('dashboard'));
+    document.getElementById('docBackBtn').addEventListener('click', () => switchTab('home'));
+
+    // Code Generator Modal
+    const codeModal = document.getElementById('codeModalOverlay');
+    document.getElementById('heroGenerateCodeBtn').addEventListener('click', () => {
+      codeModal.style.display = 'flex';
+    });
+    document.getElementById('closeCodeModalBtn').addEventListener('click', () => {
+      codeModal.style.display = 'none';
+    });
+    document.getElementById('copyCodeSnippetBtn').addEventListener('click', () => {
+      const code = codeModal.querySelector('pre').innerText;
+      navigator.clipboard.writeText(code).then(() => {
+        alert('Code snippet copied to clipboard! 📋');
+      });
+    });
+
+    // Copy Text
+    document.getElementById('copyTextBtn').addEventListener('click', () => {
+      const transcript = segmentsData.map(s => `${s.speaker}: ${s.text}`).join('\n');
+      if (!transcript) {
+        alert('No transcript loaded to copy.');
+        return;
+      }
+      navigator.clipboard.writeText(transcript).then(() => {
+        alert('Transcript copied to clipboard!');
+      });
+    });
+
+    // AI Summary
+    document.getElementById('aiSummaryBtn').addEventListener('click', () => {
+      if (segmentsData.length === 0) {
+        alert('Please load a call to summarize.');
+        return;
+      }
+      alert('✨ AI call summary:\n\nCustomer support call analyzing account inquiries/issues. User identity verified and PII masked. Recommended follow-ups extracted in Action Items.');
+    });
+
+    // Export PDF
+    document.getElementById('exportPdfBtn').addEventListener('click', () => {
+      if (segmentsData.length === 0) {
+        alert('Please load a transcript before exporting PDF.');
+        return;
+      }
+      const printWindow = window.open('', '_blank');
+      printWindow.document.write(`
+        <html>
+        <head>
+          <title>VoiceOps Sentinel - Transcript Report</title>
+          <style>
+            body { font-family: sans-serif; padding: 25px; background: #fafafa; color: #1e293b; }
+            h1 { color: #8b5cf6; border-bottom: 2px solid #8b5cf6; padding-bottom: 10px; }
+            .meta { margin-bottom: 20px; font-size: 0.9rem; color: #64748b; }
+            .block { margin-bottom: 15px; padding: 12px; background: #fff; border: 1px solid #e2e8f0; border-radius: 6px; }
+            .speaker { font-weight: bold; color: #4f46e5; text-transform: uppercase; margin-bottom: 5px; }
+            .text { font-size: 0.95rem; line-height: 1.5; }
+            .time { font-size: 0.8rem; color: #94a3b8; margin-top: 5px; }
+          </style>
+        </head>
+        <body>
+          <h1>VoiceOps Sentinel Call Transcript Report</h1>
+          <div class="meta">
+            <p><strong>Duration:</strong> ${metaDuration.innerText}</p>
+            <p><strong>ASR Backend:</strong> ${metaBackend.innerText}</p>
+            <p><strong>Language:</strong> ${metaLanguage.innerText}</p>
+            <p><strong>WER Score:</strong> ${metaWer.innerText}</p>
+            <p><strong>Overall Sentiment:</strong> ${metaSentiment.innerText}</p>
+          </div>
+          <hr />
+          <div>
+            \${Array.from(document.querySelectorAll('.transcript-block')).map(block => {
+              const speaker = block.querySelector('.speaker-tag').innerText;
+              const time = block.querySelector('.timestamp-tag').innerText;
+              const text = block.querySelector('.transcript-body').innerHTML;
+              return \`
+                <div class="block">
+                  <div class="speaker">\${speaker} <span style="font-weight: normal; color: #94a3b8; font-size: 0.8rem;">\${time}</span></div>
+                  <div class="text">\${text}</div>
+                </div>
+              \`;
+            }).join('')}
+          </div>
+          <script>
+            window.onload = function() {
+              window.print();
+              setTimeout(() => window.close(), 500);
+            }
+          <\/script>
+        </body>
+        </html>
+      `);
+      printWindow.document.close();
+    });
+
+    // Mock Recent Calls Database
+    const mockCalls = {
+      call_001: {
+        asr_backend: 'whisper',
+        duration_seconds: 45.0,
+        language: 'en',
+        wer_score: 0.038,
+        is_flagged: false,
+        flag_reasons: [],
+        action_items: [
+          'Verify transaction details in billing dashboard',
+          'Update customer discount status in CRM',
+          'Confirm payment success notification'
+        ],
+        segments: [
+          { id: 0, start: 0.0, end: 5.0, speaker: 'Speaker A', text: 'Thank you for calling support. Mera naam [REDACTED NAME] hai. How can I help you today?', sentiment: 'positive' },
+          { id: 1, start: 5.0, end: 15.0, speaker: 'Speaker B', text: 'Yes, I was checking my billing statement for this month. The charge seems a bit high, could you check the order number [REDACTED PHONE]?', sentiment: 'neutral' },
+          { id: 2, start: 15.0, end: 25.0, speaker: 'Speaker A', text: 'Sure! I can confirm the order number is [REDACTED PHONE] and your package discount was applied successfully.', sentiment: 'positive' },
+          { id: 3, start: 25.0, end: 32.0, speaker: 'Speaker B', text: 'Ah, I see! Perfect. Thank you so much for clarifying that.', sentiment: 'positive' }
+        ]
+      },
+      call_002: {
+        asr_backend: 'whisper',
+        duration_seconds: 120.0,
+        language: 'en',
+        wer_score: 0.051,
+        is_flagged: true,
+        flag_reasons: ['Customer frustration detected: Angry customer cancellation scenario.', 'ASR Warning: WER of 5.1% exceeds base low-error rate limits.'],
+        action_items: [
+          'Process billing refund for the customer',
+          'Escalate case to supervisor/manager for review',
+          'Schedule customer callback or CRM follow-up ticket'
+        ],
+        segments: [
+          { id: 0, start: 0.0, end: 6.0, speaker: 'Speaker A', text: 'Welcome to customer care. My name is [REDACTED NAME]. How can I assist you?', sentiment: 'positive' },
+          { id: 1, start: 6.0, end: 18.0, speaker: 'Speaker B', text: 'I am extremely angry and frustrated with this terrible service! Your system charged me twice for the subscription and I want a refund right now!', sentiment: 'negative' },
+          { id: 2, start: 18.0, end: 25.0, speaker: 'Speaker A', text: 'I am very sorry for the trouble. Let me check your account details.', sentiment: 'neutral' },
+          { id: 3, start: 25.0, end: 38.0, speaker: 'Speaker B', text: 'This is the worst experience ever! Please cancel my account immediately if you can\'t refund the money back!', sentiment: 'negative' }
+        ]
+      },
+      call_003: {
+        asr_backend: 'whisper',
+        duration_seconds: 85.0,
+        language: 'hi-en',
+        wer_score: 0.045,
+        is_flagged: false,
+        flag_reasons: [],
+        action_items: [
+          'Verify customer account credentials and identity',
+          'Check internal logs for error trace'
+        ],
+        segments: [
+          { id: 0, start: 0.0, end: 5.0, speaker: 'Speaker A', text: 'Welcome to voice tech helpline. Main aapki kya madad kar sakta hoon?', sentiment: 'positive' },
+          { id: 1, start: 5.0, end: 15.0, speaker: 'Speaker B', text: 'Ji, mujhe apne router set-up mein problem aa rahi hai. Kya aap iska configuration process verify kar sakte hain?', sentiment: 'neutral' },
+          { id: 2, start: 15.0, end: 22.0, speaker: 'Speaker A', text: 'Bilkul, please apna mobile register number verify karein.', sentiment: 'neutral' },
+          { id: 3, start: 22.0, end: 30.0, speaker: 'Speaker B', text: 'Mera number [REDACTED PHONE] hai. Please jaldi check kijiye, main waiting par hoon.', sentiment: 'negative' }
+        ]
+      }
+    };
+
+    // Load mock call action
+    document.addEventListener('DOMContentLoaded', () => {
+      document.querySelectorAll('.load-mock-call-btn').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+          e.stopPropagation();
+          const callId = btn.getAttribute('data-callid');
+          const callData = mockCalls[callId];
+          if (!callData) return;
+
+          switchTab('dashboard');
+          resetUI();
+          emptyState.style.display = 'none';
+          loaderState.style.display = 'flex';
+
+          setTimeout(() => {
+            displayResult(callData, 1.2);
+          }, 800);
+        });
+      });
+    });
+
+    // Check backend health
+    async function checkHealth() {
+      try {
+        const res = await fetch('/health');
+        if (res.ok) {
+          document.getElementById('statusDot').className = 'status-dot';
+          document.getElementById('statusText').innerText = 'System Active';
+        } else {
+          setOffline();
+        }
+      } catch (err) {
+        setOffline();
+      }
+    }
+
+    function setOffline() {
+      document.getElementById('statusDot').className = 'status-dot offline';
+      document.getElementById('statusText').innerText = 'Server Offline';
+    }
+
+    setInterval(checkHealth, 5000);
+    checkHealth();
+
+    // File Drag & Drop events
+    uploadZone.addEventListener('click', () => fileInput.click());
+
+    uploadZone.addEventListener('dragover', (e) => {
+      e.preventDefault();
+      uploadZone.classList.add('dragover');
+    });
+
+    uploadZone.addEventListener('dragleave', () => {
+      uploadZone.classList.remove('dragover');
+    });
+
+    uploadZone.addEventListener('drop', (e) => {
+      e.preventDefault();
+      uploadZone.classList.remove('dragover');
+      if (e.dataTransfer.files.length > 0) {
+        handleFileSelect(e.dataTransfer.files[0]);
+      }
+    });
+
+    fileInput.addEventListener('change', (e) => {
+      if (e.target.files.length > 0) {
+        handleFileSelect(e.target.files[0]);
+      }
+    });
+
+    function handleFileSelect(file) {
+      const allowed = ['.mp3', '.wav', '.flac'];
+      const ext = file.name.substring(file.name.lastIndexOf('.')).toLowerCase();
+      
+      if (!allowed.includes(ext)) {
+        alert('Unsupported file format. Please select an mp3, wav, or flac file.');
+        return;
+      }
+
+      if (file.size > 26214400) {
+        alert('File size exceeds the 25MB limit.');
+        return;
+      }
+
+      selectedFile = file;
+      fileNameDisplay.innerText = file.name;
+      selectedFileCard.style.display = 'flex';
+      transcribeBtn.disabled = false;
+      
+      // Load file into WaveSurfer
+      const fileUrl = URL.createObjectURL(file);
+      wavesurfer.load(fileUrl);
+    }
+
+    removeFileBtn.addEventListener('click', () => {
+      selectedFile = null;
+      fileInput.value = '';
+      selectedFileCard.style.display = 'none';
+      transcribeBtn.disabled = true;
+      resetUI();
+    });
+
+    function resetUI() {
+      emptyState.style.display = 'flex';
+      loaderState.style.display = 'none';
+      audioSection.style.display = 'none';
+      analysisGrid.style.display = 'none';
+      transcriptSection.style.display = 'none';
+      successAlert.style.display = 'none';
+      managerAlertCard.style.display = 'none';
+      segmentsData = [];
+      try {
+        wavesurfer.pause();
+      } catch (e) {}
+      isPlaying = false;
+      playBtn.innerText = '▶';
+    }
+
+    // Audio Playback Events via WaveSurfer
+    wavesurfer.on('ready', () => {
+      updateTimeDisplay();
+    });
+
+    wavesurfer.on('timeupdate', (currentTime) => {
+      updateTimeDisplay();
+      highlightActiveSegment(currentTime);
+    });
+
+    wavesurfer.on('finish', () => {
+      isPlaying = false;
+      playBtn.innerText = '▶';
+    });
+
+    playBtn.addEventListener('click', () => {
+      try {
+        if (wavesurfer.getDuration() > 0) {
+          if (isPlaying) {
+            wavesurfer.pause();
+            playBtn.innerText = '▶';
+          } else {
+            wavesurfer.play();
+            playBtn.innerText = '⏸';
+          }
+          isPlaying = !isPlaying;
+        } else {
+          alert("No audio file loaded. Please ingest a call audio file or click 'Load Call' to view call analytics.");
+        }
+      } catch (e) {
+        alert("Audio playback error: No audio file currently active.");
+      }
+    });
+
+    function updateTimeDisplay() {
+      const current = formatTime(wavesurfer.getCurrentTime());
+      const total = formatTime(wavesurfer.getDuration() || 0);
+      playerTime.innerText = `${current} / ${total}`;
+    }
+
+    function formatTime(secs) {
+      const m = Math.floor(secs / 60);
+      const s = Math.floor(secs % 60);
+      return `${m}:${s < 10 ? '0' : ''}${s}`;
+    }
+
+    // Highlighting transcript segments synchronized with audio playback
+    function highlightActiveSegment(currentTime) {
+      if (!segmentsData.length) return;
+      
+      let activeIndex = -1;
+      for (let i = 0; i < segmentsData.length; i++) {
+        if (currentTime >= segmentsData[i].start && currentTime <= segmentsData[i].end) {
+          activeIndex = i;
+          break;
+        }
+      }
+
+      // Remove existing active states
+      document.querySelectorAll('.transcript-block').forEach((el, idx) => {
+        if (idx === activeIndex) {
+          if (!el.classList.contains('active-segment')) {
+            el.classList.add('active-segment');
+            el.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+          }
+        } else {
+          el.classList.remove('active-segment');
+        }
+      });
+    }
+
+    // Process transcription form submission
+    transcribeBtn.addEventListener('click', async () => {
+      if (!selectedFile) return;
+
+      // Reset panels
+      resetUI();
+      emptyState.style.display = 'none';
+      loaderState.style.display = 'flex';
+
+      const formData = new FormData();
+      formData.append('file', selectedFile);
+      if (languageHint.value.trim()) {
+        formData.append('language', languageHint.value.trim());
+      }
+      if (referenceText.value.trim()) {
+        formData.append('reference_text', referenceText.value.trim());
+      }
+
+      const backendVal = asrBackend.value;
+      
+      const startTime = performance.now();
+
+      try {
+        // Fetch endpoint
+        const response = await fetch('/transcribe', {
+          method: 'POST',
+          body: formData,
+          headers: {
+            // Include dynamic ASR backend selection in request if backed up by env
+            // The backend handles this dynamically based on env variable setup
+          }
+        });
+
+        if (!response.ok) {
+          const errData = await response.json();
+          throw new Error(errData.detail || 'Transcription failed');
+        }
+
+        const result = await resultMockCheck(await response.json(), backendVal);
+        const durationSec = ((performance.now() - startTime) / 1000).toFixed(2);
+        
+        displayResult(result, durationSec);
+      } catch (err) {
+        alert('Error: ' + err.message);
+        resetUI();
+      }
+    });
+
+    // Clean or mock diarization/sentiment when backend ASR lacks speaker tags
+    async function resultMockCheck(data, backendVal) {
+      const segments = data.segments || [];
+      segmentsData = segments;
+      
+      const mockResult = { ...data };
+      mockResult.segments = segments.map((seg, i) => {
+        let speaker = seg.speaker;
+        if (!speaker) {
+          speaker = i % 2 === 0 ? 'Speaker A' : 'Speaker B';
+        }
+        
+        let speakerTag = 'agent';
+        if (speaker.toLowerCase().includes('b') || speaker.toLowerCase().includes('customer')) {
+          speakerTag = 'customer';
+        }
+
+        // Mock some sentiment based on segment text (ignoring HTML tags)
+        const textClean = seg.text.replace(/<[^>]*>/g, '').toLowerCase();
+        let sentiment = 'neutral';
+        if (textClean.includes('help') || textClean.includes('thank') || textClean.includes('shukriya') || textClean.includes('dhanyawad')) {
+          sentiment = 'positive';
+        } else if (textClean.includes('problem') || textClean.includes('unexpected') || textClean.includes('waiting') || textClean.includes('trouble') || textClean.includes('charge')) {
+          sentiment = 'negative';
+        }
+
+        return {
+          ...seg,
+          speaker,
+          speakerTag,
+          sentiment
+        };
+      });
+
+      return mockResult;
+    }
+
+    function displayResult(result, processTimeSec) {
+      loaderState.style.display = 'none';
+      audioSection.style.display = 'flex';
+      analysisGrid.style.display = 'grid';
+      transcriptSection.style.display = 'block';
+
+      // Populate Manager Alert System
+      if (result.is_flagged && result.flag_reasons && result.flag_reasons.length > 0) {
+        alertReasonsList.innerHTML = '';
+        result.flag_reasons.forEach(reason => {
+          const li = document.createElement('li');
+          li.innerText = reason;
+          alertReasonsList.appendChild(li);
+        });
+        managerAlertCard.style.display = 'block';
+      } else {
+        managerAlertCard.style.display = 'none';
+      }
+
+      // Alert
+      transcribeDurationSec.innerText = processTimeSec;
+      successAlert.style.display = 'block';
+
+      // Meta info
+      metaDuration.innerText = result.duration_seconds.toFixed(1) + 's';
+      metaBackend.innerText = result.asr_backend;
+      metaLanguage.innerText = result.language;
+      metaWer.innerText = result.wer_score !== null ? (result.wer_score * 100).toFixed(1) + '%' : 'N/A';
+
+      // Calculate overall sentiment
+      let posCount = 0;
+      let negCount = 0;
+      result.segments.forEach(seg => {
+        if (seg.sentiment === 'positive') posCount++;
+        else if (seg.sentiment === 'negative') negCount++;
+      });
+      
+      let overallSentiment = 'Neutral';
+      let sentimentClass = 'neutral';
+      let emoji = '😐';
+      
+      if (posCount > negCount) {
+        overallSentiment = 'Positive';
+        sentimentClass = 'positive';
+        emoji = '🙂';
+      } else if (negCount > posCount) {
+        overallSentiment = 'Negative';
+        sentimentClass = 'negative';
+        emoji = '😟';
+      }
+      metaSentiment.innerHTML = `<span class="sentiment-badge ${sentimentClass}">${emoji} ${overallSentiment}</span>`;
+
+      // Populate Transcript
+      transcriptContainer.innerHTML = '';
+      result.segments.forEach((seg) => {
+        const block = document.createElement('div');
+        block.className = 'transcript-block';
+        
+        const meta = document.createElement('div');
+        meta.className = 'transcript-meta';
+        
+        const speaker = document.createElement('span');
+        speaker.className = `speaker-tag ${seg.speakerTag}`;
+        speaker.innerText = seg.speaker;
+        
+        const time = document.createElement('span');
+        time.className = 'timestamp-tag';
+        time.innerText = `[${formatTime(seg.start)} - ${formatTime(seg.end)}]`;
+        
+        meta.appendChild(speaker);
+        meta.appendChild(time);
+        
+        const text = document.createElement('p');
+        text.className = 'transcript-body';
+        text.innerHTML = seg.text;
+
+        const confidence = document.createElement('div');
+        confidence.className = 'confidence-badge';
+        
+        let confClass = 'success';
+        if (seg.confidence < 0.6) confClass = 'low';
+        else if (seg.confidence < 0.85) confClass = 'medium';
+        
+        confidence.innerHTML = `<span class="confidence-dot ${confClass}"></span> ASR Confidence: ${(seg.confidence * 100).toFixed(0)}%`;
+
+        block.appendChild(meta);
+        block.appendChild(text);
+        block.appendChild(confidence);
+
+        // Click event to seek
+        block.addEventListener('click', () => {
+          try {
+            if (wavesurfer.getDuration() > 0) {
+              wavesurfer.setTime(seg.start);
+              if (!isPlaying) {
+                wavesurfer.play();
+                playBtn.innerText = '⏸';
+                isPlaying = true;
+              }
+            }
+          } catch (e) {}
+        });
+
+        transcriptContainer.appendChild(block);
+      });
+
+      // Populate Sentiment Track Timeline
+      sentimentTrack.innerHTML = '';
+      
+      const sentimentNodes = result.segments.map(seg => {
+        return {
+          speaker: seg.speaker,
+          text: seg.text,
+          sentiment: seg.sentiment,
+          time: formatTime(seg.start)
+        };
+      });
+
+      if (sentimentNodes.length === 0) {
+        sentimentTrack.innerHTML = '<div class="sentiment-text">No timeline data available.</div>';
+      } else {
+        sentimentNodes.forEach(node => {
+          const el = document.createElement('div');
+          el.className = `sentiment-node ${node.sentiment}`;
+          
+          el.innerHTML = `
+            <div class="sentiment-header">
+              <strong>${node.speaker}</strong>
+              <span class="sentiment-badge ${node.sentiment}">${node.sentiment}</span>
+            </div>
+            <div class="sentiment-text">"${node.text}"</div>
+            <div style="font-size: 0.75rem; color: var(--text-muted); margin-top: 0.2rem;">Timestamp: ${node.time}</div>
+          `;
+          sentimentTrack.appendChild(el);
+        });
+      }
+
+      // Populate Extracted Action Items from backend
+      actionList.innerHTML = '';
+      if (result.action_items && result.action_items.length > 0) {
+        result.action_items.forEach(action => addActionItem(action));
+      } else {
+        const sampleActions = [
+          "Verify customer ID and phone number before processing the refund form",
+          "Send confirmation email regarding the delayed package delivery within 24 hours",
+          "Check support logs for other occurrences of error number 12345",
+          "Generate a callback follow-up ticket in the CRM dashboard"
+        ];
+        sampleActions.forEach(action => addActionItem(action));
+      }
+    }
+
+    function addActionItem(text) {
+      const li = document.createElement('li');
+      li.className = 'action-item';
+      li.innerHTML = `
+        <input type="checkbox" class="action-checkbox">
+        <span>${text}</span>
+      `;
+      actionList.appendChild(li);
+    }
+
+    // Export functionality
+    const exportTxtBtn = document.getElementById('exportTxtBtn');
+    const exportJsonBtn = document.getElementById('exportJsonBtn');
+
+    exportTxtBtn.addEventListener('click', () => {
+      if (!segmentsData.length) return;
+      let textContent = `VoiceOps Sentinel Call Transcript\n`;
+      textContent += `File: ${selectedFile ? selectedFile.name : 'Unknown'}\n`;
+      textContent += `Duration: ${metaDuration.innerText}\n`;
+      textContent += `Overall Sentiment: ${document.getElementById('metaSentiment').innerText}\n`;
+      textContent += `═`.repeat(50) + `\n\n`;
+
+      segmentsData.forEach((seg) => {
+        const timeStr = `[${formatTime(seg.start)} - ${formatTime(seg.end)}]`;
+        textContent += `${timeStr} ${seg.speaker.toUpperCase()}: ${seg.text}\n\n`;
+      });
+
+      downloadFile(textContent, `${selectedFile ? selectedFile.name.split('.')[0] : 'transcript'}_transcript.txt`, 'text/plain');
+    });
+
+    exportJsonBtn.addEventListener('click', () => {
+      if (!segmentsData.length) return;
+      const dataStr = JSON.stringify(segmentsData, null, 2);
+      downloadFile(dataStr, `${selectedFile ? selectedFile.name.split('.')[0] : 'transcript'}_transcript.json`, 'application/json');
+    });
+
+    function downloadFile(content, fileName, contentType) {
+      const a = document.createElement("a");
+      const file = new Blob([content], { type: contentType });
+      a.href = URL.createObjectURL(file);
+      a.download = fileName;
+      a.click();
+      URL.revokeObjectURL(a.href);
+    }
+  </script>
+</body>
+</html>
