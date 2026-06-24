@@ -1,12 +1,11 @@
 {
-  "name": "voiceops-sentinel-workspace",
+  "name": "voiceops-sentinel",
   "version": "1.0.0",
-  "description": "VoiceOps Sentinel Call Intelligence System - Workspace Root",
-  "main": "index.js",
+  "description": "VoiceOps Sentinel Call Intelligence System - Application Core",
   "scripts": {
-    "start": "voiceops-sentinel/.venv/bin/uvicorn app.main:app --app-dir voiceops-sentinel --host 0.0.0.0 --port 9000",
-    "dev": "voiceops-sentinel/.venv/bin/uvicorn app.main:app --app-dir voiceops-sentinel --host 0.0.0.0 --port 9000 --reload",
-    "test": "cd voiceops-sentinel && source .venv/bin/activate && pytest"
+    "start": ".venv/bin/uvicorn app.main:app --host 0.0.0.0 --port 9000",
+    "dev": ".venv/bin/uvicorn app.main:app --host 0.0.0.0 --port 9000 --reload",
+    "test": "source .venv/bin/activate && pytest"
   },
   "keywords": [
     "voiceops",

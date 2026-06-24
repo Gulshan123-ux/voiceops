@@ -1,19 +1,247 @@
-2026-06-17 21:06:28,115 | INFO     | root:78 | Logging initialised: level=20, file=logs/transcription_20260617.log
-2026-06-17 21:06:28,115 | INFO     | app.main:136 | VoiceOps Sentinel starting up | ASR_BACKEND=whisper | MAX_FILE_SIZE=26214400 bytes
-2026-06-17 21:09:13,527 | INFO     | app.main:289 | File received: name=freesound_community-nem_070725-60173.mp3, content_type=audio/mpeg
-2026-06-17 21:09:13,534 | INFO     | app.main:305 | File spooled: name=freesound_community-nem_070725-60173.mp3, size=11934144 bytes
-2026-06-17 21:09:13,534 | INFO     | app.preprocessor:202 | Preprocessing started: freesound_community-nem_070725-60173.mp3
-2026-06-17 21:09:14,290 | INFO     | app.preprocessor:224 | Preprocessing complete: file=freesound_community-nem_070725-60173.mp3, duration=1491.77s, preprocessing_time=0.756s, output=preprocessed_freesound_community-nem_070725-60173.wav
-2026-06-17 21:09:14,291 | INFO     | app.transcriber:444 | Transcription dispatched: backend=whisper, file=freesound_community-nem_070725-60173.mp3, duration=1491.77s
-2026-06-17 21:09:14,577 | INFO     | app.transcriber:131 | Calling Whisper API: file=preprocessed_freesound_community-nem_070725-60173.wav, model=whisper-1
-2026-06-17 21:09:34,970 | INFO     | httpx:1025 | HTTP Request: POST https://api.openai.com/v1/audio/transcriptions "HTTP/1.1 401 Unauthorized"
-2026-06-17 21:09:34,972 | WARNING  | app.transcriber:64 | Retrying app.transcriber._call_whisper_api in 1 seconds as it raised AuthenticationError: Error code: 401 - {'error': {'message': 'Incorrect API key provided: sk-proj-********************************************************************************************************************************************************8dsA. You can find your API key at https://platform.openai.com/account/api-keys.', 'type': 'invalid_request_error', 'code': 'invalid_api_key', 'param': None}, 'status': 401}.
-2026-06-17 21:09:35,991 | INFO     | app.transcriber:131 | Calling Whisper API: file=preprocessed_freesound_community-nem_070725-60173.wav, model=whisper-1
-2026-06-17 21:09:50,384 | INFO     | httpx:1025 | HTTP Request: POST https://api.openai.com/v1/audio/transcriptions "HTTP/1.1 401 Unauthorized"
-2026-06-17 21:09:50,386 | WARNING  | app.transcriber:64 | Retrying app.transcriber._call_whisper_api in 2 seconds as it raised AuthenticationError: Error code: 401 - {'error': {'message': 'Incorrect API key provided: sk-proj-********************************************************************************************************************************************************8dsA. You can find your API key at https://platform.openai.com/account/api-keys.', 'type': 'invalid_request_error', 'code': 'invalid_api_key', 'param': None}, 'status': 401}.
-2026-06-17 21:09:52,405 | INFO     | app.transcriber:131 | Calling Whisper API: file=preprocessed_freesound_community-nem_070725-60173.wav, model=whisper-1
-2026-06-17 21:10:12,910 | INFO     | httpx:1025 | HTTP Request: POST https://api.openai.com/v1/audio/transcriptions "HTTP/1.1 401 Unauthorized"
-2026-06-17 21:10:12,911 | ERROR    | app.main:367 | Transcription failed for freesound_community-nem_070725-60173.mp3
+2026-06-17 14:06:04,311 | INFO     | root:78 | Logging initialised: level=20, file=logs/transcription_20260617.log
+2026-06-17 14:06:04,311 | INFO     | app.main:136 | VoiceOps Sentinel starting up | ASR_BACKEND=whisper | MAX_FILE_SIZE=26214400 bytes
+2026-06-17 14:15:18,200 | INFO     | app.main:272 | File received: name=test_tone.wav, content_type=application/octet-stream
+2026-06-17 14:15:18,202 | INFO     | app.main:288 | File spooled: name=test_tone.wav, size=264644 bytes
+2026-06-17 14:15:18,202 | INFO     | app.preprocessor:202 | Preprocessing started: test_tone.wav
+2026-06-17 14:15:18,205 | INFO     | app.preprocessor:224 | Preprocessing complete: file=test_tone.wav, duration=3.00s, preprocessing_time=0.003s, output=preprocessed_test_tone.wav
+2026-06-17 14:15:18,205 | INFO     | app.transcriber:444 | Transcription dispatched: backend=whisper, file=test_tone.wav, duration=3.00s
+2026-06-17 14:15:18,370 | INFO     | app.transcriber:131 | Calling Whisper API: file=preprocessed_test_tone.wav, model=whisper-1
+2026-06-17 14:15:22,400 | INFO     | httpx:1025 | HTTP Request: POST https://api.openai.com/v1/audio/transcriptions "HTTP/1.1 401 Unauthorized"
+2026-06-17 14:15:22,403 | WARNING  | app.transcriber:64 | Retrying app.transcriber._call_whisper_api in 1 seconds as it raised AuthenticationError: Error code: 401 - {'error': {'message': 'Incorrect API key provided: sk-proj-********************************************************************************************************************************************************QhMA. You can find your API key at https://platform.openai.com/account/api-keys.', 'type': 'invalid_request_error', 'code': 'invalid_api_key', 'param': None}, 'status': 401}.
+2026-06-17 14:15:23,420 | INFO     | app.transcriber:131 | Calling Whisper API: file=preprocessed_test_tone.wav, model=whisper-1
+2026-06-17 14:15:24,546 | INFO     | httpx:1025 | HTTP Request: POST https://api.openai.com/v1/audio/transcriptions "HTTP/1.1 401 Unauthorized"
+2026-06-17 14:15:24,548 | WARNING  | app.transcriber:64 | Retrying app.transcriber._call_whisper_api in 2 seconds as it raised AuthenticationError: Error code: 401 - {'error': {'message': 'Incorrect API key provided: sk-proj-********************************************************************************************************************************************************QhMA. You can find your API key at https://platform.openai.com/account/api-keys.', 'type': 'invalid_request_error', 'code': 'invalid_api_key', 'param': None}, 'status': 401}.
+2026-06-17 14:15:26,561 | INFO     | app.transcriber:131 | Calling Whisper API: file=preprocessed_test_tone.wav, model=whisper-1
+2026-06-17 14:15:28,219 | INFO     | httpx:1025 | HTTP Request: POST https://api.openai.com/v1/audio/transcriptions "HTTP/1.1 401 Unauthorized"
+2026-06-17 14:15:28,219 | ERROR    | app.main:350 | Transcription failed for test_tone.wav
+Traceback (most recent call last):
+  File "/Users/sharma/voicetech/voiceops-sentinel/app/main.py", line 337, in transcribe_audio
+    result = await loop.run_in_executor(_executor, _run_transcribe)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/anaconda3/lib/python3.13/concurrent/futures/thread.py", line 59, in run
+    result = self.fn(*self.args, **self.kwargs)
+  File "/Users/sharma/voicetech/voiceops-sentinel/app/main.py", line 328, in _run_transcribe
+    return transcribe(
+        audio_path=preprocessed_wav,  # type: ignore[arg-type]
+    ...<3 lines>...
+        reference_text=reference_text,
+    )
+  File "/Users/sharma/voicetech/voiceops-sentinel/app/transcriber.py", line 450, in transcribe
+    return _transcribe_whisper(
+        audio_path, duration_seconds, original_filename,
+        language=language, reference_text=reference_text,
+    )
+  File "/Users/sharma/voicetech/voiceops-sentinel/app/transcriber.py", line 205, in _transcribe_whisper
+    raw = _call_whisper_api(audio_path, language=language)
+  File "/Users/sharma/voicetech/voiceops-sentinel/.venv/lib/python3.13/site-packages/tenacity/__init__.py", line 331, in wrapped_f
+    return copy(f, *args, **kw)
+  File "/Users/sharma/voicetech/voiceops-sentinel/.venv/lib/python3.13/site-packages/tenacity/__init__.py", line 470, in __call__
+    do = self.iter(retry_state=retry_state)
+  File "/Users/sharma/voicetech/voiceops-sentinel/.venv/lib/python3.13/site-packages/tenacity/__init__.py", line 371, in iter
+    result = action(retry_state)
+  File "/Users/sharma/voicetech/voiceops-sentinel/.venv/lib/python3.13/site-packages/tenacity/__init__.py", line 413, in exc_check
+    raise retry_exc.reraise()
+          ~~~~~~~~~~~~~~~~~^^
+  File "/Users/sharma/voicetech/voiceops-sentinel/.venv/lib/python3.13/site-packages/tenacity/__init__.py", line 184, in reraise
+    raise self.last_attempt.result()
+          ~~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "/opt/anaconda3/lib/python3.13/concurrent/futures/_base.py", line 449, in result
+    return self.__get_result()
+           ~~~~~~~~~~~~~~~~~^^
+  File "/opt/anaconda3/lib/python3.13/concurrent/futures/_base.py", line 401, in __get_result
+    raise self._exception
+  File "/Users/sharma/voicetech/voiceops-sentinel/.venv/lib/python3.13/site-packages/tenacity/__init__.py", line 473, in __call__
+    result = fn(*args, **kwargs)
+  File "/Users/sharma/voicetech/voiceops-sentinel/app/transcriber.py", line 144, in _call_whisper_api
+    response = client.audio.transcriptions.create(**kwargs)
+  File "/Users/sharma/voicetech/voiceops-sentinel/.venv/lib/python3.13/site-packages/openai/_utils/_utils.py", line 298, in wrapper
+    return func(*args, **kwargs)
+  File "/Users/sharma/voicetech/voiceops-sentinel/.venv/lib/python3.13/site-packages/openai/resources/audio/transcriptions.py", line 485, in create
+    return self._post(  # type: ignore[return-value]
+           ~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        "/audio/transcriptions",
+        ^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<16 lines>...
+        stream_cls=Stream[TranscriptionStreamEvent],
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "/Users/sharma/voicetech/voiceops-sentinel/.venv/lib/python3.13/site-packages/openai/_base_client.py", line 1332, in post
+    return cast(ResponseT, self.request(cast_to, opts, stream=stream, stream_cls=stream_cls))
+                           ~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/sharma/voicetech/voiceops-sentinel/.venv/lib/python3.13/site-packages/openai/_base_client.py", line 1105, in request
+    raise self._make_status_error_from_response(err.response) from None
+openai.AuthenticationError: Error code: 401 - {'error': {'message': 'Incorrect API key provided: sk-proj-********************************************************************************************************************************************************QhMA. You can find your API key at https://platform.openai.com/account/api-keys.', 'type': 'invalid_request_error', 'code': 'invalid_api_key', 'param': None}, 'status': 401}
+2026-06-17 14:15:57,243 | INFO     | app.main:272 | File received: name=test_tone.wav, content_type=application/octet-stream
+2026-06-17 14:15:57,245 | INFO     | app.main:288 | File spooled: name=test_tone.wav, size=264644 bytes
+2026-06-17 14:15:57,246 | INFO     | app.preprocessor:202 | Preprocessing started: test_tone.wav
+2026-06-17 14:15:57,249 | INFO     | app.preprocessor:224 | Preprocessing complete: file=test_tone.wav, duration=3.00s, preprocessing_time=0.004s, output=preprocessed_test_tone.wav
+2026-06-17 14:15:57,249 | INFO     | app.transcriber:444 | Transcription dispatched: backend=whisper, file=test_tone.wav, duration=3.00s
+2026-06-17 14:15:57,255 | INFO     | app.transcriber:131 | Calling Whisper API: file=preprocessed_test_tone.wav, model=whisper-1
+2026-06-17 14:16:06,190 | INFO     | httpx:1025 | HTTP Request: POST https://api.openai.com/v1/audio/transcriptions "HTTP/1.1 401 Unauthorized"
+2026-06-17 14:16:06,191 | WARNING  | app.transcriber:64 | Retrying app.transcriber._call_whisper_api in 1 seconds as it raised AuthenticationError: Error code: 401 - {'error': {'message': 'Incorrect API key provided: sk-proj-********************************************************************************************************************************************************QhMA. You can find your API key at https://platform.openai.com/account/api-keys.', 'type': 'invalid_request_error', 'code': 'invalid_api_key', 'param': None}, 'status': 401}.
+2026-06-17 14:16:07,205 | INFO     | app.transcriber:131 | Calling Whisper API: file=preprocessed_test_tone.wav, model=whisper-1
+2026-06-17 14:16:12,096 | INFO     | httpx:1025 | HTTP Request: POST https://api.openai.com/v1/audio/transcriptions "HTTP/1.1 401 Unauthorized"
+2026-06-17 14:16:12,099 | WARNING  | app.transcriber:64 | Retrying app.transcriber._call_whisper_api in 2 seconds as it raised AuthenticationError: Error code: 401 - {'error': {'message': 'Incorrect API key provided: sk-proj-********************************************************************************************************************************************************QhMA. You can find your API key at https://platform.openai.com/account/api-keys.', 'type': 'invalid_request_error', 'code': 'invalid_api_key', 'param': None}, 'status': 401}.
+2026-06-17 14:16:14,119 | INFO     | app.transcriber:131 | Calling Whisper API: file=preprocessed_test_tone.wav, model=whisper-1
+2026-06-17 14:16:15,805 | INFO     | httpx:1025 | HTTP Request: POST https://api.openai.com/v1/audio/transcriptions "HTTP/1.1 401 Unauthorized"
+2026-06-17 14:16:15,806 | ERROR    | app.main:350 | Transcription failed for test_tone.wav
+Traceback (most recent call last):
+  File "/Users/sharma/voicetech/voiceops-sentinel/app/main.py", line 337, in transcribe_audio
+    result = await loop.run_in_executor(_executor, _run_transcribe)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/anaconda3/lib/python3.13/concurrent/futures/thread.py", line 59, in run
+    result = self.fn(*self.args, **self.kwargs)
+  File "/Users/sharma/voicetech/voiceops-sentinel/app/main.py", line 328, in _run_transcribe
+    return transcribe(
+        audio_path=preprocessed_wav,  # type: ignore[arg-type]
+    ...<3 lines>...
+        reference_text=reference_text,
+    )
+  File "/Users/sharma/voicetech/voiceops-sentinel/app/transcriber.py", line 450, in transcribe
+    return _transcribe_whisper(
+        audio_path, duration_seconds, original_filename,
+        language=language, reference_text=reference_text,
+    )
+  File "/Users/sharma/voicetech/voiceops-sentinel/app/transcriber.py", line 205, in _transcribe_whisper
+    raw = _call_whisper_api(audio_path, language=language)
+  File "/Users/sharma/voicetech/voiceops-sentinel/.venv/lib/python3.13/site-packages/tenacity/__init__.py", line 331, in wrapped_f
+    return copy(f, *args, **kw)
+  File "/Users/sharma/voicetech/voiceops-sentinel/.venv/lib/python3.13/site-packages/tenacity/__init__.py", line 470, in __call__
+    do = self.iter(retry_state=retry_state)
+  File "/Users/sharma/voicetech/voiceops-sentinel/.venv/lib/python3.13/site-packages/tenacity/__init__.py", line 371, in iter
+    result = action(retry_state)
+  File "/Users/sharma/voicetech/voiceops-sentinel/.venv/lib/python3.13/site-packages/tenacity/__init__.py", line 413, in exc_check
+    raise retry_exc.reraise()
+          ~~~~~~~~~~~~~~~~~^^
+  File "/Users/sharma/voicetech/voiceops-sentinel/.venv/lib/python3.13/site-packages/tenacity/__init__.py", line 184, in reraise
+    raise self.last_attempt.result()
+          ~~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "/opt/anaconda3/lib/python3.13/concurrent/futures/_base.py", line 449, in result
+    return self.__get_result()
+           ~~~~~~~~~~~~~~~~~^^
+  File "/opt/anaconda3/lib/python3.13/concurrent/futures/_base.py", line 401, in __get_result
+    raise self._exception
+  File "/Users/sharma/voicetech/voiceops-sentinel/.venv/lib/python3.13/site-packages/tenacity/__init__.py", line 473, in __call__
+    result = fn(*args, **kwargs)
+  File "/Users/sharma/voicetech/voiceops-sentinel/app/transcriber.py", line 144, in _call_whisper_api
+    response = client.audio.transcriptions.create(**kwargs)
+  File "/Users/sharma/voicetech/voiceops-sentinel/.venv/lib/python3.13/site-packages/openai/_utils/_utils.py", line 298, in wrapper
+    return func(*args, **kwargs)
+  File "/Users/sharma/voicetech/voiceops-sentinel/.venv/lib/python3.13/site-packages/openai/resources/audio/transcriptions.py", line 485, in create
+    return self._post(  # type: ignore[return-value]
+           ~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        "/audio/transcriptions",
+        ^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<16 lines>...
+        stream_cls=Stream[TranscriptionStreamEvent],
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "/Users/sharma/voicetech/voiceops-sentinel/.venv/lib/python3.13/site-packages/openai/_base_client.py", line 1332, in post
+    return cast(ResponseT, self.request(cast_to, opts, stream=stream, stream_cls=stream_cls))
+                           ~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/sharma/voicetech/voiceops-sentinel/.venv/lib/python3.13/site-packages/openai/_base_client.py", line 1105, in request
+    raise self._make_status_error_from_response(err.response) from None
+openai.AuthenticationError: Error code: 401 - {'error': {'message': 'Incorrect API key provided: sk-proj-********************************************************************************************************************************************************QhMA. You can find your API key at https://platform.openai.com/account/api-keys.', 'type': 'invalid_request_error', 'code': 'invalid_api_key', 'param': None}, 'status': 401}
+2026-06-17 14:16:44,439 | INFO     | app.main:146 | VoiceOps Sentinel shutting down…
+2026-06-17 14:17:13,377 | INFO     | root:78 | Logging initialised: level=20, file=logs/transcription_20260617.log
+2026-06-17 14:17:13,377 | INFO     | app.main:136 | VoiceOps Sentinel starting up | ASR_BACKEND=whisper | MAX_FILE_SIZE=26214400 bytes
+2026-06-17 14:17:51,310 | INFO     | app.main:272 | File received: name=test_tone.wav, content_type=application/octet-stream
+2026-06-17 14:17:51,311 | INFO     | app.main:288 | File spooled: name=test_tone.wav, size=264644 bytes
+2026-06-17 14:17:51,311 | INFO     | app.preprocessor:202 | Preprocessing started: test_tone.wav
+2026-06-17 14:17:51,314 | INFO     | app.preprocessor:224 | Preprocessing complete: file=test_tone.wav, duration=3.00s, preprocessing_time=0.003s, output=preprocessed_test_tone.wav
+2026-06-17 14:17:51,314 | INFO     | app.transcriber:444 | Transcription dispatched: backend=whisper, file=test_tone.wav, duration=3.00s
+2026-06-17 14:17:51,486 | INFO     | app.transcriber:131 | Calling Whisper API: file=preprocessed_test_tone.wav, model=whisper-1
+2026-06-17 14:17:53,842 | INFO     | httpx:1025 | HTTP Request: POST https://api.openai.com/v1/audio/transcriptions "HTTP/1.1 401 Unauthorized"
+2026-06-17 14:17:53,844 | WARNING  | app.transcriber:64 | Retrying app.transcriber._call_whisper_api in 1 seconds as it raised AuthenticationError: Error code: 401 - {'error': {'message': 'Incorrect API key provided: sk-proj-********************************************************************************************************************************************************8dsA. You can find your API key at https://platform.openai.com/account/api-keys.', 'type': 'invalid_request_error', 'code': 'invalid_api_key', 'param': None}, 'status': 401}.
+2026-06-17 14:17:54,861 | INFO     | app.transcriber:131 | Calling Whisper API: file=preprocessed_test_tone.wav, model=whisper-1
+2026-06-17 14:17:58,870 | INFO     | httpx:1025 | HTTP Request: POST https://api.openai.com/v1/audio/transcriptions "HTTP/1.1 401 Unauthorized"
+2026-06-17 14:17:58,872 | WARNING  | app.transcriber:64 | Retrying app.transcriber._call_whisper_api in 2 seconds as it raised AuthenticationError: Error code: 401 - {'error': {'message': 'Incorrect API key provided: sk-proj-********************************************************************************************************************************************************8dsA. You can find your API key at https://platform.openai.com/account/api-keys.', 'type': 'invalid_request_error', 'code': 'invalid_api_key', 'param': None}, 'status': 401}.
+2026-06-17 14:18:00,889 | INFO     | app.transcriber:131 | Calling Whisper API: file=preprocessed_test_tone.wav, model=whisper-1
+2026-06-17 14:18:04,587 | INFO     | httpx:1025 | HTTP Request: POST https://api.openai.com/v1/audio/transcriptions "HTTP/1.1 401 Unauthorized"
+2026-06-17 14:18:04,589 | ERROR    | app.main:350 | Transcription failed for test_tone.wav
+Traceback (most recent call last):
+  File "/Users/sharma/voicetech/voiceops-sentinel/app/main.py", line 337, in transcribe_audio
+    result = await loop.run_in_executor(_executor, _run_transcribe)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/anaconda3/lib/python3.13/concurrent/futures/thread.py", line 59, in run
+    result = self.fn(*self.args, **self.kwargs)
+  File "/Users/sharma/voicetech/voiceops-sentinel/app/main.py", line 328, in _run_transcribe
+    return transcribe(
+        audio_path=preprocessed_wav,  # type: ignore[arg-type]
+    ...<3 lines>...
+        reference_text=reference_text,
+    )
+  File "/Users/sharma/voicetech/voiceops-sentinel/app/transcriber.py", line 450, in transcribe
+    return _transcribe_whisper(
+        audio_path, duration_seconds, original_filename,
+        language=language, reference_text=reference_text,
+    )
+  File "/Users/sharma/voicetech/voiceops-sentinel/app/transcriber.py", line 205, in _transcribe_whisper
+    raw = _call_whisper_api(audio_path, language=language)
+  File "/Users/sharma/voicetech/voiceops-sentinel/.venv/lib/python3.13/site-packages/tenacity/__init__.py", line 331, in wrapped_f
+    return copy(f, *args, **kw)
+  File "/Users/sharma/voicetech/voiceops-sentinel/.venv/lib/python3.13/site-packages/tenacity/__init__.py", line 470, in __call__
+    do = self.iter(retry_state=retry_state)
+  File "/Users/sharma/voicetech/voiceops-sentinel/.venv/lib/python3.13/site-packages/tenacity/__init__.py", line 371, in iter
+    result = action(retry_state)
+  File "/Users/sharma/voicetech/voiceops-sentinel/.venv/lib/python3.13/site-packages/tenacity/__init__.py", line 413, in exc_check
+    raise retry_exc.reraise()
+          ~~~~~~~~~~~~~~~~~^^
+  File "/Users/sharma/voicetech/voiceops-sentinel/.venv/lib/python3.13/site-packages/tenacity/__init__.py", line 184, in reraise
+    raise self.last_attempt.result()
+          ~~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "/opt/anaconda3/lib/python3.13/concurrent/futures/_base.py", line 449, in result
+    return self.__get_result()
+           ~~~~~~~~~~~~~~~~~^^
+  File "/opt/anaconda3/lib/python3.13/concurrent/futures/_base.py", line 401, in __get_result
+    raise self._exception
+  File "/Users/sharma/voicetech/voiceops-sentinel/.venv/lib/python3.13/site-packages/tenacity/__init__.py", line 473, in __call__
+    result = fn(*args, **kwargs)
+  File "/Users/sharma/voicetech/voiceops-sentinel/app/transcriber.py", line 144, in _call_whisper_api
+    response = client.audio.transcriptions.create(**kwargs)
+  File "/Users/sharma/voicetech/voiceops-sentinel/.venv/lib/python3.13/site-packages/openai/_utils/_utils.py", line 298, in wrapper
+    return func(*args, **kwargs)
+  File "/Users/sharma/voicetech/voiceops-sentinel/.venv/lib/python3.13/site-packages/openai/resources/audio/transcriptions.py", line 485, in create
+    return self._post(  # type: ignore[return-value]
+           ~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        "/audio/transcriptions",
+        ^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<16 lines>...
+        stream_cls=Stream[TranscriptionStreamEvent],
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "/Users/sharma/voicetech/voiceops-sentinel/.venv/lib/python3.13/site-packages/openai/_base_client.py", line 1332, in post
+    return cast(ResponseT, self.request(cast_to, opts, stream=stream, stream_cls=stream_cls))
+                           ~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/sharma/voicetech/voiceops-sentinel/.venv/lib/python3.13/site-packages/openai/_base_client.py", line 1105, in request
+    raise self._make_status_error_from_response(err.response) from None
+openai.AuthenticationError: Error code: 401 - {'error': {'message': 'Incorrect API key provided: sk-proj-********************************************************************************************************************************************************8dsA. You can find your API key at https://platform.openai.com/account/api-keys.', 'type': 'invalid_request_error', 'code': 'invalid_api_key', 'param': None}, 'status': 401}
+2026-06-17 14:26:51,062 | INFO     | app.main:146 | VoiceOps Sentinel shutting down…
+2026-06-17 14:26:51,350 | INFO     | root:78 | Logging initialised: level=20, file=logs/transcription_20260617.log
+2026-06-17 14:26:51,350 | INFO     | app.main:136 | VoiceOps Sentinel starting up | ASR_BACKEND=whisper | MAX_FILE_SIZE=26214400 bytes
+2026-06-17 14:27:06,105 | INFO     | app.main:146 | VoiceOps Sentinel shutting down…
+2026-06-17 14:27:06,348 | INFO     | root:78 | Logging initialised: level=20, file=logs/transcription_20260617.log
+2026-06-17 14:27:06,348 | INFO     | app.main:136 | VoiceOps Sentinel starting up | ASR_BACKEND=whisper | MAX_FILE_SIZE=26214400 bytes
+2026-06-17 14:28:02,834 | INFO     | app.main:146 | VoiceOps Sentinel shutting down…
+2026-06-17 14:28:03,191 | INFO     | root:78 | Logging initialised: level=20, file=logs/transcription_20260617.log
+2026-06-17 14:28:03,191 | INFO     | app.main:136 | VoiceOps Sentinel starting up | ASR_BACKEND=whisper | MAX_FILE_SIZE=26214400 bytes
+2026-06-17 14:39:54,260 | INFO     | app.main:289 | File received: name=freesound_community-nem_070725-60173.mp3, content_type=audio/mpeg
+2026-06-17 14:39:54,267 | INFO     | app.main:305 | File spooled: name=freesound_community-nem_070725-60173.mp3, size=11934144 bytes
+2026-06-17 14:39:54,267 | INFO     | app.preprocessor:202 | Preprocessing started: freesound_community-nem_070725-60173.mp3
+2026-06-17 14:40:02,171 | INFO     | app.preprocessor:224 | Preprocessing complete: file=freesound_community-nem_070725-60173.mp3, duration=1491.77s, preprocessing_time=7.904s, output=preprocessed_freesound_community-nem_070725-60173.wav
+2026-06-17 14:40:02,175 | INFO     | app.transcriber:444 | Transcription dispatched: backend=whisper, file=freesound_community-nem_070725-60173.mp3, duration=1491.77s
+2026-06-17 14:40:02,456 | INFO     | app.transcriber:131 | Calling Whisper API: file=preprocessed_freesound_community-nem_070725-60173.wav, model=whisper-1
+2026-06-17 14:40:34,817 | INFO     | httpx:1025 | HTTP Request: POST https://api.openai.com/v1/audio/transcriptions "HTTP/1.1 401 Unauthorized"
+2026-06-17 14:40:34,820 | WARNING  | app.transcriber:64 | Retrying app.transcriber._call_whisper_api in 1 seconds as it raised AuthenticationError: Error code: 401 - {'error': {'message': 'Incorrect API key provided: sk-proj-********************************************************************************************************************************************************8dsA. You can find your API key at https://platform.openai.com/account/api-keys.', 'type': 'invalid_request_error', 'code': 'invalid_api_key', 'param': None}, 'status': 401}.
+2026-06-17 14:40:35,839 | INFO     | app.transcriber:131 | Calling Whisper API: file=preprocessed_freesound_community-nem_070725-60173.wav, model=whisper-1
+2026-06-17 14:41:11,821 | INFO     | httpx:1025 | HTTP Request: POST https://api.openai.com/v1/audio/transcriptions "HTTP/1.1 401 Unauthorized"
+2026-06-17 14:41:11,823 | WARNING  | app.transcriber:64 | Retrying app.transcriber._call_whisper_api in 2 seconds as it raised AuthenticationError: Error code: 401 - {'error': {'message': 'Incorrect API key provided: sk-proj-********************************************************************************************************************************************************8dsA. You can find your API key at https://platform.openai.com/account/api-keys.', 'type': 'invalid_request_error', 'code': 'invalid_api_key', 'param': None}, 'status': 401}.
+2026-06-17 14:41:13,843 | INFO     | app.transcriber:131 | Calling Whisper API: file=preprocessed_freesound_community-nem_070725-60173.wav, model=whisper-1
+2026-06-17 14:41:46,821 | INFO     | httpx:1025 | HTTP Request: POST https://api.openai.com/v1/audio/transcriptions "HTTP/1.1 401 Unauthorized"
+2026-06-17 14:41:46,822 | ERROR    | app.main:367 | Transcription failed for freesound_community-nem_070725-60173.mp3
 Traceback (most recent call last):
   File "/Users/sharma/voicetech/voiceops-sentinel/app/main.py", line 354, in transcribe_audio
     result = await loop.run_in_executor(_executor, _run_transcribe)
@@ -72,54 +300,106 @@ Traceback (most recent call last):
   File "/Users/sharma/voicetech/voiceops-sentinel/.venv/lib/python3.13/site-packages/openai/_base_client.py", line 1105, in request
     raise self._make_status_error_from_response(err.response) from None
 openai.AuthenticationError: Error code: 401 - {'error': {'message': 'Incorrect API key provided: sk-proj-********************************************************************************************************************************************************8dsA. You can find your API key at https://platform.openai.com/account/api-keys.', 'type': 'invalid_request_error', 'code': 'invalid_api_key', 'param': None}, 'status': 401}
-2026-06-17 21:12:38,202 | INFO     | app.main:146 | VoiceOps Sentinel shutting down…
-2026-06-17 21:12:38,531 | INFO     | root:79 | Logging initialised: level=20, file=logs/transcription_20260617.log
-2026-06-17 21:12:38,531 | INFO     | app.main:137 | VoiceOps Sentinel starting up | ASR_BACKEND=whisper | MAX_FILE_SIZE=26214400 bytes
-2026-06-17 21:12:51,969 | INFO     | app.main:147 | VoiceOps Sentinel shutting down…
-2026-06-17 21:12:52,177 | INFO     | root:79 | Logging initialised: level=20, file=logs/transcription_20260617.log
-2026-06-17 21:12:52,178 | INFO     | app.main:106 | VoiceOps Sentinel starting up | ASR_BACKEND=whisper | MAX_FILE_SIZE=26214400 bytes
-2026-06-17 21:13:09,355 | INFO     | app.main:112 | VoiceOps Sentinel shutting down…
-2026-06-17 21:13:09,598 | INFO     | root:79 | Logging initialised: level=20, file=logs/transcription_20260617.log
-2026-06-17 21:13:09,598 | INFO     | app.main:106 | VoiceOps Sentinel starting up | ASR_BACKEND=whisper | MAX_FILE_SIZE=26214400 bytes
-2026-06-17 21:13:23,643 | INFO     | app.main:112 | VoiceOps Sentinel shutting down…
-2026-06-17 21:13:23,868 | INFO     | root:79 | Logging initialised: level=20, file=logs/transcription_20260617.log
-2026-06-17 21:13:23,868 | INFO     | app.main:106 | VoiceOps Sentinel starting up | ASR_BACKEND=whisper | MAX_FILE_SIZE=26214400 bytes
-2026-06-17 21:19:46,131 | INFO     | app.main:112 | VoiceOps Sentinel shutting down…
-2026-06-17 21:19:46,467 | INFO     | root:79 | Logging initialised: level=20, file=logs/transcription_20260617.log
-2026-06-17 21:19:46,467 | INFO     | app.main:106 | VoiceOps Sentinel starting up | ASR_BACKEND=whisper | MAX_FILE_SIZE=26214400 bytes
-2026-06-17 21:22:49,486 | INFO     | app.main:112 | VoiceOps Sentinel shutting down…
-2026-06-17 21:22:49,839 | INFO     | root:79 | Logging initialised: level=20, file=logs/transcription_20260617.log
-2026-06-17 21:22:49,839 | INFO     | app.main:106 | VoiceOps Sentinel starting up | ASR_BACKEND=whisper | MAX_FILE_SIZE=26214400 bytes
-2026-06-17 21:22:58,018 | INFO     | app.main:112 | VoiceOps Sentinel shutting down…
-2026-06-17 21:23:10,884 | INFO     | root:79 | Logging initialised: level=20, file=logs/transcription_20260617.log
-2026-06-17 21:23:10,884 | INFO     | app.main:106 | VoiceOps Sentinel starting up | ASR_BACKEND=whisper | MAX_FILE_SIZE=26214400 bytes
-2026-06-17 21:23:45,571 | INFO     | app.main:283 | File received: name=freesound_community-nem_070725-60173.mp3, content_type=audio/mpeg
-2026-06-17 21:23:45,579 | INFO     | app.main:299 | File spooled: name=freesound_community-nem_070725-60173.mp3, size=11934144 bytes
-2026-06-17 21:23:45,579 | INFO     | app.preprocessor:202 | Preprocessing started: freesound_community-nem_070725-60173.mp3
-2026-06-17 21:23:46,308 | INFO     | app.preprocessor:224 | Preprocessing complete: file=freesound_community-nem_070725-60173.mp3, duration=1491.77s, preprocessing_time=0.729s, output=preprocessed_freesound_community-nem_070725-60173.wav
-2026-06-17 21:23:46,310 | INFO     | app.transcriber:445 | Transcription dispatched: backend=whisper, file=freesound_community-nem_070725-60173.mp3, duration=1491.77s
-2026-06-17 21:23:46,579 | INFO     | app.transcriber:131 | Calling Whisper API: file=preprocessed_freesound_community-nem_070725-60173.wav, model=whisper-1
-2026-06-17 21:24:16,997 | INFO     | httpx:1025 | HTTP Request: POST https://api.openai.com/v1/audio/transcriptions "HTTP/1.1 401 Unauthorized"
-2026-06-17 21:24:17,000 | WARNING  | app.transcriber:64 | Retrying app.transcriber._call_whisper_api in 1 seconds as it raised AuthenticationError: Error code: 401 - {'error': {'message': 'Incorrect API key provided: sk-proj-********************************************************************************************************************************************************8dsA. You can find your API key at https://platform.openai.com/account/api-keys.', 'type': 'invalid_request_error', 'code': 'invalid_api_key', 'param': None}, 'status': 401}.
-2026-06-17 21:24:18,018 | INFO     | app.transcriber:131 | Calling Whisper API: file=preprocessed_freesound_community-nem_070725-60173.wav, model=whisper-1
-2026-06-17 21:24:42,129 | INFO     | httpx:1025 | HTTP Request: POST https://api.openai.com/v1/audio/transcriptions "HTTP/1.1 401 Unauthorized"
-2026-06-17 21:24:42,132 | WARNING  | app.transcriber:64 | Retrying app.transcriber._call_whisper_api in 2 seconds as it raised AuthenticationError: Error code: 401 - {'error': {'message': 'Incorrect API key provided: sk-proj-********************************************************************************************************************************************************8dsA. You can find your API key at https://platform.openai.com/account/api-keys.', 'type': 'invalid_request_error', 'code': 'invalid_api_key', 'param': None}, 'status': 401}.
-2026-06-17 21:24:44,149 | INFO     | app.transcriber:131 | Calling Whisper API: file=preprocessed_freesound_community-nem_070725-60173.wav, model=whisper-1
-2026-06-17 21:25:03,009 | INFO     | httpx:1025 | HTTP Request: POST https://api.openai.com/v1/audio/transcriptions "HTTP/1.1 401 Unauthorized"
-2026-06-17 21:25:03,010 | ERROR    | app.main:361 | Transcription failed for freesound_community-nem_070725-60173.mp3
+2026-06-17 14:41:57,799 | INFO     | app.main:289 | File received: name=freesound_community-nem_070725-60173.mp3, content_type=audio/mpeg
+2026-06-17 14:41:57,807 | INFO     | app.main:305 | File spooled: name=freesound_community-nem_070725-60173.mp3, size=11934144 bytes
+2026-06-17 14:41:57,807 | INFO     | app.preprocessor:202 | Preprocessing started: freesound_community-nem_070725-60173.mp3
+2026-06-17 14:41:58,492 | INFO     | app.preprocessor:224 | Preprocessing complete: file=freesound_community-nem_070725-60173.mp3, duration=1491.77s, preprocessing_time=0.685s, output=preprocessed_freesound_community-nem_070725-60173.wav
+2026-06-17 14:41:58,496 | INFO     | app.transcriber:444 | Transcription dispatched: backend=whisper, file=freesound_community-nem_070725-60173.mp3, duration=1491.77s
+2026-06-17 14:41:58,503 | INFO     | app.transcriber:131 | Calling Whisper API: file=preprocessed_freesound_community-nem_070725-60173.wav, model=whisper-1
+2026-06-17 14:42:29,830 | INFO     | httpx:1025 | HTTP Request: POST https://api.openai.com/v1/audio/transcriptions "HTTP/1.1 401 Unauthorized"
+2026-06-17 14:42:29,831 | WARNING  | app.transcriber:64 | Retrying app.transcriber._call_whisper_api in 1 seconds as it raised AuthenticationError: Error code: 401 - {'error': {'message': 'Incorrect API key provided: sk-proj-********************************************************************************************************************************************************8dsA. You can find your API key at https://platform.openai.com/account/api-keys.', 'type': 'invalid_request_error', 'code': 'invalid_api_key', 'param': None}, 'status': 401}.
+2026-06-17 14:42:30,850 | INFO     | app.transcriber:131 | Calling Whisper API: file=preprocessed_freesound_community-nem_070725-60173.wav, model=whisper-1
+2026-06-17 14:45:23,424 | INFO     | httpx:1025 | HTTP Request: POST https://api.openai.com/v1/audio/transcriptions "HTTP/1.1 401 Unauthorized"
+2026-06-17 14:45:23,427 | WARNING  | app.transcriber:64 | Retrying app.transcriber._call_whisper_api in 2 seconds as it raised AuthenticationError: Error code: 401 - {'error': {'message': 'Incorrect API key provided: sk-proj-********************************************************************************************************************************************************8dsA. You can find your API key at https://platform.openai.com/account/api-keys.', 'type': 'invalid_request_error', 'code': 'invalid_api_key', 'param': None}, 'status': 401}.
+2026-06-17 14:45:25,453 | INFO     | app.transcriber:131 | Calling Whisper API: file=preprocessed_freesound_community-nem_070725-60173.wav, model=whisper-1
+2026-06-17 14:45:25,554 | INFO     | openai._base_client:1129 | Retrying request to /audio/transcriptions in 0.472889 seconds
+2026-06-17 14:45:26,042 | INFO     | openai._base_client:1129 | Retrying request to /audio/transcriptions in 0.926086 seconds
+2026-06-17 14:45:26,976 | ERROR    | app.main:367 | Transcription failed for freesound_community-nem_070725-60173.mp3
 Traceback (most recent call last):
-  File "/Users/sharma/voicetech/voiceops-sentinel/app/main.py", line 348, in transcribe_audio
+  File "/Users/sharma/voicetech/voiceops-sentinel/.venv/lib/python3.13/site-packages/httpx/_transports/default.py", line 101, in map_httpcore_exceptions
+    yield
+  File "/Users/sharma/voicetech/voiceops-sentinel/.venv/lib/python3.13/site-packages/httpx/_transports/default.py", line 250, in handle_request
+    resp = self._pool.handle_request(req)
+  File "/Users/sharma/voicetech/voiceops-sentinel/.venv/lib/python3.13/site-packages/httpcore/_sync/connection_pool.py", line 256, in handle_request
+    raise exc from None
+  File "/Users/sharma/voicetech/voiceops-sentinel/.venv/lib/python3.13/site-packages/httpcore/_sync/connection_pool.py", line 236, in handle_request
+    response = connection.handle_request(
+        pool_request.request
+    )
+  File "/Users/sharma/voicetech/voiceops-sentinel/.venv/lib/python3.13/site-packages/httpcore/_sync/connection.py", line 101, in handle_request
+    raise exc
+  File "/Users/sharma/voicetech/voiceops-sentinel/.venv/lib/python3.13/site-packages/httpcore/_sync/connection.py", line 78, in handle_request
+    stream = self._connect(request)
+  File "/Users/sharma/voicetech/voiceops-sentinel/.venv/lib/python3.13/site-packages/httpcore/_sync/connection.py", line 124, in _connect
+    stream = self._network_backend.connect_tcp(**kwargs)
+  File "/Users/sharma/voicetech/voiceops-sentinel/.venv/lib/python3.13/site-packages/httpcore/_backends/sync.py", line 207, in connect_tcp
+    with map_exceptions(exc_map):
+         ~~~~~~~~~~~~~~^^^^^^^^^
+  File "/opt/anaconda3/lib/python3.13/contextlib.py", line 162, in __exit__
+    self.gen.throw(value)
+    ~~~~~~~~~~~~~~^^^^^^^
+  File "/Users/sharma/voicetech/voiceops-sentinel/.venv/lib/python3.13/site-packages/httpcore/_exceptions.py", line 14, in map_exceptions
+    raise to_exc(exc) from exc
+httpcore.ConnectError: [Errno 8] nodename nor servname provided, or not known
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/Users/sharma/voicetech/voiceops-sentinel/.venv/lib/python3.13/site-packages/openai/_base_client.py", line 1037, in request
+    response = self._send_request(
+        request,
+        stream=stream or self._should_stream_response_body(request=request),
+        **kwargs,
+    )
+  File "/Users/sharma/voicetech/voiceops-sentinel/.venv/lib/python3.13/site-packages/openai/_client.py", line 440, in _send_request
+    return self._send_with_auth_retry(request, stream=stream, **kwargs)
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/sharma/voicetech/voiceops-sentinel/.venv/lib/python3.13/site-packages/openai/_client.py", line 418, in _send_with_auth_retry
+    response = super()._send_request(request, stream=stream, **kwargs)
+  File "/Users/sharma/voicetech/voiceops-sentinel/.venv/lib/python3.13/site-packages/openai/_base_client.py", line 964, in _send_request
+    return self._client.send(request, stream=stream, **kwargs)
+           ~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/sharma/voicetech/voiceops-sentinel/.venv/lib/python3.13/site-packages/httpx/_client.py", line 914, in send
+    response = self._send_handling_auth(
+        request,
+    ...<2 lines>...
+        history=[],
+    )
+  File "/Users/sharma/voicetech/voiceops-sentinel/.venv/lib/python3.13/site-packages/httpx/_client.py", line 942, in _send_handling_auth
+    response = self._send_handling_redirects(
+        request,
+        follow_redirects=follow_redirects,
+        history=history,
+    )
+  File "/Users/sharma/voicetech/voiceops-sentinel/.venv/lib/python3.13/site-packages/httpx/_client.py", line 979, in _send_handling_redirects
+    response = self._send_single_request(request)
+  File "/Users/sharma/voicetech/voiceops-sentinel/.venv/lib/python3.13/site-packages/httpx/_client.py", line 1014, in _send_single_request
+    response = transport.handle_request(request)
+  File "/Users/sharma/voicetech/voiceops-sentinel/.venv/lib/python3.13/site-packages/httpx/_transports/default.py", line 249, in handle_request
+    with map_httpcore_exceptions():
+         ~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "/opt/anaconda3/lib/python3.13/contextlib.py", line 162, in __exit__
+    self.gen.throw(value)
+    ~~~~~~~~~~~~~~^^^^^^^
+  File "/Users/sharma/voicetech/voiceops-sentinel/.venv/lib/python3.13/site-packages/httpx/_transports/default.py", line 118, in map_httpcore_exceptions
+    raise mapped_exc(message) from exc
+httpx.ConnectError: [Errno 8] nodename nor servname provided, or not known
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/Users/sharma/voicetech/voiceops-sentinel/app/main.py", line 354, in transcribe_audio
     result = await loop.run_in_executor(_executor, _run_transcribe)
              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
   File "/opt/anaconda3/lib/python3.13/concurrent/futures/thread.py", line 59, in run
     result = self.fn(*self.args, **self.kwargs)
-  File "/Users/sharma/voicetech/voiceops-sentinel/app/main.py", line 339, in _run_transcribe
+  File "/Users/sharma/voicetech/voiceops-sentinel/app/main.py", line 345, in _run_transcribe
     return transcribe(
         audio_path=preprocessed_wav,  # type: ignore[arg-type]
     ...<3 lines>...
         reference_text=reference_text,
     )
-  File "/Users/sharma/voicetech/voiceops-sentinel/app/transcriber.py", line 451, in transcribe
+  File "/Users/sharma/voicetech/voiceops-sentinel/app/transcriber.py", line 450, in transcribe
     return _transcribe_whisper(
         audio_path, duration_seconds, original_filename,
         language=language, reference_text=reference_text,
@@ -162,71 +442,6 @@ Traceback (most recent call last):
   File "/Users/sharma/voicetech/voiceops-sentinel/.venv/lib/python3.13/site-packages/openai/_base_client.py", line 1332, in post
     return cast(ResponseT, self.request(cast_to, opts, stream=stream, stream_cls=stream_cls))
                            ~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "/Users/sharma/voicetech/voiceops-sentinel/.venv/lib/python3.13/site-packages/openai/_base_client.py", line 1105, in request
-    raise self._make_status_error_from_response(err.response) from None
-openai.AuthenticationError: Error code: 401 - {'error': {'message': 'Incorrect API key provided: sk-proj-********************************************************************************************************************************************************8dsA. You can find your API key at https://platform.openai.com/account/api-keys.', 'type': 'invalid_request_error', 'code': 'invalid_api_key', 'param': None}, 'status': 401}
-2026-06-17 21:27:07,434 | INFO     | app.main:112 | VoiceOps Sentinel shutting down…
-2026-06-17 21:27:07,811 | INFO     | root:79 | Logging initialised: level=20, file=logs/transcription_20260617.log
-2026-06-17 21:27:07,811 | INFO     | app.main:106 | VoiceOps Sentinel starting up | ASR_BACKEND=whisper | MAX_FILE_SIZE=26214400 bytes
-2026-06-17 21:27:27,218 | INFO     | app.main:283 | File received: name=test_tone.wav, content_type=application/octet-stream
-2026-06-17 21:27:27,219 | INFO     | app.main:299 | File spooled: name=test_tone.wav, size=264644 bytes
-2026-06-17 21:27:27,219 | INFO     | app.preprocessor:202 | Preprocessing started: test_tone.wav
-2026-06-17 21:27:27,222 | INFO     | app.preprocessor:224 | Preprocessing complete: file=test_tone.wav, duration=3.00s, preprocessing_time=0.003s, output=preprocessed_test_tone.wav
-2026-06-17 21:27:27,222 | INFO     | app.transcriber:530 | Transcription dispatched: backend=whisper, file=test_tone.wav, duration=3.00s
-2026-06-17 21:27:27,497 | INFO     | app.transcriber:131 | Calling Whisper API: file=preprocessed_test_tone.wav, model=whisper-1
-2026-06-17 21:27:28,159 | INFO     | httpx:1025 | HTTP Request: POST https://api.openai.com/v1/audio/transcriptions "HTTP/1.1 401 Unauthorized"
-2026-06-17 21:27:28,162 | WARNING  | app.transcriber:64 | Retrying app.transcriber._call_whisper_api in 1 seconds as it raised AuthenticationError: Error code: 401 - {'error': {'message': 'Incorrect API key provided: sk-proj-********************************************************************************************************************************************************8dsA. You can find your API key at https://platform.openai.com/account/api-keys.', 'type': 'invalid_request_error', 'code': 'invalid_api_key', 'param': None}, 'status': 401}.
-2026-06-17 21:27:29,179 | INFO     | app.transcriber:131 | Calling Whisper API: file=preprocessed_test_tone.wav, model=whisper-1
-2026-06-17 21:27:29,557 | INFO     | httpx:1025 | HTTP Request: POST https://api.openai.com/v1/audio/transcriptions "HTTP/1.1 401 Unauthorized"
-2026-06-17 21:27:29,559 | WARNING  | app.transcriber:64 | Retrying app.transcriber._call_whisper_api in 2 seconds as it raised AuthenticationError: Error code: 401 - {'error': {'message': 'Incorrect API key provided: sk-proj-********************************************************************************************************************************************************8dsA. You can find your API key at https://platform.openai.com/account/api-keys.', 'type': 'invalid_request_error', 'code': 'invalid_api_key', 'param': None}, 'status': 401}.
-2026-06-17 21:27:31,578 | INFO     | app.transcriber:131 | Calling Whisper API: file=preprocessed_test_tone.wav, model=whisper-1
-2026-06-17 21:27:31,993 | INFO     | httpx:1025 | HTTP Request: POST https://api.openai.com/v1/audio/transcriptions "HTTP/1.1 401 Unauthorized"
-2026-06-17 21:27:31,995 | WARNING  | app.transcriber:549 | Whisper ASR returned 401/unauthorized. Falling back to local Mock ASR. Error: Error code: 401 - {'error': {'message': 'Incorrect API key provided: sk-proj-********************************************************************************************************************************************************8dsA. You can find your API key at https://platform.openai.com/account/api-keys.', 'type': 'invalid_request_error', 'code': 'invalid_api_key', 'param': None}, 'status': 401}
-2026-06-17 21:27:31,996 | INFO     | app.transcriber:414 | Using mock transcription backend for file=test_tone.wav
-2026-06-17 21:27:31,996 | INFO     | app.main:367 | Transcription complete: job_id=a7d4b0cd-17dd-43b3-a174-fe6706203e88, segments=4, duration=3.00s, wer=N/A
-2026-06-17 21:27:39,115 | INFO     | app.main:283 | File received: name=test_tone.wav, content_type=application/octet-stream
-2026-06-17 21:27:39,116 | INFO     | app.main:299 | File spooled: name=test_tone.wav, size=264644 bytes
-2026-06-17 21:27:39,116 | INFO     | app.preprocessor:202 | Preprocessing started: test_tone.wav
-2026-06-17 21:27:39,119 | INFO     | app.preprocessor:224 | Preprocessing complete: file=test_tone.wav, duration=3.00s, preprocessing_time=0.003s, output=preprocessed_test_tone.wav
-2026-06-17 21:27:39,119 | INFO     | app.transcriber:530 | Transcription dispatched: backend=whisper, file=test_tone.wav, duration=3.00s
-2026-06-17 21:27:39,124 | INFO     | app.transcriber:131 | Calling Whisper API: file=preprocessed_test_tone.wav, model=whisper-1
-2026-06-17 21:27:39,586 | INFO     | httpx:1025 | HTTP Request: POST https://api.openai.com/v1/audio/transcriptions "HTTP/1.1 401 Unauthorized"
-2026-06-17 21:27:39,588 | WARNING  | app.transcriber:64 | Retrying app.transcriber._call_whisper_api in 1 seconds as it raised AuthenticationError: Error code: 401 - {'error': {'message': 'Incorrect API key provided: sk-proj-********************************************************************************************************************************************************8dsA. You can find your API key at https://platform.openai.com/account/api-keys.', 'type': 'invalid_request_error', 'code': 'invalid_api_key', 'param': None}, 'status': 401}.
-2026-06-17 21:27:40,603 | INFO     | app.transcriber:131 | Calling Whisper API: file=preprocessed_test_tone.wav, model=whisper-1
-2026-06-17 21:27:41,123 | INFO     | httpx:1025 | HTTP Request: POST https://api.openai.com/v1/audio/transcriptions "HTTP/1.1 401 Unauthorized"
-2026-06-17 21:27:41,124 | WARNING  | app.transcriber:64 | Retrying app.transcriber._call_whisper_api in 2 seconds as it raised AuthenticationError: Error code: 401 - {'error': {'message': 'Incorrect API key provided: sk-proj-********************************************************************************************************************************************************8dsA. You can find your API key at https://platform.openai.com/account/api-keys.', 'type': 'invalid_request_error', 'code': 'invalid_api_key', 'param': None}, 'status': 401}.
-2026-06-17 21:27:43,140 | INFO     | app.transcriber:131 | Calling Whisper API: file=preprocessed_test_tone.wav, model=whisper-1
-2026-06-17 21:27:43,551 | INFO     | httpx:1025 | HTTP Request: POST https://api.openai.com/v1/audio/transcriptions "HTTP/1.1 401 Unauthorized"
-2026-06-17 21:27:43,564 | WARNING  | app.transcriber:549 | Whisper ASR returned 401/unauthorized. Falling back to local Mock ASR. Error: Error code: 401 - {'error': {'message': 'Incorrect API key provided: sk-proj-********************************************************************************************************************************************************8dsA. You can find your API key at https://platform.openai.com/account/api-keys.', 'type': 'invalid_request_error', 'code': 'invalid_api_key', 'param': None}, 'status': 401}
-2026-06-17 21:27:43,564 | INFO     | app.transcriber:414 | Using mock transcription backend for file=test_tone.wav
-2026-06-17 21:27:43,567 | INFO     | app.main:367 | Transcription complete: job_id=8cdfcc69-fdcd-4c9d-910b-a43c9beea6ef, segments=5, duration=3.00s, wer=0.0000
-2026-06-17 21:28:52,024 | INFO     | app.main:112 | VoiceOps Sentinel shutting down…
-2026-06-17 21:28:52,333 | INFO     | root:79 | Logging initialised: level=20, file=logs/transcription_20260617.log
-2026-06-17 21:28:52,333 | INFO     | app.main:106 | VoiceOps Sentinel starting up | ASR_BACKEND=whisper | MAX_FILE_SIZE=26214400 bytes
-2026-06-17 21:29:08,094 | INFO     | app.main:112 | VoiceOps Sentinel shutting down…
-2026-06-17 21:29:08,325 | INFO     | root:79 | Logging initialised: level=20, file=logs/transcription_20260617.log
-2026-06-17 21:29:08,325 | INFO     | app.main:106 | VoiceOps Sentinel starting up | ASR_BACKEND=whisper | MAX_FILE_SIZE=26214400 bytes
-2026-06-17 21:29:35,916 | INFO     | app.main:283 | File received: name=test_tone.wav, content_type=application/octet-stream
-2026-06-17 21:29:35,917 | INFO     | app.main:299 | File spooled: name=test_tone.wav, size=264644 bytes
-2026-06-17 21:29:35,917 | INFO     | app.preprocessor:202 | Preprocessing started: test_tone.wav
-2026-06-17 21:29:35,920 | INFO     | app.preprocessor:224 | Preprocessing complete: file=test_tone.wav, duration=3.00s, preprocessing_time=0.003s, output=preprocessed_test_tone.wav
-2026-06-17 21:29:35,920 | INFO     | app.transcriber:545 | Transcription dispatched: backend=whisper, file=test_tone.wav, duration=3.00s
-2026-06-17 21:29:36,144 | INFO     | app.transcriber:142 | Calling Whisper API: file=preprocessed_test_tone.wav, model=whisper-1
-2026-06-17 21:29:36,838 | INFO     | httpx:1025 | HTTP Request: POST https://api.openai.com/v1/audio/transcriptions "HTTP/1.1 401 Unauthorized"
-2026-06-17 21:29:36,840 | WARNING  | app.transcriber:564 | Whisper ASR returned 401/unauthorized. Falling back to local Mock ASR. Error: Invalid OpenAI API key (401): Error code: 401 - {'error': {'message': 'Incorrect API key provided: sk-proj-********************************************************************************************************************************************************8dsA. You can find your API key at https://platform.openai.com/account/api-keys.', 'type': 'invalid_request_error', 'code': 'invalid_api_key', 'param': None}, 'status': 401}
-2026-06-17 21:29:36,841 | INFO     | app.transcriber:429 | Using mock transcription backend for file=test_tone.wav
-2026-06-17 21:29:36,842 | INFO     | app.main:367 | Transcription complete: job_id=a7bf6c68-72a3-41d9-8b80-a61a92098a1e, segments=4, duration=3.00s, wer=N/A
-2026-06-17 21:41:57,414 | INFO     | app.main:112 | VoiceOps Sentinel shutting down…
-2026-06-17 21:41:57,777 | INFO     | root:79 | Logging initialised: level=20, file=logs/transcription_20260617.log
-2026-06-17 21:41:57,777 | INFO     | app.main:106 | VoiceOps Sentinel starting up | ASR_BACKEND=whisper | MAX_FILE_SIZE=26214400 bytes
-2026-06-17 21:44:55,815 | INFO     | app.main:112 | VoiceOps Sentinel shutting down…
-2026-06-17 21:45:48,991 | INFO     | root:79 | Logging initialised: level=20, file=logs/transcription_20260617.log
-2026-06-17 21:45:48,991 | INFO     | app.main:106 | VoiceOps Sentinel starting up | ASR_BACKEND=whisper | MAX_FILE_SIZE=26214400 bytes
-2026-06-17 21:49:22,377 | INFO     | app.main:112 | VoiceOps Sentinel shutting down…
-2026-06-17 21:49:22,771 | INFO     | root:79 | Logging initialised: level=20, file=logs/transcription_20260617.log
-2026-06-17 21:49:22,771 | INFO     | app.main:106 | VoiceOps Sentinel starting up | ASR_BACKEND=whisper | MAX_FILE_SIZE=26214400 bytes
-2026-06-17 21:55:58,971 | INFO     | root:79 | Logging initialised: level=20, file=logs/transcription_20260617.log
-2026-06-17 21:55:58,971 | INFO     | app.main:106 | VoiceOps Sentinel starting up | ASR_BACKEND=mock | MAX_FILE_SIZE=26214400 bytes
-2026-06-17 22:00:53,794 | INFO     | app.main:112 | VoiceOps Sentinel shutting down…
-2026-06-17 22:00:54,435 | INFO     | root:79 | Logging initialised: level=20, file=logs/transcription_20260617.log
-2026-06-17 22:00:54,435 | INFO     | app.main:106 | VoiceOps Sentinel starting up | ASR_BACKEND=mock | MAX_FILE_SIZE=26214400 bytes
+  File "/Users/sharma/voicetech/voiceops-sentinel/.venv/lib/python3.13/site-packages/openai/_base_client.py", line 1072, in request
+    raise APIConnectionError(request=request) from err
+openai.APIConnectionError: Connection error.

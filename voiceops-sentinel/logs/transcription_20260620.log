@@ -1,104 +1,104 @@
-2026-06-20 10:13:29,746 | INFO     | root:80 | Logging initialised: level=20, file=logs/transcription_20260620.log
-2026-06-20 10:13:29,746 | INFO     | app.main:108 | VoiceOps Sentinel starting up | ASR_BACKEND=mock | MAX_FILE_SIZE=26214400 bytes
-2026-06-20 10:14:06,844 | INFO     | app.main:114 | VoiceOps Sentinel shutting down…
-2026-06-20 10:14:07,589 | INFO     | root:80 | Logging initialised: level=20, file=logs/transcription_20260620.log
-2026-06-20 10:14:07,589 | INFO     | app.main:108 | VoiceOps Sentinel starting up | ASR_BACKEND=mock | MAX_FILE_SIZE=26214400 bytes
-2026-06-20 10:14:17,115 | INFO     | app.main:114 | VoiceOps Sentinel shutting down…
-2026-06-20 10:14:17,885 | INFO     | root:80 | Logging initialised: level=20, file=logs/transcription_20260620.log
-2026-06-20 10:14:17,885 | INFO     | app.main:108 | VoiceOps Sentinel starting up | ASR_BACKEND=mock | MAX_FILE_SIZE=26214400 bytes
-2026-06-20 10:14:25,791 | INFO     | app.main:114 | VoiceOps Sentinel shutting down…
-2026-06-20 10:14:26,305 | INFO     | root:80 | Logging initialised: level=20, file=logs/transcription_20260620.log
-2026-06-20 10:14:26,305 | INFO     | app.main:108 | VoiceOps Sentinel starting up | ASR_BACKEND=mock | MAX_FILE_SIZE=26214400 bytes
-2026-06-20 10:14:39,177 | INFO     | app.main:114 | VoiceOps Sentinel shutting down…
-2026-06-20 10:14:39,713 | INFO     | root:80 | Logging initialised: level=20, file=logs/transcription_20260620.log
-2026-06-20 10:14:39,713 | INFO     | app.main:108 | VoiceOps Sentinel starting up | ASR_BACKEND=mock | MAX_FILE_SIZE=26214400 bytes
-2026-06-20 10:20:32,958 | INFO     | app.main:114 | VoiceOps Sentinel shutting down…
-2026-06-20 10:20:33,535 | INFO     | root:80 | Logging initialised: level=20, file=logs/transcription_20260620.log
-2026-06-20 10:20:33,535 | INFO     | app.main:108 | VoiceOps Sentinel starting up | ASR_BACKEND=mock | MAX_FILE_SIZE=26214400 bytes
-2026-06-20 10:21:41,760 | INFO     | app.main:114 | VoiceOps Sentinel shutting down…
-2026-06-20 10:21:42,326 | INFO     | root:80 | Logging initialised: level=20, file=logs/transcription_20260620.log
-2026-06-20 10:21:42,326 | INFO     | app.main:108 | VoiceOps Sentinel starting up | ASR_BACKEND=mock | MAX_FILE_SIZE=26214400 bytes
-2026-06-20 10:22:22,348 | INFO     | app.main:114 | VoiceOps Sentinel shutting down…
-2026-06-20 10:22:22,873 | INFO     | root:80 | Logging initialised: level=20, file=logs/transcription_20260620.log
-2026-06-20 10:22:22,874 | INFO     | app.main:108 | VoiceOps Sentinel starting up | ASR_BACKEND=mock | MAX_FILE_SIZE=26214400 bytes
-2026-06-20 10:22:38,523 | INFO     | app.main:114 | VoiceOps Sentinel shutting down…
-2026-06-20 10:22:38,944 | INFO     | root:80 | Logging initialised: level=20, file=logs/transcription_20260620.log
-2026-06-20 10:22:38,944 | INFO     | app.main:108 | VoiceOps Sentinel starting up | ASR_BACKEND=mock | MAX_FILE_SIZE=26214400 bytes
-2026-06-20 10:22:51,984 | INFO     | app.main:114 | VoiceOps Sentinel shutting down…
-2026-06-20 10:22:52,418 | INFO     | root:80 | Logging initialised: level=20, file=logs/transcription_20260620.log
-2026-06-20 10:22:52,418 | INFO     | app.main:108 | VoiceOps Sentinel starting up | ASR_BACKEND=mock | MAX_FILE_SIZE=26214400 bytes
-2026-06-20 10:23:20,727 | INFO     | app.main:114 | VoiceOps Sentinel shutting down…
-2026-06-20 10:23:21,419 | INFO     | root:80 | Logging initialised: level=20, file=logs/transcription_20260620.log
-2026-06-20 10:23:21,419 | INFO     | app.main:108 | VoiceOps Sentinel starting up | ASR_BACKEND=mock | MAX_FILE_SIZE=26214400 bytes
-2026-06-20 10:23:28,588 | INFO     | app.main:114 | VoiceOps Sentinel shutting down…
-2026-06-20 10:23:28,987 | INFO     | root:80 | Logging initialised: level=20, file=logs/transcription_20260620.log
-2026-06-20 10:23:28,987 | INFO     | app.main:108 | VoiceOps Sentinel starting up | ASR_BACKEND=mock | MAX_FILE_SIZE=26214400 bytes
-2026-06-20 10:23:45,058 | INFO     | app.main:114 | VoiceOps Sentinel shutting down…
-2026-06-20 10:23:51,240 | INFO     | root:80 | Logging initialised: level=20, file=logs/transcription_20260620.log
-2026-06-20 10:23:51,243 | INFO     | app.database:49 | Database initialized successfully at ./voiceops.db
-2026-06-20 10:23:51,244 | INFO     | app.main:110 | VoiceOps Sentinel starting up | ASR_BACKEND=mock | MAX_FILE_SIZE=26214400 bytes
-2026-06-20 10:23:57,625 | INFO     | app.main:116 | VoiceOps Sentinel shutting down…
-2026-06-20 10:23:58,022 | INFO     | root:80 | Logging initialised: level=20, file=logs/transcription_20260620.log
-2026-06-20 10:23:58,025 | INFO     | app.database:49 | Database initialized successfully at ./voiceops.db
-2026-06-20 10:23:58,025 | INFO     | app.main:110 | VoiceOps Sentinel starting up | ASR_BACKEND=mock | MAX_FILE_SIZE=26214400 bytes
-2026-06-20 10:25:10,841 | INFO     | app.main:116 | VoiceOps Sentinel shutting down…
-2026-06-20 10:25:11,269 | INFO     | root:81 | Logging initialised: level=20, file=logs/transcription_20260620.log
-2026-06-20 10:25:11,272 | INFO     | app.database:49 | Database initialized successfully at ./voiceops.db
-2026-06-20 10:25:11,272 | INFO     | app.main:111 | VoiceOps Sentinel starting up | ASR_BACKEND=mock | MAX_FILE_SIZE=26214400 bytes
-2026-06-20 10:25:19,957 | INFO     | app.main:117 | VoiceOps Sentinel shutting down…
-2026-06-20 10:25:49,315 | INFO     | root:81 | Logging initialised: level=20, file=logs/transcription_20260620.log
-2026-06-20 10:25:49,320 | INFO     | app.database:49 | Database initialized successfully at ./voiceops.db
-2026-06-20 10:25:49,320 | INFO     | app.main:111 | VoiceOps Sentinel starting up | ASR_BACKEND=mock | MAX_FILE_SIZE=26214400 bytes
-2026-06-20 10:36:27,639 | INFO     | app.main:117 | VoiceOps Sentinel shutting down…
-2026-06-20 10:36:28,341 | INFO     | root:81 | Logging initialised: level=20, file=logs/transcription_20260620.log
-2026-06-20 10:36:28,346 | INFO     | app.database:49 | Database initialized successfully at ./voiceops.db
-2026-06-20 10:36:28,346 | INFO     | app.main:111 | VoiceOps Sentinel starting up | ASR_BACKEND=mock | MAX_FILE_SIZE=26214400 bytes
-2026-06-20 10:36:30,367 | INFO     | app.main:117 | VoiceOps Sentinel shutting down…
-2026-06-20 10:36:30,944 | INFO     | root:81 | Logging initialised: level=20, file=logs/transcription_20260620.log
-2026-06-20 10:36:30,946 | INFO     | app.database:49 | Database initialized successfully at ./voiceops.db
-2026-06-20 10:36:30,947 | INFO     | app.main:111 | VoiceOps Sentinel starting up | ASR_BACKEND=mock | MAX_FILE_SIZE=26214400 bytes
-2026-06-20 10:36:32,572 | INFO     | app.main:117 | VoiceOps Sentinel shutting down…
-2026-06-20 10:36:33,277 | INFO     | root:81 | Logging initialised: level=20, file=logs/transcription_20260620.log
-2026-06-20 10:36:33,281 | INFO     | app.database:49 | Database initialized successfully at ./voiceops.db
-2026-06-20 10:36:33,281 | INFO     | app.main:111 | VoiceOps Sentinel starting up | ASR_BACKEND=mock | MAX_FILE_SIZE=26214400 bytes
-2026-06-20 10:36:33,382 | INFO     | app.main:117 | VoiceOps Sentinel shutting down…
-2026-06-20 10:36:33,840 | INFO     | root:81 | Logging initialised: level=20, file=logs/transcription_20260620.log
-2026-06-20 10:36:33,843 | INFO     | app.database:49 | Database initialized successfully at ./voiceops.db
-2026-06-20 10:36:33,843 | INFO     | app.main:111 | VoiceOps Sentinel starting up | ASR_BACKEND=mock | MAX_FILE_SIZE=26214400 bytes
-2026-06-20 10:37:10,039 | INFO     | app.main:117 | VoiceOps Sentinel shutting down…
-2026-06-20 10:37:10,800 | INFO     | root:81 | Logging initialised: level=20, file=logs/transcription_20260620.log
-2026-06-20 10:37:10,808 | INFO     | app.database:49 | Database initialized successfully at ./voiceops.db
-2026-06-20 10:37:10,809 | INFO     | app.main:111 | VoiceOps Sentinel starting up | ASR_BACKEND=mock | MAX_FILE_SIZE=26214400 bytes
-2026-06-20 10:39:43,501 | INFO     | app.main:117 | VoiceOps Sentinel shutting down…
-2026-06-20 10:39:44,340 | INFO     | root:81 | Logging initialised: level=20, file=logs/transcription_20260620.log
-2026-06-20 10:39:44,346 | INFO     | app.database:49 | Database initialized successfully at ./voiceops.db
-2026-06-20 10:39:44,346 | INFO     | app.main:111 | VoiceOps Sentinel starting up | ASR_BACKEND=mock | MAX_FILE_SIZE=26214400 bytes
-2026-06-20 10:42:47,355 | INFO     | app.main:117 | VoiceOps Sentinel shutting down…
-2026-06-20 10:42:48,056 | INFO     | root:81 | Logging initialised: level=20, file=logs/transcription_20260620.log
-2026-06-20 10:42:48,060 | INFO     | app.database:49 | Database initialized successfully at ./voiceops.db
-2026-06-20 10:42:48,060 | INFO     | app.main:111 | VoiceOps Sentinel starting up | ASR_BACKEND=mock | MAX_FILE_SIZE=26214400 bytes
-2026-06-20 10:43:40,422 | INFO     | app.main:117 | VoiceOps Sentinel shutting down…
-2026-06-20 10:43:41,023 | INFO     | root:81 | Logging initialised: level=20, file=logs/transcription_20260620.log
-2026-06-20 10:43:41,027 | INFO     | app.database:49 | Database initialized successfully at ./voiceops.db
-2026-06-20 10:43:41,027 | INFO     | app.main:111 | VoiceOps Sentinel starting up | ASR_BACKEND=mock | MAX_FILE_SIZE=26214400 bytes
-2026-06-20 10:46:02,004 | INFO     | app.main:117 | VoiceOps Sentinel shutting down…
-2026-06-20 10:46:03,103 | INFO     | root:81 | Logging initialised: level=20, file=logs/transcription_20260620.log
-2026-06-20 10:46:03,108 | INFO     | app.database:49 | Database initialized successfully at ./voiceops.db
-2026-06-20 10:46:03,108 | INFO     | app.main:111 | VoiceOps Sentinel starting up | ASR_BACKEND=mock | MAX_FILE_SIZE=26214400 bytes
-2026-06-20 10:47:15,785 | INFO     | app.main:117 | VoiceOps Sentinel shutting down…
-2026-06-20 10:47:16,358 | INFO     | root:81 | Logging initialised: level=20, file=logs/transcription_20260620.log
-2026-06-20 10:47:16,361 | INFO     | app.database:49 | Database initialized successfully at ./voiceops.db
-2026-06-20 10:47:16,361 | INFO     | app.main:111 | VoiceOps Sentinel starting up | ASR_BACKEND=mock | MAX_FILE_SIZE=26214400 bytes
-2026-06-20 10:50:52,789 | INFO     | app.main:117 | VoiceOps Sentinel shutting down…
-2026-06-20 10:50:53,927 | INFO     | root:81 | Logging initialised: level=20, file=logs/transcription_20260620.log
-2026-06-20 10:50:53,936 | INFO     | app.database:49 | Database initialized successfully at ./voiceops.db
-2026-06-20 10:50:53,936 | INFO     | app.main:111 | VoiceOps Sentinel starting up | ASR_BACKEND=mock | MAX_FILE_SIZE=26214400 bytes
-2026-06-20 10:51:35,553 | INFO     | app.main:117 | VoiceOps Sentinel shutting down…
-2026-06-20 10:51:36,575 | INFO     | root:81 | Logging initialised: level=20, file=logs/transcription_20260620.log
-2026-06-20 10:51:36,581 | INFO     | app.database:49 | Database initialized successfully at ./voiceops.db
-2026-06-20 10:51:36,581 | INFO     | app.main:111 | VoiceOps Sentinel starting up | ASR_BACKEND=mock | MAX_FILE_SIZE=26214400 bytes
-2026-06-20 10:52:46,410 | INFO     | app.main:117 | VoiceOps Sentinel shutting down…
-2026-06-20 10:52:47,312 | INFO     | root:81 | Logging initialised: level=20, file=logs/transcription_20260620.log
-2026-06-20 10:52:47,317 | INFO     | app.database:49 | Database initialized successfully at ./voiceops.db
-2026-06-20 10:52:47,317 | INFO     | app.main:111 | VoiceOps Sentinel starting up | ASR_BACKEND=mock | MAX_FILE_SIZE=26214400 bytes
-2026-06-22 09:04:12,149 | INFO     | app.main:117 | VoiceOps Sentinel shutting down…
+2026-06-20 10:02:49,384 | INFO     | root:80 | Logging initialised: level=20, file=logs/transcription_20260620.log
+2026-06-20 10:02:49,384 | INFO     | app.main:108 | VoiceOps Sentinel starting up | ASR_BACKEND=mock | MAX_FILE_SIZE=26214400 bytes
+2026-06-20 10:04:14,195 | INFO     | app.main:285 | File received: name=freesound_community-nem_070725-60173.mp3, content_type=audio/mpeg
+2026-06-20 10:04:14,202 | INFO     | app.main:301 | File spooled: name=freesound_community-nem_070725-60173.mp3, size=11934144 bytes
+2026-06-20 10:04:14,202 | INFO     | app.preprocessor:205 | Preprocessing started: freesound_community-nem_070725-60173.mp3
+2026-06-20 10:04:15,243 | INFO     | app.preprocessor:227 | Preprocessing complete: file=freesound_community-nem_070725-60173.mp3, duration=1491.77s, preprocessing_time=1.041s, output=preprocessed_freesound_community-nem_070725-60173.wav
+2026-06-20 10:04:15,246 | INFO     | app.transcriber:607 | Transcription dispatched: backend=mock, file=freesound_community-nem_070725-60173.mp3, duration=1491.77s
+2026-06-20 10:04:15,246 | INFO     | app.transcriber:445 | Using mock transcription backend for file=freesound_community-nem_070725-60173.mp3
+2026-06-20 10:04:15,250 | INFO     | app.main:369 | Transcription complete: job_id=c4050dcd-9d7c-47ab-9c81-e6b70f96642e, segments=4, duration=1491.77s, wer=N/A
+2026-06-20 10:27:37,848 | INFO     | root:81 | Logging initialised: level=20, file=logs/transcription_20260620.log
+2026-06-20 10:27:37,850 | INFO     | app.database:49 | Database initialized successfully at ./voiceops.db
+2026-06-20 10:27:37,851 | INFO     | app.main:111 | VoiceOps Sentinel starting up | ASR_BACKEND=mock | MAX_FILE_SIZE=26214400 bytes
+2026-06-20 10:27:37,851 | INFO     | app.main:117 | VoiceOps Sentinel shutting down…
+2026-06-20 10:28:04,617 | INFO     | root:81 | Logging initialised: level=20, file=logs/transcription_20260620.log
+2026-06-20 10:28:04,620 | INFO     | app.database:49 | Database initialized successfully at ./voiceops.db
+2026-06-20 10:28:04,620 | INFO     | app.main:111 | VoiceOps Sentinel starting up | ASR_BACKEND=mock | MAX_FILE_SIZE=26214400 bytes
+2026-06-20 10:29:25,142 | INFO     | app.main:312 | File received: name=freesound_community-nem_070725-60173.mp3, content_type=audio/mpeg
+2026-06-20 10:29:25,150 | INFO     | app.main:328 | File spooled: name=freesound_community-nem_070725-60173.mp3, size=11934144 bytes
+2026-06-20 10:29:25,150 | INFO     | app.preprocessor:205 | Preprocessing started: freesound_community-nem_070725-60173.mp3
+2026-06-20 10:29:25,946 | INFO     | app.preprocessor:227 | Preprocessing complete: file=freesound_community-nem_070725-60173.mp3, duration=1491.77s, preprocessing_time=0.796s, output=preprocessed_freesound_community-nem_070725-60173.wav
+2026-06-20 10:29:25,948 | INFO     | app.transcriber:607 | Transcription dispatched: backend=mock, file=freesound_community-nem_070725-60173.mp3, duration=1491.77s
+2026-06-20 10:29:25,948 | INFO     | app.transcriber:445 | Using mock transcription backend for file=freesound_community-nem_070725-60173.mp3
+2026-06-20 10:29:25,953 | WARNING  | app.pii_redactor:21 | spacy or presidio-analyzer/anonymizer not installed. Using robust regex-based PII Redactor.
+2026-06-20 10:29:25,953 | WARNING  | app.sentiment:21 | transformers/torch not installed. Using robust lexical fallback for sentiment analysis.
+2026-06-20 10:29:27,057 | INFO     | httpx:1025 | HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 401 Unauthorized"
+2026-06-20 10:29:27,059 | ERROR    | app.action_extractor:65 | OpenAI action item extraction failed: Error code: 401 - {'error': {'message': 'Incorrect API key provided: sk-proj-********************************************************************************************************************************************************8dsA. You can find your API key at https://platform.openai.com/account/api-keys.', 'type': 'invalid_request_error', 'code': 'invalid_api_key', 'param': None}, 'status': 401}. Using heuristic fallback.
+2026-06-20 10:29:27,061 | INFO     | app.database:95 | Call record inserted: 7b0f5569-3c93-4d66-a899-9fd5990fece8
+2026-06-20 10:29:27,061 | INFO     | app.main:396 | Transcription complete: job_id=7b0f5569-3c93-4d66-a899-9fd5990fece8, segments=4, duration=1491.77s, wer=N/A
+2026-06-20 10:31:21,583 | INFO     | app.main:312 | File received: name=freesound_community-nem_070725-60173.mp3, content_type=audio/mpeg
+2026-06-20 10:31:21,590 | INFO     | app.main:328 | File spooled: name=freesound_community-nem_070725-60173.mp3, size=11934144 bytes
+2026-06-20 10:31:21,590 | INFO     | app.preprocessor:205 | Preprocessing started: freesound_community-nem_070725-60173.mp3
+2026-06-20 10:31:22,517 | INFO     | app.preprocessor:227 | Preprocessing complete: file=freesound_community-nem_070725-60173.mp3, duration=1491.77s, preprocessing_time=0.927s, output=preprocessed_freesound_community-nem_070725-60173.wav
+2026-06-20 10:31:22,518 | INFO     | app.transcriber:607 | Transcription dispatched: backend=mock, file=freesound_community-nem_070725-60173.mp3, duration=1491.77s
+2026-06-20 10:31:22,518 | INFO     | app.transcriber:445 | Using mock transcription backend for file=freesound_community-nem_070725-60173.mp3
+2026-06-20 10:31:23,155 | INFO     | httpx:1025 | HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 401 Unauthorized"
+2026-06-20 10:31:23,157 | ERROR    | app.action_extractor:65 | OpenAI action item extraction failed: Error code: 401 - {'error': {'message': 'Incorrect API key provided: sk-proj-********************************************************************************************************************************************************8dsA. You can find your API key at https://platform.openai.com/account/api-keys.', 'type': 'invalid_request_error', 'code': 'invalid_api_key', 'param': None}, 'status': 401}. Using heuristic fallback.
+2026-06-20 10:31:23,168 | INFO     | app.database:95 | Call record inserted: 54d908fd-b4c7-447b-a460-34d6bb6e54e6
+2026-06-20 10:31:23,168 | INFO     | app.main:396 | Transcription complete: job_id=54d908fd-b4c7-447b-a460-34d6bb6e54e6, segments=4, duration=1491.77s, wer=N/A
+2026-06-20 10:47:38,566 | INFO     | root:81 | Logging initialised: level=20, file=logs/transcription_20260620.log
+2026-06-20 10:47:38,569 | INFO     | app.database:49 | Database initialized successfully at ./voiceops.db
+2026-06-20 10:47:38,569 | INFO     | app.main:111 | VoiceOps Sentinel starting up | ASR_BACKEND=whisper | MAX_FILE_SIZE=26214400 bytes
+2026-06-20 10:48:12,516 | INFO     | root:81 | Logging initialised: level=20, file=logs/transcription_20260620.log
+2026-06-20 10:48:12,519 | INFO     | app.database:49 | Database initialized successfully at ./voiceops.db
+2026-06-20 10:48:12,519 | INFO     | app.main:111 | VoiceOps Sentinel starting up | ASR_BACKEND=mock | MAX_FILE_SIZE=26214400 bytes
+2026-06-20 10:54:22,434 | INFO     | app.main:312 | File received: name=freesound_community-nem_070725-60173.mp3, content_type=audio/mpeg
+2026-06-20 10:54:22,448 | INFO     | app.main:328 | File spooled: name=freesound_community-nem_070725-60173.mp3, size=11934144 bytes
+2026-06-20 10:54:22,449 | INFO     | app.preprocessor:205 | Preprocessing started: freesound_community-nem_070725-60173.mp3
+2026-06-20 10:54:23,448 | INFO     | app.preprocessor:227 | Preprocessing complete: file=freesound_community-nem_070725-60173.mp3, duration=1491.77s, preprocessing_time=0.999s, output=preprocessed_freesound_community-nem_070725-60173.wav
+2026-06-20 10:54:23,452 | INFO     | app.transcriber:607 | Transcription dispatched: backend=mock, file=freesound_community-nem_070725-60173.mp3, duration=1491.77s
+2026-06-20 10:54:23,452 | INFO     | app.transcriber:445 | Using mock transcription backend for file=freesound_community-nem_070725-60173.mp3
+2026-06-20 10:54:24,099 | INFO     | presidio-analyzer:40 | Using device of type: cpu
+2026-06-20 10:54:24,313 | WARNING  | app.sentiment:21 | transformers/torch not installed. Using robust lexical fallback for sentiment analysis.
+2026-06-20 10:54:24,660 | INFO     | presidio-analyzer:110 | Created NLP engine: spacy. Loaded models: ['en']
+2026-06-20 10:54:24,660 | INFO     | presidio-analyzer:79 | registry not provided, creating default.
+2026-06-20 10:54:24,670 | INFO     | presidio-analyzer:60 | Loaded recognizer: CreditCardRecognizer
+2026-06-20 10:54:24,670 | INFO     | presidio-analyzer:60 | Loaded recognizer: CreditCardRecognizer
+2026-06-20 10:54:24,670 | INFO     | presidio-analyzer:60 | Loaded recognizer: CreditCardRecognizer
+2026-06-20 10:54:24,670 | INFO     | presidio-analyzer:60 | Loaded recognizer: CreditCardRecognizer
+2026-06-20 10:54:24,671 | INFO     | presidio-analyzer:60 | Loaded recognizer: UsBankRecognizer
+2026-06-20 10:54:24,671 | INFO     | presidio-analyzer:60 | Loaded recognizer: UsLicenseRecognizer
+2026-06-20 10:54:24,671 | INFO     | presidio-analyzer:60 | Loaded recognizer: UsItinRecognizer
+2026-06-20 10:54:24,671 | INFO     | presidio-analyzer:60 | Loaded recognizer: UsPassportRecognizer
+2026-06-20 10:54:24,671 | INFO     | presidio-analyzer:60 | Loaded recognizer: UsSsnRecognizer
+2026-06-20 10:54:24,671 | INFO     | presidio-analyzer:60 | Loaded recognizer: NhsRecognizer
+2026-06-20 10:54:24,671 | INFO     | presidio-analyzer:60 | Loaded recognizer: EsNifRecognizer
+2026-06-20 10:54:24,671 | INFO     | presidio-analyzer:60 | Loaded recognizer: EsNieRecognizer
+2026-06-20 10:54:24,671 | INFO     | presidio-analyzer:60 | Loaded recognizer: ItDriverLicenseRecognizer
+2026-06-20 10:54:24,671 | INFO     | presidio-analyzer:60 | Loaded recognizer: ItFiscalCodeRecognizer
+2026-06-20 10:54:24,671 | INFO     | presidio-analyzer:60 | Loaded recognizer: ItVatCodeRecognizer
+2026-06-20 10:54:24,671 | INFO     | presidio-analyzer:60 | Loaded recognizer: ItIdentityCardRecognizer
+2026-06-20 10:54:24,671 | INFO     | presidio-analyzer:60 | Loaded recognizer: ItPassportRecognizer
+2026-06-20 10:54:24,672 | INFO     | presidio-analyzer:60 | Loaded recognizer: PlPeselRecognizer
+2026-06-20 10:54:24,672 | INFO     | presidio-analyzer:60 | Loaded recognizer: CryptoRecognizer
+2026-06-20 10:54:24,672 | INFO     | presidio-analyzer:60 | Loaded recognizer: DateRecognizer
+2026-06-20 10:54:24,672 | INFO     | presidio-analyzer:60 | Loaded recognizer: EmailRecognizer
+2026-06-20 10:54:24,672 | INFO     | presidio-analyzer:60 | Loaded recognizer: IbanRecognizer
+2026-06-20 10:54:24,672 | INFO     | presidio-analyzer:60 | Loaded recognizer: IpRecognizer
+2026-06-20 10:54:24,672 | INFO     | presidio-analyzer:60 | Loaded recognizer: MedicalLicenseRecognizer
+2026-06-20 10:54:24,672 | INFO     | presidio-analyzer:60 | Loaded recognizer: MacAddressRecognizer
+2026-06-20 10:54:24,672 | INFO     | presidio-analyzer:60 | Loaded recognizer: PhoneRecognizer
+2026-06-20 10:54:24,672 | INFO     | presidio-analyzer:60 | Loaded recognizer: UrlRecognizer
+2026-06-20 10:54:24,672 | WARNING  | presidio-analyzer:168 | Recognizer not added to registry because language is not supported by registry - CreditCardRecognizer supported languages: es, registry supported languages: en
+2026-06-20 10:54:24,672 | WARNING  | presidio-analyzer:168 | Recognizer not added to registry because language is not supported by registry - CreditCardRecognizer supported languages: it, registry supported languages: en
+2026-06-20 10:54:24,672 | WARNING  | presidio-analyzer:168 | Recognizer not added to registry because language is not supported by registry - CreditCardRecognizer supported languages: pl, registry supported languages: en
+2026-06-20 10:54:24,672 | WARNING  | presidio-analyzer:168 | Recognizer not added to registry because language is not supported by registry - EsNifRecognizer supported languages: es, registry supported languages: en
+2026-06-20 10:54:24,672 | WARNING  | presidio-analyzer:168 | Recognizer not added to registry because language is not supported by registry - EsNieRecognizer supported languages: es, registry supported languages: en
+2026-06-20 10:54:24,672 | WARNING  | presidio-analyzer:168 | Recognizer not added to registry because language is not supported by registry - ItDriverLicenseRecognizer supported languages: it, registry supported languages: en
+2026-06-20 10:54:24,672 | WARNING  | presidio-analyzer:168 | Recognizer not added to registry because language is not supported by registry - ItFiscalCodeRecognizer supported languages: it, registry supported languages: en
+2026-06-20 10:54:24,672 | WARNING  | presidio-analyzer:168 | Recognizer not added to registry because language is not supported by registry - ItVatCodeRecognizer supported languages: it, registry supported languages: en
+2026-06-20 10:54:24,672 | WARNING  | presidio-analyzer:168 | Recognizer not added to registry because language is not supported by registry - ItIdentityCardRecognizer supported languages: it, registry supported languages: en
+2026-06-20 10:54:24,672 | WARNING  | presidio-analyzer:168 | Recognizer not added to registry because language is not supported by registry - ItPassportRecognizer supported languages: it, registry supported languages: en
+2026-06-20 10:54:24,672 | WARNING  | presidio-analyzer:168 | Recognizer not added to registry because language is not supported by registry - PlPeselRecognizer supported languages: pl, registry supported languages: en
+2026-06-20 10:54:24,672 | INFO     | presidio-analyzer:60 | Loaded recognizer: SpacyRecognizer
+2026-06-20 10:54:24,673 | INFO     | app.pii_redactor:44 | Presidio Analyzer/Anonymizer engines initialized successfully using en_core_web_sm.
+2026-06-20 10:54:25,709 | INFO     | httpx:1025 | HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 401 Unauthorized"
+2026-06-20 10:54:25,710 | ERROR    | app.action_extractor:65 | OpenAI action item extraction failed: Error code: 401 - {'error': {'message': 'Incorrect API key provided: sk-.... You can find your API key at https://platform.openai.com/account/api-keys.', 'type': 'invalid_request_error', 'code': 'invalid_api_key', 'param': None}, 'status': 401}. Using heuristic fallback.
+2026-06-20 10:54:25,753 | WARNING  | presidio-analyzer:272 | Entity MONEY is not mapped to a Presidio entity, but keeping anyway. Add to `NerModelConfiguration.labels_to_ignore` to remove.
+2026-06-20 10:54:25,764 | WARNING  | presidio-analyzer:272 | Entity MONEY is not mapped to a Presidio entity, but keeping anyway. Add to `NerModelConfiguration.labels_to_ignore` to remove.
+2026-06-20 10:54:25,773 | INFO     | app.database:95 | Call record inserted: 121bb5b9-9590-4b2f-bc5e-d229dd1fde82
+2026-06-20 10:54:25,775 | INFO     | app.main:396 | Transcription complete: job_id=121bb5b9-9590-4b2f-bc5e-d229dd1fde82, segments=4, duration=1491.77s, wer=N/A
+2026-06-20 10:56:51,732 | INFO     | root:81 | Logging initialised: level=20, file=logs/transcription_20260620.log
+2026-06-20 10:56:51,736 | INFO     | app.database:49 | Database initialized successfully at ./voiceops.db
+2026-06-20 10:56:51,736 | INFO     | app.main:111 | VoiceOps Sentinel starting up | ASR_BACKEND=whisper | MAX_FILE_SIZE=26214400 bytes
+2026-06-22 09:08:33,291 | INFO     | app.main:117 | VoiceOps Sentinel shutting down…

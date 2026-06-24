@@ -45,6 +45,13 @@ def init_db() -> None:
             )
             """
         )
+        # Check if segments column exists, if not add it dynamically
+        cursor.execute("PRAGMA table_info(calls)")
+        columns = [row["name"] for row in cursor.fetchall()]
+        if "segments" not in columns:
+            cursor.execute("ALTER TABLE calls ADD COLUMN segments TEXT")
+            logger.info("Added 'segments' column to calls table")
+
         conn.commit()
         logger.info(f"Database initialized successfully at {DB_PATH}")
     except Exception as e:
@@ -64,18 +71,33 @@ def insert_call(
     wer_score: float | None,
     action_items: list[str],
     flagged: bool,
+    segments: list | None = None,
 ) -> None:
     """Insert a new call analytics record."""
     conn = get_db_connection()
     try:
         cursor = conn.cursor()
         created_at = datetime.now(timezone.utc).isoformat().replace("+00:00", "Z")
+
+        # Serialize segments if present
+        segments_json = None
+        if segments:
+            serialized_segs = []
+            for seg in segments:
+                if hasattr(seg, "model_dump"):
+                    serialized_segs.append(seg.model_dump())
+                elif hasattr(seg, "dict"):
+                    serialized_segs.append(seg.dict())
+                else:
+                    serialized_segs.append(seg)
+            segments_json = json.dumps(serialized_segs)
+
         cursor.execute(
             """
             INSERT OR REPLACE INTO calls (
                 id, filename, duration, transcript, redacted_transcript,
-                sentiment, sentiment_score, wer_score, action_items, flagged, created_at
-            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                sentiment, sentiment_score, wer_score, action_items, flagged, created_at, segments
+            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
             """,
             (
                 job_id,
@@ -89,6 +111,7 @@ def insert_call(
                 json.dumps(action_items),
                 1 if flagged else 0,
                 created_at,
+                segments_json,
             ),
         )
         conn.commit()
@@ -108,9 +131,29 @@ def get_all_calls() -> list[dict]:
         rows = cursor.fetchall()
         calls = []
         for row in rows:
-            call_dict = dict(row)
-            call_dict["action_items"] = json.loads(call_dict["action_items"])
-            call_dict["flagged"] = bool(call_dict["flagged"])
+            row_dict = dict(row)
+
+            segments_data = []
+            if row_dict.get("segments"):
+                try:
+                    segments_data = json.loads(row_dict["segments"])
+                except Exception:
+                    pass
+
+            call_dict = {
+                "job_id": row_dict["id"],
+                "audio_file": row_dict["filename"],
+                "duration_seconds": row_dict["duration"],
+                "full_transcript": row_dict["transcript"],
+                "redacted_transcript": row_dict["redacted_transcript"],
+                "sentiment": row_dict["sentiment"],
+                "sentiment_score": row_dict["sentiment_score"],
+                "wer_score": row_dict["wer_score"],
+                "action_items": json.loads(row_dict["action_items"]),
+                "flagged": bool(row_dict["flagged"]),
+                "processed_at": row_dict["created_at"],
+                "segments": segments_data,
+            }
             calls.append(call_dict)
         return calls
     except Exception as e:
@@ -128,10 +171,29 @@ def get_call_by_id(job_id: str) -> dict | None:
         cursor.execute("SELECT * FROM calls WHERE id = ?", (job_id,))
         row = cursor.fetchone()
         if row:
-            call_dict = dict(row)
-            call_dict["action_items"] = json.loads(call_dict["action_items"])
-            call_dict["flagged"] = bool(call_dict["flagged"])
-            return call_dict
+            row_dict = dict(row)
+
+            segments_data = []
+            if row_dict.get("segments"):
+                try:
+                    segments_data = json.loads(row_dict["segments"])
+                except Exception:
+                    pass
+
+            return {
+                "job_id": row_dict["id"],
+                "audio_file": row_dict["filename"],
+                "duration_seconds": row_dict["duration"],
+                "full_transcript": row_dict["transcript"],
+                "redacted_transcript": row_dict["redacted_transcript"],
+                "sentiment": row_dict["sentiment"],
+                "sentiment_score": row_dict["sentiment_score"],
+                "wer_score": row_dict["wer_score"],
+                "action_items": json.loads(row_dict["action_items"]),
+                "flagged": bool(row_dict["flagged"]),
+                "processed_at": row_dict["created_at"],
+                "segments": segments_data,
+            }
         return None
     except Exception as e:
         logger.error(f"Failed to query call by id {job_id}: {e}")

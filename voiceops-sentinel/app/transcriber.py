@@ -747,7 +747,8 @@ def transcribe(
         sentiment_score=result.sentiment_score,
         wer_score=result.wer_score,
         action_items=result.action_items,
-        flagged=result.flagged
+        flagged=result.flagged,
+        segments=result.segments
     )
 
     return result

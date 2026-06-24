@@ -147,8 +147,11 @@ app.add_middleware(
 
 # Mount static files from frontend directory (create if it doesn't exist)
 import os
-os.makedirs("frontend", exist_ok=True)
-app.mount("/static", StaticFiles(directory="frontend"), name="static")
+frontend_dir = Path(__file__).parent.parent / "frontend"
+if not frontend_dir.exists():
+    frontend_dir = Path("frontend")
+    os.makedirs(frontend_dir, exist_ok=True)
+app.mount("/static", StaticFiles(directory=str(frontend_dir)), name="static")
 
 
 # ─────────────────────────────────────────────────────────────────────────────
@@ -209,7 +212,10 @@ def _validate_upload(file: UploadFile) -> None:
 )
 async def serve_home() -> HTMLResponse:
     """Serve the VoiceOps Sentinel Landing/Home Page UI."""
-    index_path = Path("frontend/index.html")
+    frontend_dir = Path(__file__).parent.parent / "frontend"
+    index_path = frontend_dir / "index.html"
+    if not index_path.exists():
+        index_path = Path("frontend/index.html")
     if not index_path.exists():
         index_path = Path(__file__).parent / "static" / "index.html"
     if not index_path.exists():
@@ -228,7 +234,10 @@ async def serve_home() -> HTMLResponse:
 )
 async def serve_dashboard_page() -> HTMLResponse:
     """Serve the VoiceOps Sentinel Main Dashboard Page UI."""
-    dash_path = Path("frontend/dashboard.html")
+    frontend_dir = Path(__file__).parent.parent / "frontend"
+    dash_path = frontend_dir / "dashboard.html"
+    if not dash_path.exists():
+        dash_path = Path("frontend/dashboard.html")
     if not dash_path.exists():
         return HTMLResponse(
             content="<h1>dashboard.html not found. Please verify the frontend files exist.</h1>",
