@@ -1,0 +1,37 @@
+# VoiceOps Sentinel — Week 1 Transcription Pipeline Report
+
+This report summarizes the implementation and verification of the **Week 1: Transcription Pipeline** for the VoiceOps Sentinel platform.
+
+---
+
+## 1. Executive Summary
+Week 1 established the core audio processing and transcription foundation. The pipeline handles audio ingestion, quality-preserving preprocessing, multi-engine ASR transcription with automatic retry failover, PII redaction, and call metadata storage.
+
+---
+
+## 2. Technical Architecture & Component Details
+
+### 2.1 Audio Ingestion & Validation
+- **Size Restrictions**: Enforces a strict **25 MB** maximum file limit.
+- **Supported Formats**: Supports `mp3`, `wav`, and `flac` audio uploads.
+- **REST Interface**: Exposed via FastAPI's `POST /transcribe` endpoint.
+
+### 2.2 Audio Preprocessor (`app/preprocessor.py`)
+- **Format Standardization**: Normalizes all incoming audio files to **16 kHz, 16-bit, mono WAV format** using `pydub` and `ffmpeg`.
+- **Loudness Normalization**: Targets a consistent **-20 dBFS** to prevent volume fluctuations.
+- **Silence Trimming**: Automatically detects and trims silence longer than **2.0 seconds** from the start and end of the audio clip to minimize transcript padding.
+
+### 2.3 ASR Dispatcher & Retries (`app/transcriber.py`)
+- **Dual-ASR Engine**:
+  - **Primary**: OpenAI Whisper API (`whisper-1`).
+  - **Secondary / Fallback**: Deepgram Nova-2.
+- **Retry Mechanism**: Automatically retries ASR requests up to **3 times** with exponential backoff (`1s`, `2s`, `4s`, `8s`) if network or transient API failures occur.
+
+### 2.4 Smart Content Processing (`app/smart_features.py`)
+- **PII Redaction**: Integrates Microsoft Presidio Analyzer and Anonymizer to mask sensitive data (names, emails, credit cards, phone numbers).
+- **Hinglish Code-switching**: Custom preprocessing filters handle Hinglish language inputs.
+- **Quality Alert System**: Flags calls with high Word Error Rates (WER) or customer frustration keywords.
+
+### 2.5 Database Storage (`app/database.py`)
+- **SQLite Engine**: Stores call metadata, transcription output, segment details, sentiment scores, and flags.
+- **Thread-safe Connections**: Implements safe query executions for concurrent requests.
