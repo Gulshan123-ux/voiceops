@@ -53,12 +53,26 @@ Audio File (mp3/wav/flac)
 └────────┬──────────┘     └────────────────────┘
          │ Retry: 3 attempts, exponential backoff (1→8s)
          ▼
+┌─────────────────────────────────────────────────────────┐
+│  ★ Week 2: Intelligence Layer (NEW)                      │
+│  ───────────────────────────────────────────────────    │
+│  CallSummarizer (app/summarizer.py)                     │
+│    • GPT-3.5-turbo: structured Issue/Resolution/Follow-up│
+│    • Extractive fallback: keyword-scored sentence ranking│
+│                                                          │
+│  LatencyTracker (app/latency_tracker.py)                │
+│    • Per-stage timing: preprocess / transcribe / intel   │
+│    • Target: intelligence output < 3s after audio ends   │
+└────────┬────────────────────────────────────────────────┘
+         │
+         ▼
 ┌───────────────────┐
-│  TranscriptionResult │  Structured JSON response
-│  • job_id (UUID)  │  • segments [ {id, start, end, text, confidence} ]
-│  • duration_secs  │  • full_transcript
+│  TranscriptionResult │  Structured JSON response (v2.0)
+│  • job_id (UUID)  │  • segments [ {id, start, end, text} ]
+│  • duration_secs  │  • full_transcript + redacted_transcript
 │  • language       │  • wer_score (optional)
-│  • processed_at   │
+│  • summary        │  • summary_issue / resolution / follow_up ★
+│  • latency_report │  • latency_report { stage_ms, intel_ok } ★
 └───────────────────┘
 ```
 
@@ -346,13 +360,14 @@ flake8 app/ tests/ --max-line-length=99
 
 ---
 
-## 🗺️ Roadmap (Weeks 2–4)
+## 🗺️ Roadmap
 
-| Week | Feature |
-|---|---|
-| Week 2 | Intelligence Layer: LLM-based summarization + sentiment analysis |
-| Week 3 | Diarization (Pyannote) + PII redaction (spaCy) |
-| Week 4 | Dashboard UI + live audio streaming + time-synced audio player |
+| Week | Feature | Status |
+|---|---|---|
+| Week 1 | Transcription Pipeline: Whisper ASR + WER evaluation | ✅ Done |
+| Week 2 | Intelligence Layer: LLM summarisation + sentiment + latency tracking | ✅ Done |
+| Week 3 | Diarization (Pyannote) + PII redaction (spaCy/Presidio) | 🔜 Next |
+| Week 4 | Dashboard UI + live audio streaming + time-synced audio player | 📋 Planned |
 
 ---
 

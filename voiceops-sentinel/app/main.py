@@ -43,6 +43,11 @@ from fastapi.staticfiles import StaticFiles
 from app.preprocessor import preprocess_audio
 from app.schemas import ErrorResponse, TranscriptionResult
 from app.transcriber import transcribe
+from app.summarizer import CallSummarizer
+from app.latency_tracker import LatencyTracker
+
+# Singleton summarizer (loaded once at startup)
+_summarizer = CallSummarizer()
 
 # ── Load .env before anything else ───────────────────────────────────────────
 load_dotenv()
@@ -128,9 +133,10 @@ app = FastAPI(
         "Real-Time Call Intelligence System.\n\n"
         "Upload customer support audio files (mp3/wav/flac) and receive "
         "structured transcripts with timestamped segments, language detection, "
-        "and optional Word Error Rate scoring."
+        "optional Word Error Rate scoring, LLM-powered call summarisation, "
+        "sentiment analysis, and PII redaction. (Week 2: Intelligence Layer)"
     ),
-    version="1.0.0",
+    version="2.0.0",
     docs_url="/docs",
     redoc_url="/redoc",
     license_info={"name": "MIT"},
@@ -141,17 +147,37 @@ app = FastAPI(
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
-    allow_methods=["GET", "POST"],
+    allow_methods=["GET", "POST", "DELETE", "OPTIONS"],
     allow_headers=["*"],
 )
 
-# Mount static files from frontend directory (create if it doesn't exist)
+# ── Static file serving with no-cache for JS/CSS ─────────────────────────────
 import os
+import mimetypes
+from fastapi.responses import FileResponse
+
 frontend_dir = Path(__file__).parent.parent / "frontend"
 if not frontend_dir.exists():
     frontend_dir = Path("frontend")
     os.makedirs(frontend_dir, exist_ok=True)
-app.mount("/static", StaticFiles(directory=str(frontend_dir)), name="static")
+
+
+@app.get("/static/{filepath:path}", include_in_schema=False)
+async def serve_static(filepath: str):
+    """Serve frontend static files. Adds no-cache for JS and CSS."""
+    file_path = frontend_dir / filepath
+    if not file_path.exists() or not file_path.is_file():
+        raise HTTPException(status_code=404, detail=f"Static file not found: {filepath}")
+
+    mime_type, _ = mimetypes.guess_type(str(file_path))
+    headers: dict = {}
+    # Prevent browser caching JS and CSS so updates are instant
+    if filepath.endswith(".js") or filepath.endswith(".css"):
+        headers["Cache-Control"] = "no-cache, no-store, must-revalidate"
+        headers["Pragma"] = "no-cache"
+        headers["Expires"] = "0"
+
+    return FileResponse(str(file_path), media_type=mime_type or "application/octet-stream", headers=headers)
 
 
 # ─────────────────────────────────────────────────────────────────────────────
@@ -320,6 +346,9 @@ async def transcribe_audio(
 
     logger.info("File received: name=%s, content_type=%s", original_filename, file.content_type)
 
+    # ── Latency tracker (Week 2) ──────────────────────────────────────────────
+    tracker = LatencyTracker()
+
     # ── 2. Spool to temp file on disk ─────────────────────────────────────────
     # We use a temp directory so we can safely clean up regardless of outcome.
     tmp_dir = Path(tempfile.mkdtemp(prefix="voiceops_"))
@@ -356,9 +385,11 @@ async def transcribe_audio(
             )
 
         try:
+            tracker.start("preprocess")
             preprocessed_wav, duration_seconds = await loop.run_in_executor(
                 _executor, _run_preprocess
             )
+            tracker.stop("preprocess")
         except (ValueError, FileNotFoundError) as exc:
             raise HTTPException(
                 status_code=status.HTTP_400_BAD_REQUEST,
@@ -383,7 +414,9 @@ async def transcribe_audio(
             )
 
         try:
+            tracker.start("transcribe")
             result = await loop.run_in_executor(_executor, _run_transcribe)
+            tracker.stop("transcribe")
         except EnvironmentError as exc:
             # Missing API key
             raise HTTPException(
@@ -401,6 +434,30 @@ async def transcribe_audio(
                 status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
                 detail=f"Transcription failed after retries: {exc}",
             ) from exc
+
+        # ── 6. Intelligence Layer — Summarisation (Week 2) ───────────────────
+        def _run_intelligence() -> dict:
+            """Run LLM summariser in thread pool (may call OpenAI API)."""
+            return _summarizer.summarize(
+                transcript=result.full_transcript,
+                language=result.language or "en",
+            )
+
+        tracker.start("intelligence")
+        summary_data = await loop.run_in_executor(_executor, _run_intelligence)
+        tracker.stop("intelligence")
+
+        # Populate Week 2 fields on the result
+        result.summary = summary_data.get("summary", "")
+        result.summary_issue = summary_data.get("issue", "")
+        result.summary_resolution = summary_data.get("resolution", "")
+        result.summary_follow_up = summary_data.get("follow_up", "None")
+        result.summary_engine = summary_data.get("engine", "extractive")
+
+        # Attach latency report
+        latency_report = tracker.build_report()
+        result.latency_report = latency_report.to_dict()
+        latency_report.log(str(result.job_id))
 
         logger.info(
             "Transcription complete: job_id=%s, segments=%d, duration=%.2fs, wer=%s",

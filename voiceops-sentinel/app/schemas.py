@@ -4,6 +4,14 @@ Pydantic v2 models for request / response validation.
 
 Every field has an explicit type hint + Field description so that
 FastAPI can auto-generate rich OpenAPI documentation.
+
+Week 2 additions:
+  - ``summary``            : LLM/extractive call summary
+  - ``summary_issue``      : Structured detected issue
+  - ``summary_resolution`` : Detected resolution outcome
+  - ``summary_follow_up``  : Outstanding follow-up action
+  - ``summary_engine``     : 'gpt' | 'extractive'
+  - ``latency_report``     : Per-stage pipeline latency breakdown
 """
 
 from __future__ import annotations
@@ -91,6 +99,32 @@ class TranscriptionResult(BaseModel):
     )
     asr_backend: str = Field(
         default="whisper", description="ASR engine used ('whisper', 'deepgram', 'mock')"
+    )
+
+    # ── Week 2: Intelligence Layer ───────────────────────────────────────────
+    summary: str = Field(
+        default="",
+        description="LLM or extractive summary of the call (2-4 sentences)",
+    )
+    summary_issue: str = Field(
+        default="",
+        description="Primary customer issue detected in the call",
+    )
+    summary_resolution: str = Field(
+        default="",
+        description="Resolution / outcome of the call",
+    )
+    summary_follow_up: str = Field(
+        default="None",
+        description="Outstanding follow-up action required after the call",
+    )
+    summary_engine: str = Field(
+        default="extractive",
+        description="Engine used to produce summary: 'gpt' or 'extractive'",
+    )
+    latency_report: Optional[dict] = Field(
+        default=None,
+        description="Per-stage pipeline latency breakdown (ms) for this job",
     )
 
 

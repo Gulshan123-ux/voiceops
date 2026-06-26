@@ -1,0 +1,86 @@
+2026-06-26 09:49:01,286 | INFO     | root:86 | Logging initialised: level=20, file=logs/transcription_20260626.log
+2026-06-26 09:49:01,318 | INFO     | app.database:53 | Added 'segments' column to calls table
+2026-06-26 09:49:01,318 | INFO     | app.database:56 | Database initialized successfully at ./voiceops.db
+2026-06-26 09:49:01,318 | INFO     | app.main:116 | VoiceOps Sentinel starting up | ASR_BACKEND=whisper | MAX_FILE_SIZE=26214400 bytes
+2026-06-26 09:50:45,674 | INFO     | root:86 | Logging initialised: level=20, file=logs/transcription_20260626.log
+2026-06-26 09:50:45,678 | INFO     | app.database:56 | Database initialized successfully at ./voiceops.db
+2026-06-26 09:50:45,678 | INFO     | app.main:116 | VoiceOps Sentinel starting up | ASR_BACKEND=whisper | MAX_FILE_SIZE=26214400 bytes
+2026-06-26 09:56:19,150 | INFO     | app.main:327 | File received: name=freesound_community-nem_070725-60173.mp3, content_type=audio/mpeg
+2026-06-26 09:56:19,156 | INFO     | app.main:346 | File spooled: name=freesound_community-nem_070725-60173.mp3, size=11934144 bytes
+2026-06-26 09:56:19,157 | INFO     | app.preprocessor:205 | Preprocessing started: freesound_community-nem_070725-60173.mp3
+2026-06-26 09:56:20,021 | INFO     | app.preprocessor:227 | Preprocessing complete: file=freesound_community-nem_070725-60173.mp3, duration=1491.77s, preprocessing_time=0.864s, output=preprocessed_freesound_community-nem_070725-60173.wav
+2026-06-26 09:56:20,022 | INFO     | app.transcriber:607 | Transcription dispatched: backend=whisper, file=freesound_community-nem_070725-60173.mp3, duration=1491.77s
+2026-06-26 09:56:20,089 | INFO     | app.transcriber:144 | Calling Whisper API: file=preprocessed_freesound_community-nem_070725-60173.wav, model=whisper-1
+2026-06-26 09:56:36,641 | INFO     | httpx:1025 | HTTP Request: POST https://api.openai.com/v1/audio/transcriptions "HTTP/1.1 401 Unauthorized"
+2026-06-26 09:56:36,645 | WARNING  | app.transcriber:631 | Whisper ASR returned 401/unauthorized. Falling back to local Mock ASR. Error: Invalid OpenAI API key (401): Error code: 401 - {'error': {'message': 'Incorrect API key provided: sk-.... You can find your API key at https://platform.openai.com/account/api-keys.', 'type': 'invalid_request_error', 'code': 'invalid_api_key', 'param': None}, 'status': 401}
+2026-06-26 09:56:36,645 | INFO     | app.transcriber:445 | Using mock transcription backend for file=freesound_community-nem_070725-60173.mp3
+2026-06-26 09:56:37,778 | INFO     | presidio-analyzer:40 | Using device of type: cpu
+2026-06-26 09:56:37,969 | WARNING  | app.sentiment:21 | transformers/torch not installed. Using robust lexical fallback for sentiment analysis.
+2026-06-26 09:56:38,205 | INFO     | presidio-analyzer:110 | Created NLP engine: spacy. Loaded models: ['en']
+2026-06-26 09:56:38,205 | INFO     | presidio-analyzer:79 | registry not provided, creating default.
+2026-06-26 09:56:38,216 | INFO     | presidio-analyzer:60 | Loaded recognizer: CreditCardRecognizer
+2026-06-26 09:56:38,216 | INFO     | presidio-analyzer:60 | Loaded recognizer: CreditCardRecognizer
+2026-06-26 09:56:38,216 | INFO     | presidio-analyzer:60 | Loaded recognizer: CreditCardRecognizer
+2026-06-26 09:56:38,217 | INFO     | presidio-analyzer:60 | Loaded recognizer: CreditCardRecognizer
+2026-06-26 09:56:38,217 | INFO     | presidio-analyzer:60 | Loaded recognizer: UsBankRecognizer
+2026-06-26 09:56:38,217 | INFO     | presidio-analyzer:60 | Loaded recognizer: UsLicenseRecognizer
+2026-06-26 09:56:38,217 | INFO     | presidio-analyzer:60 | Loaded recognizer: UsItinRecognizer
+2026-06-26 09:56:38,217 | INFO     | presidio-analyzer:60 | Loaded recognizer: UsPassportRecognizer
+2026-06-26 09:56:38,217 | INFO     | presidio-analyzer:60 | Loaded recognizer: UsSsnRecognizer
+2026-06-26 09:56:38,217 | INFO     | presidio-analyzer:60 | Loaded recognizer: NhsRecognizer
+2026-06-26 09:56:38,217 | INFO     | presidio-analyzer:60 | Loaded recognizer: EsNifRecognizer
+2026-06-26 09:56:38,217 | INFO     | presidio-analyzer:60 | Loaded recognizer: EsNieRecognizer
+2026-06-26 09:56:38,217 | INFO     | presidio-analyzer:60 | Loaded recognizer: ItDriverLicenseRecognizer
+2026-06-26 09:56:38,217 | INFO     | presidio-analyzer:60 | Loaded recognizer: ItFiscalCodeRecognizer
+2026-06-26 09:56:38,217 | INFO     | presidio-analyzer:60 | Loaded recognizer: ItVatCodeRecognizer
+2026-06-26 09:56:38,217 | INFO     | presidio-analyzer:60 | Loaded recognizer: ItIdentityCardRecognizer
+2026-06-26 09:56:38,217 | INFO     | presidio-analyzer:60 | Loaded recognizer: ItPassportRecognizer
+2026-06-26 09:56:38,217 | INFO     | presidio-analyzer:60 | Loaded recognizer: PlPeselRecognizer
+2026-06-26 09:56:38,217 | INFO     | presidio-analyzer:60 | Loaded recognizer: CryptoRecognizer
+2026-06-26 09:56:38,218 | INFO     | presidio-analyzer:60 | Loaded recognizer: DateRecognizer
+2026-06-26 09:56:38,218 | INFO     | presidio-analyzer:60 | Loaded recognizer: EmailRecognizer
+2026-06-26 09:56:38,218 | INFO     | presidio-analyzer:60 | Loaded recognizer: IbanRecognizer
+2026-06-26 09:56:38,218 | INFO     | presidio-analyzer:60 | Loaded recognizer: IpRecognizer
+2026-06-26 09:56:38,218 | INFO     | presidio-analyzer:60 | Loaded recognizer: MedicalLicenseRecognizer
+2026-06-26 09:56:38,218 | INFO     | presidio-analyzer:60 | Loaded recognizer: MacAddressRecognizer
+2026-06-26 09:56:38,218 | INFO     | presidio-analyzer:60 | Loaded recognizer: PhoneRecognizer
+2026-06-26 09:56:38,218 | INFO     | presidio-analyzer:60 | Loaded recognizer: UrlRecognizer
+2026-06-26 09:56:38,218 | WARNING  | presidio-analyzer:168 | Recognizer not added to registry because language is not supported by registry - CreditCardRecognizer supported languages: es, registry supported languages: en
+2026-06-26 09:56:38,218 | WARNING  | presidio-analyzer:168 | Recognizer not added to registry because language is not supported by registry - CreditCardRecognizer supported languages: it, registry supported languages: en
+2026-06-26 09:56:38,218 | WARNING  | presidio-analyzer:168 | Recognizer not added to registry because language is not supported by registry - CreditCardRecognizer supported languages: pl, registry supported languages: en
+2026-06-26 09:56:38,218 | WARNING  | presidio-analyzer:168 | Recognizer not added to registry because language is not supported by registry - EsNifRecognizer supported languages: es, registry supported languages: en
+2026-06-26 09:56:38,218 | WARNING  | presidio-analyzer:168 | Recognizer not added to registry because language is not supported by registry - EsNieRecognizer supported languages: es, registry supported languages: en
+2026-06-26 09:56:38,218 | WARNING  | presidio-analyzer:168 | Recognizer not added to registry because language is not supported by registry - ItDriverLicenseRecognizer supported languages: it, registry supported languages: en
+2026-06-26 09:56:38,218 | WARNING  | presidio-analyzer:168 | Recognizer not added to registry because language is not supported by registry - ItFiscalCodeRecognizer supported languages: it, registry supported languages: en
+2026-06-26 09:56:38,218 | WARNING  | presidio-analyzer:168 | Recognizer not added to registry because language is not supported by registry - ItVatCodeRecognizer supported languages: it, registry supported languages: en
+2026-06-26 09:56:38,218 | WARNING  | presidio-analyzer:168 | Recognizer not added to registry because language is not supported by registry - ItIdentityCardRecognizer supported languages: it, registry supported languages: en
+2026-06-26 09:56:38,218 | WARNING  | presidio-analyzer:168 | Recognizer not added to registry because language is not supported by registry - ItPassportRecognizer supported languages: it, registry supported languages: en
+2026-06-26 09:56:38,218 | WARNING  | presidio-analyzer:168 | Recognizer not added to registry because language is not supported by registry - PlPeselRecognizer supported languages: pl, registry supported languages: en
+2026-06-26 09:56:38,218 | INFO     | presidio-analyzer:60 | Loaded recognizer: SpacyRecognizer
+2026-06-26 09:56:38,218 | INFO     | app.pii_redactor:44 | Presidio Analyzer/Anonymizer engines initialized successfully using en_core_web_sm.
+2026-06-26 09:56:39,038 | INFO     | httpx:1025 | HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 401 Unauthorized"
+2026-06-26 09:56:39,039 | ERROR    | app.action_extractor:65 | OpenAI action item extraction failed: Error code: 401 - {'error': {'message': 'Incorrect API key provided: sk-.... You can find your API key at https://platform.openai.com/account/api-keys.', 'type': 'invalid_request_error', 'code': 'invalid_api_key', 'param': None}, 'status': 401}. Using heuristic fallback.
+2026-06-26 09:56:39,076 | WARNING  | presidio-analyzer:272 | Entity MONEY is not mapped to a Presidio entity, but keeping anyway. Add to `NerModelConfiguration.labels_to_ignore` to remove.
+2026-06-26 09:56:39,091 | WARNING  | presidio-analyzer:272 | Entity MONEY is not mapped to a Presidio entity, but keeping anyway. Add to `NerModelConfiguration.labels_to_ignore` to remove.
+2026-06-26 09:56:39,107 | INFO     | app.database:118 | Call record inserted: b209d209-b47f-4635-b010-76c60b3247e1
+2026-06-26 09:56:39,680 | INFO     | httpx:1025 | HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 401 Unauthorized"
+2026-06-26 09:56:39,686 | WARNING  | app.summarizer:106 | GPT summarisation failed (Error code: 401 - {'error': {'message': 'Incorrect API key provided: sk-.... You can find your API key at https://platform.openai.com/account/api-keys.', 'type': 'invalid_request_error', 'code': 'invalid_api_key', 'param': None}, 'status': 401}). Using extractive fallback.
+2026-06-26 09:56:39,691 | INFO     | app.summarizer:72 | Summary generated: engine=extractive latency=582.9ms
+2026-06-26 09:56:39,692 | INFO     | app.latency_tracker:62 | LATENCY job_id=b209d209-b47f-4635-b010-76c60b3247e1 preprocess=866ms transcribe=19085ms intelligence=584ms total=20541ms [✅ OK]
+2026-06-26 09:56:39,693 | INFO     | app.main:442 | Transcription complete: job_id=b209d209-b47f-4635-b010-76c60b3247e1, segments=4, duration=1491.77s, wer=N/A
+2026-06-26 10:04:21,018 | INFO     | app.main:122 | VoiceOps Sentinel shutting down…
+2026-06-26 10:04:21,701 | INFO     | root:86 | Logging initialised: level=20, file=logs/transcription_20260626.log
+2026-06-26 10:04:21,705 | INFO     | app.database:56 | Database initialized successfully at ./voiceops.db
+2026-06-26 10:04:21,705 | INFO     | app.main:116 | VoiceOps Sentinel starting up | ASR_BACKEND=whisper | MAX_FILE_SIZE=26214400 bytes
+2026-06-26 10:13:16,945 | INFO     | app.main:122 | VoiceOps Sentinel shutting down…
+2026-06-26 10:13:17,594 | INFO     | root:86 | Logging initialised: level=20, file=logs/transcription_20260626.log
+2026-06-26 10:13:17,598 | INFO     | app.database:56 | Database initialized successfully at ./voiceops.db
+2026-06-26 10:13:17,598 | INFO     | app.main:116 | VoiceOps Sentinel starting up | ASR_BACKEND=whisper | MAX_FILE_SIZE=26214400 bytes
+2026-06-26 10:14:20,876 | INFO     | app.main:122 | VoiceOps Sentinel shutting down…
+2026-06-26 10:14:21,510 | INFO     | root:86 | Logging initialised: level=20, file=logs/transcription_20260626.log
+2026-06-26 10:14:21,514 | INFO     | app.database:56 | Database initialized successfully at ./voiceops.db
+2026-06-26 10:14:21,514 | INFO     | app.main:116 | VoiceOps Sentinel starting up | ASR_BACKEND=whisper | MAX_FILE_SIZE=26214400 bytes
+2026-06-26 10:15:01,644 | INFO     | app.main:122 | VoiceOps Sentinel shutting down…
+2026-06-26 10:15:02,227 | INFO     | root:86 | Logging initialised: level=20, file=logs/transcription_20260626.log
+2026-06-26 10:15:02,230 | INFO     | app.database:56 | Database initialized successfully at ./voiceops.db
+2026-06-26 10:15:02,231 | INFO     | app.main:116 | VoiceOps Sentinel starting up | ASR_BACKEND=whisper | MAX_FILE_SIZE=26214400 bytes

@@ -167,6 +167,9 @@ async function reloadDashboardData() {
     }
 }
 
+// Track which job_id is pending delete confirmation
+let _pendingDeleteId = null;
+
 function renderCallHistoryTable(callsToRender) {
     const tbody = document.getElementById('call-history-body');
     if (!tbody) return;
@@ -180,9 +183,24 @@ function renderCallHistoryTable(callsToRender) {
         const werStr = formatWER(call.wer_score);
         const sentimentClass = call.sentiment === 'Positive' ? 'badge-success' : (call.sentiment === 'Negative' ? 'badge-danger' : 'badge-warning');
         const alertHtml = call.flagged ? `<span class="badge badge-danger">FLAGGED</span>` : `<span class="badge badge-success">OK</span>`;
-        
+
         const isSelected = selectedCall && selectedCall.job_id === call.job_id;
-        const rowStyle = isSelected ? 'style="background-color: rgba(59, 130, 246, 0.15); border-left: 3px solid var(--accent-blue);"' : '';
+        const isPending = _pendingDeleteId === call.job_id;
+        const rowStyle = isSelected
+            ? 'style="background-color: rgba(59, 130, 246, 0.15); border-left: 3px solid var(--accent-blue);"'
+            : '';
+
+        // Inline confirm row shown instead of browser confirm dialog
+        const confirmRow = isPending ? `
+            <tr id="confirm-row-${call.job_id}" style="background:rgba(239,68,68,0.12); border-left:3px solid #ef4444;">
+                <td colspan="5" style="padding:0.5rem 0.75rem; font-size:0.8125rem;">
+                    <span style="color:#fca5a5; margin-right:0.75rem;">🗑 Delete <strong>${call.audio_file}</strong>? This cannot be undone.</span>
+                    <button onclick="event.stopPropagation(); confirmDelete('${call.job_id}')"
+                        style="background:#ef4444;color:#fff;border:none;padding:0.25rem 0.75rem;border-radius:0.375rem;cursor:pointer;font-size:0.8rem;margin-right:0.5rem;">Yes, Delete</button>
+                    <button onclick="event.stopPropagation(); cancelDelete()"
+                        style="background:transparent;color:#94a3b8;border:1px solid #475569;padding:0.25rem 0.75rem;border-radius:0.375rem;cursor:pointer;font-size:0.8rem;">Cancel</button>
+                </td>
+            </tr>` : '';
 
         return `
             <tr ${rowStyle} onclick="selectCall('${call.job_id}')" class="clickable-row">
@@ -194,37 +212,47 @@ function renderCallHistoryTable(callsToRender) {
                     <button class="action-btn" onclick="event.stopPropagation(); deleteCall('${call.job_id}')" title="Delete record">🗑</button>
                 </td>
             </tr>
+            ${confirmRow}
         `;
     }).join('');
 }
 
+function getProcessedCalls() {
+    const searchInput = document.getElementById('db-search');
+    const query = searchInput ? searchInput.value.toLowerCase() : '';
+    
+    let processed = [...allCalls];
+    if (query) {
+        processed = processed.filter(call => 
+            call.audio_file.toLowerCase().includes(query) ||
+            (call.sentiment || '').toLowerCase().includes(query)
+        );
+    }
+    
+    const selector = document.getElementById('sort-selector');
+    const currentSort = selector ? selector.value : 'date-desc';
+    
+    if (currentSort === 'date-desc') {
+        processed.sort((a, b) => new Date(b.processed_at) - new Date(a.processed_at));
+    } else if (currentSort === 'date-asc') {
+        processed.sort((a, b) => new Date(a.processed_at) - new Date(b.processed_at));
+    } else if (currentSort === 'wer-desc') {
+        processed.sort((a, b) => (b.wer_score || 0) - (a.wer_score || 0));
+    } else if (currentSort === 'wer-asc') {
+        processed.sort((a, b) => (a.wer_score || 999) - (b.wer_score || 999));
+    }
+    
+    return processed;
+}
+
 function filterCallHistory() {
-    const query = document.getElementById('db-search').value.toLowerCase();
-    const filtered = allCalls.filter(call => 
-        call.audio_file.toLowerCase().includes(query) ||
-        (call.sentiment || '').toLowerCase().includes(query)
-    );
-    renderCallHistoryTable(filtered);
+    renderCallHistoryTable(getProcessedCalls());
 }
 
 function sortCallHistory() {
-    const selector = document.getElementById('sort-selector');
-    if (!selector) return;
-    currentSort = selector.value;
-    
-    let sorted = [...allCalls];
-    if (currentSort === 'date-desc') {
-        sorted.sort((a, b) => new Date(b.processed_at) - new Date(a.processed_at));
-    } else if (currentSort === 'date-asc') {
-        sorted.sort((a, b) => new Date(a.processed_at) - new Date(b.processed_at));
-    } else if (currentSort === 'wer-desc') {
-        sorted.sort((a, b) => (b.wer_score || 0) - (a.wer_score || 0));
-    } else if (currentSort === 'wer-asc') {
-        sorted.sort((a, b) => (a.wer_score || 999) - (b.wer_score || 999));
-    }
-    
-    renderCallHistoryTable(sorted);
+    renderCallHistoryTable(getProcessedCalls());
 }
+
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Call details pane
@@ -277,7 +305,6 @@ function renderDetailsPane() {
     const transcriptHtml = segments.map(seg => {
         const speakerClass = (seg.speaker || '').toLowerCase() === 'agent' ? 'agent' : 'customer';
         const formattedText = highlightPII(seg.text);
-        
         return `
             <div class="segment-item" onclick="playSegmentText('${seg.text.replace(/'/g, "\\'")}', ${seg.start})">
                 <div class="segment-header">
@@ -324,10 +351,13 @@ function renderDetailsPane() {
             </div>
         </div>
 
+        <!-- Week 2: Intelligence Layer — Call Summary Panel -->
+        ${renderIntelligencePanel(selectedCall)}
+
         <!-- Audio Sync Synthesizer -->
         <div class="audio-player-container">
             <div style="display:flex; justify-content:space-between; align-items:center;">
-                <span style="font-size:0.8125rem; font-weight:600;">Simulated Audio Sync & Speech</span>
+                <span style="font-size:0.8125rem; font-weight:600;">Simulated Audio Sync &amp; Speech</span>
                 <span style="font-size:0.75rem; color:var(--text-secondary);" id="audio-time-label">0.0s / ${formatDuration(selectedCall.duration_seconds)}</span>
             </div>
             <div style="display:flex; gap:0.5rem; align-items:center; margin-top:0.5rem;">
@@ -354,6 +384,76 @@ function renderDetailsPane() {
             <div class="transcript-box">
                 ${transcriptHtml}
             </div>
+        </div>
+    `;
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Week 2: Intelligence Panel Renderer
+// ─────────────────────────────────────────────────────────────────────────────
+function renderIntelligencePanel(call) {
+    const summary = call.summary || '';
+    const issue = call.summary_issue || '';
+    const resolution = call.summary_resolution || '';
+    const followUp = call.summary_follow_up || 'None';
+    const engine = call.summary_engine || 'extractive';
+    const latency = call.latency_report || null;
+
+    // If no summary data at all (old records), skip panel
+    if (!summary && !issue) return '';
+
+    const engineBadge = engine === 'gpt'
+        ? `<span class="badge badge-success" title="Powered by GPT">🤖 GPT</span>`
+        : `<span class="badge badge-warning" title="Extractive rule-based">⚙️ Extractive</span>`;
+
+    let latencyHtml = '';
+    if (latency) {
+        const intelOk = latency.intelligence_within_target;
+        const intelColor = intelOk ? 'var(--accent-green)' : 'var(--accent-red)';
+        const intelIcon = intelOk ? '✅' : '⚠️';
+        latencyHtml = `
+            <div style="margin-top:0.75rem; padding:0.625rem 0.75rem; background:rgba(0,0,0,0.25); border-radius:0.375rem; border:1px solid var(--border-color);">
+                <div style="font-size:0.7rem; text-transform:uppercase; color:var(--text-secondary); margin-bottom:0.4rem; letter-spacing:0.05em;">⏱ Pipeline Latency</div>
+                <div style="display:flex; flex-wrap:wrap; gap:0.75rem; font-size:0.8rem;">
+                    <span>🔧 Preprocess: <strong>${latency.preprocess_ms}ms</strong></span>
+                    <span>🎙 Transcribe: <strong>${latency.transcribe_ms}ms</strong></span>
+                    <span style="color:${intelColor}">${intelIcon} Intelligence: <strong>${latency.intelligence_ms}ms</strong> (target ≤${latency.target_s * 1000}ms)</span>
+                    <span>📊 Total: <strong>${latency.total_ms}ms</strong></span>
+                </div>
+            </div>
+        `;
+    }
+
+    return `
+        <div style="background: linear-gradient(135deg, rgba(99,102,241,0.08) 0%, rgba(59,130,246,0.08) 100%);
+                    border: 1px solid rgba(99,102,241,0.25); border-radius: 0.75rem; padding: 1rem; margin: 0;">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:0.75rem;">
+                <h3 style="font-size:1rem; font-weight:700; margin:0; display:flex; align-items:center; gap:0.5rem;">
+                    🧠 Intelligence Layer Summary
+                </h3>
+                ${engineBadge}
+            </div>
+
+            <!-- Summary Text -->
+            ${ summary ? `<p style="font-size:0.875rem; color:var(--text-primary); line-height:1.6; margin-bottom:0.75rem; font-style:italic;">&ldquo;${summary}&rdquo;</p>` : '' }
+
+            <!-- Structured Cards -->
+            <div style="display:grid; grid-template-columns: 1fr 1fr 1fr; gap:0.5rem;">
+                <div style="background:rgba(0,0,0,0.2); border-radius:0.5rem; padding:0.625rem; border-left: 3px solid #f59e0b;">
+                    <div style="font-size:0.65rem; text-transform:uppercase; color:#f59e0b; letter-spacing:0.08em; margin-bottom:0.25rem;">🔎 Issue</div>
+                    <div style="font-size:0.8125rem; font-weight:500;">${issue || 'N/A'}</div>
+                </div>
+                <div style="background:rgba(0,0,0,0.2); border-radius:0.5rem; padding:0.625rem; border-left: 3px solid #10b981;">
+                    <div style="font-size:0.65rem; text-transform:uppercase; color:#10b981; letter-spacing:0.08em; margin-bottom:0.25rem;">✅ Resolution</div>
+                    <div style="font-size:0.8125rem; font-weight:500;">${resolution || 'N/A'}</div>
+                </div>
+                <div style="background:rgba(0,0,0,0.2); border-radius:0.5rem; padding:0.625rem; border-left: 3px solid #3b82f6;">
+                    <div style="font-size:0.65rem; text-transform:uppercase; color:#3b82f6; letter-spacing:0.08em; margin-bottom:0.25rem;">📌 Follow-up</div>
+                    <div style="font-size:0.8125rem; font-weight:500;">${followUp}</div>
+                </div>
+            </div>
+
+            ${latencyHtml}
         </div>
     `;
 }
@@ -462,7 +562,7 @@ async function uploadFile(file) {
             "2. Running audio preprocessor (16kHz mono conversion)...",
             "3. Calling Whisper ASR engine...",
             "4. Computing Word Error Rate (WER)...",
-            "5. Applying Smart Sentiment & Presidio Redactor..."
+            "5. Running Intelligence Layer: LLM Summary + Sentiment..."
         ];
 
         let stepIndex = 0;
@@ -538,13 +638,21 @@ if (uploadZone) {
 // ─────────────────────────────────────────────────────────────────────────────
 // Deletion Logic
 // ─────────────────────────────────────────────────────────────────────────────
-async function deleteCall(jobId) {
-    if (!confirm("Are you sure you want to delete this call record?")) return;
+// Step 1 — show inline confirm row (no browser dialog)
+function deleteCall(jobId) {
+    _pendingDeleteId = jobId;
+    sortCallHistory(); // re-render table with confirm row visible
+}
+
+// Step 2 — user clicked "Yes, Delete"
+async function confirmDelete(jobId) {
+    _pendingDeleteId = null;
     try {
         const res = await fetch(`${API_URL}/calls/${jobId}`, {
             method: 'DELETE'
         });
         if (res.ok) {
+            // Clear details pane if the deleted call was selected
             if (selectedCall && selectedCall.job_id === jobId) {
                 selectedCall = null;
                 document.getElementById('details-pane').innerHTML = `
@@ -557,11 +665,26 @@ async function deleteCall(jobId) {
             }
             await reloadDashboardData();
         } else {
-            alert("Failed to delete record.");
+            const body = await res.json().catch(() => ({}));
+            const msg = body.detail || `Server error ${res.status}`;
+            // Show error inline
+            const confirmRow = document.getElementById(`confirm-row-${jobId}`);
+            if (confirmRow) {
+                confirmRow.innerHTML = `<td colspan="5" style="color:#fca5a5; padding:0.5rem 0.75rem; font-size:0.8125rem;">⚠️ Delete failed: ${msg}</td>`;
+                setTimeout(() => { _pendingDeleteId = null; sortCallHistory(); }, 2500);
+            }
         }
     } catch (err) {
-        console.error("Delete call error:", err);
+        console.error('Delete call error:', err);
+        _pendingDeleteId = null;
+        sortCallHistory();
     }
+}
+
+// Step 2 (alt) — user clicked "Cancel"
+function cancelDelete() {
+    _pendingDeleteId = null;
+    sortCallHistory(); // re-render table without confirm row
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
