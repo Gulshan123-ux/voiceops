@@ -1,0 +1,58 @@
+# VoiceOps Sentinel — Week 2 Intelligence Layer Report
+
+This report summarizes the implementation and verification of the **Week 2: Intelligence Layer** for the VoiceOps Sentinel platform. 
+
+---
+
+## 1. Executive Summary
+Week 2 introduces deep call intelligence features, structured metadata reporting, latency tracking, and a premium operations dashboard UI. The platform now transcribes audio, structures conversations, and evaluates processing time against strict target thresholds.
+
+---
+
+## 2. Technical Architecture & Component Details
+
+### 2.1 LLM Call Summarizer (`app/summarizer.py`)
+- **Primary Engine**: Leverages OpenAI's `gpt-3.5-turbo` to extract structured insights from raw call transcripts.
+  - **Issue Identification**: Pinpoints billing requests, technical failures, and general support inquiries.
+  - **Resolution Status**: Detects completed tasks or active agent actions.
+  - **Follow-up / Callbacks**: Captures explicit client callback scheduling or follow-up timelines.
+- **Local Extractive Fallback**: If `OPENAI_API_KEY` is absent or the API request fails, the system transitions to a local TF-IDF sentence-scoring pipeline. Sentences are ranked and scored based on term frequency and domain-specific keywords (e.g., *refund, manager, callback*).
+
+### 2.2 Pipeline Latency Tracker (`app/latency_tracker.py`)
+- **Microsecond Stage Timers**: Individually measures:
+  - **Preprocessing**: Loudness normalisation, sample rate downsampling, silence trimming.
+  - **Transcription (ASR)**: Whisper/Deepgram network and processing latency.
+  - **Intelligence**: LLM summarization and extractive fallback runtime.
+- **Latency Threshold Verification**: Compares the intelligence stage's elapsed time against the **3.0-second** ceiling requirement.
+- **Structured Logs**: Emits unified pipeline latency reports in structured log files.
+
+### 2.3 SQLite Schema & Schema Models (`app/schemas.py`, `app/database.py`)
+- **Database Schema Migration**: Enhanced the SQLite schema to persist intelligence fields and latency metrics:
+  - `summary` (TEXT)
+  - `summary_issue` (TEXT)
+  - `summary_resolution` (TEXT)
+  - `summary_follow_up` (TEXT)
+  - `summary_engine` (TEXT)
+  - `latency_report` (TEXT/JSON)
+- **Model Compatibility**: All fields default to appropriate safe fallbacks (`""`, `"None"`, `"extractive"`) to support backward compatibility with Week 1 records.
+
+---
+
+## 3. UI/UX Dashboard Integration (`frontend/`)
+- **Action Column & Deletion**: Implemented inline delete/cancel confirmation panels inside the dashboard table.
+- **Search & Sort Syncing**: Fully synchronized sorting selectors and search boxes so active search results are preserved when deleting, sorting, or selecting rows.
+- **Details Pane**:
+  - Highlights PII masks (`[REDACTED NAME]`, `[REDACTED EMAIL]`, `[REDACTED PHONE]`).
+  - Displays speaker-separated channels (Agent / Customer).
+  - Displays extracted Action Items.
+  - Includes local exports (TXT, JSON) and Print-to-PDF formatting.
+
+---
+
+## 4. Verification and Test Suite
+- **Comprehensive Coverage**: 74 unit and integration tests covering:
+  - Whisper/Deepgram mock dispatchers and retry mechanisms.
+  - PII redact engines (Presidio) and alert triggers.
+  - CallSummarizer (API path and extractive TF-IDF path).
+  - LatencyTracker timers and Pydantic models.
+- **Results**: All 74 tests pass successfully in `.venv/bin/pytest`.
