@@ -463,6 +463,18 @@ async def transcribe_audio(
         result.latency_report = latency_report.to_dict()
         latency_report.log(str(result.job_id))
 
+        # Persist intelligence fields and latency report in SQLite
+        from app.database import update_call_intelligence
+        update_call_intelligence(
+            job_id=str(result.job_id),
+            summary=result.summary,
+            summary_issue=result.summary_issue,
+            summary_resolution=result.summary_resolution,
+            summary_follow_up=result.summary_follow_up,
+            summary_engine=result.summary_engine,
+            latency_report=result.latency_report,
+        )
+
         # Save preprocessed WAV file persistently for streaming
         if preprocessed_wav and preprocessed_wav.exists():
             persistent_wav = audio_dir / f"{result.job_id}.wav"
@@ -495,10 +507,60 @@ async def transcribe_audio(
     summary="Get all processed call records",
     tags=["Calls"],
 )
-async def list_calls() -> list[dict]:
-    """Retrieve all processed call records stored in SQLite database."""
-    from app.database import get_all_calls
-    return get_all_calls()
+async def list_calls(
+    q: Optional[str] = None,
+    sentiment: Optional[str] = None,
+    flagged: Optional[bool] = None,
+    tag: Optional[str] = None,
+    wer_min: Optional[float] = None,
+    wer_max: Optional[float] = None,
+    duration_min: Optional[float] = None,
+    duration_max: Optional[float] = None,
+) -> list[dict]:
+    """Retrieve processed call records with optional search/filtering."""
+    from app.search import search_calls
+    return search_calls(
+        query=q,
+        sentiment=sentiment,
+        flagged=flagged,
+        tag=tag,
+        wer_min=wer_min,
+        wer_max=wer_max,
+        duration_min=duration_min,
+        duration_max=duration_max,
+    )
+
+
+@app.post(
+    "/calls/{job_id}/tags",
+    summary="Add a tag to a call record",
+    tags=["Tags"],
+)
+async def add_call_tag(job_id: str, tag: str = Form(..., description="Tag name to add")) -> list[str]:
+    """Add a tag to a specific call record."""
+    from app.tags import add_tag
+    try:
+        return add_tag(job_id, tag)
+    except ValueError as e:
+        raise HTTPException(status_code=404, detail=str(e))
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@app.delete(
+    "/calls/{job_id}/tags/{tag}",
+    summary="Remove a tag from a call record",
+    tags=["Tags"],
+)
+async def remove_call_tag(job_id: str, tag: str) -> list[str]:
+    """Remove a tag from a specific call record."""
+    from app.tags import remove_tag
+    try:
+        return remove_tag(job_id, tag)
+    except ValueError as e:
+        raise HTTPException(status_code=404, detail=str(e))
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
 
 
 @app.get(

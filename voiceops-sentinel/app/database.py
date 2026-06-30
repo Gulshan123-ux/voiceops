@@ -45,12 +45,33 @@ def init_db() -> None:
             )
             """
         )
-        # Check if segments column exists, if not add it dynamically
+        # Check which columns exist, if not add them dynamically
         cursor.execute("PRAGMA table_info(calls)")
         columns = [row["name"] for row in cursor.fetchall()]
         if "segments" not in columns:
             cursor.execute("ALTER TABLE calls ADD COLUMN segments TEXT")
             logger.info("Added 'segments' column to calls table")
+        if "summary" not in columns:
+            cursor.execute("ALTER TABLE calls ADD COLUMN summary TEXT")
+            logger.info("Added 'summary' column to calls table")
+        if "summary_issue" not in columns:
+            cursor.execute("ALTER TABLE calls ADD COLUMN summary_issue TEXT")
+            logger.info("Added 'summary_issue' column to calls table")
+        if "summary_resolution" not in columns:
+            cursor.execute("ALTER TABLE calls ADD COLUMN summary_resolution TEXT")
+            logger.info("Added 'summary_resolution' column to calls table")
+        if "summary_follow_up" not in columns:
+            cursor.execute("ALTER TABLE calls ADD COLUMN summary_follow_up TEXT")
+            logger.info("Added 'summary_follow_up' column to calls table")
+        if "summary_engine" not in columns:
+            cursor.execute("ALTER TABLE calls ADD COLUMN summary_engine TEXT")
+            logger.info("Added 'summary_engine' column to calls table")
+        if "latency_report" not in columns:
+            cursor.execute("ALTER TABLE calls ADD COLUMN latency_report TEXT")
+            logger.info("Added 'latency_report' column to calls table")
+        if "tags" not in columns:
+            cursor.execute("ALTER TABLE calls ADD COLUMN tags TEXT")
+            logger.info("Added 'tags' column to calls table")
 
         conn.commit()
         logger.info(f"Database initialized successfully at {DB_PATH}")
@@ -72,6 +93,13 @@ def insert_call(
     action_items: list[str],
     flagged: bool,
     segments: list | None = None,
+    summary: str = "",
+    summary_issue: str = "",
+    summary_resolution: str = "",
+    summary_follow_up: str = "None",
+    summary_engine: str = "extractive",
+    latency_report: dict | None = None,
+    tags: list[str] | None = None,
 ) -> None:
     """Insert a new call analytics record."""
     conn = get_db_connection()
@@ -96,8 +124,9 @@ def insert_call(
             """
             INSERT OR REPLACE INTO calls (
                 id, filename, duration, transcript, redacted_transcript,
-                sentiment, sentiment_score, wer_score, action_items, flagged, created_at, segments
-            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                sentiment, sentiment_score, wer_score, action_items, flagged, created_at, segments,
+                summary, summary_issue, summary_resolution, summary_follow_up, summary_engine, latency_report, tags
+            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
             """,
             (
                 job_id,
@@ -112,12 +141,78 @@ def insert_call(
                 1 if flagged else 0,
                 created_at,
                 segments_json,
+                summary,
+                summary_issue,
+                summary_resolution,
+                summary_follow_up,
+                summary_engine,
+                json.dumps(latency_report) if latency_report else None,
+                json.dumps(tags or []),
             ),
         )
         conn.commit()
         logger.info(f"Call record inserted: {job_id}")
     except Exception as e:
         logger.error(f"Failed to insert call record: {e}")
+    finally:
+        conn.close()
+
+
+def update_call_intelligence(
+    job_id: str,
+    summary: str,
+    summary_issue: str,
+    summary_resolution: str,
+    summary_follow_up: str,
+    summary_engine: str,
+    latency_report: dict | None,
+) -> None:
+    """Update intelligence fields for an existing call record."""
+    conn = get_db_connection()
+    try:
+        cursor = conn.cursor()
+        cursor.execute(
+            """
+            UPDATE calls SET
+                summary = ?,
+                summary_issue = ?,
+                summary_resolution = ?,
+                summary_follow_up = ?,
+                summary_engine = ?,
+                latency_report = ?
+            WHERE id = ?
+            """,
+            (
+                summary,
+                summary_issue,
+                summary_resolution,
+                summary_follow_up,
+                summary_engine,
+                json.dumps(latency_report) if latency_report else None,
+                job_id,
+            ),
+        )
+        conn.commit()
+        logger.info(f"Updated intelligence fields for call: {job_id}")
+    except Exception as e:
+        logger.error(f"Failed to update intelligence fields: {e}")
+    finally:
+        conn.close()
+
+
+def update_call_tags(job_id: str, tags: list[str]) -> None:
+    """Update tags for an existing call record."""
+    conn = get_db_connection()
+    try:
+        cursor = conn.cursor()
+        cursor.execute(
+            "UPDATE calls SET tags = ? WHERE id = ?",
+            (json.dumps(tags), job_id),
+        )
+        conn.commit()
+        logger.info(f"Updated tags for call {job_id}: {tags}")
+    except Exception as e:
+        logger.error(f"Failed to update tags: {e}")
     finally:
         conn.close()
 
@@ -140,6 +235,20 @@ def get_all_calls() -> list[dict]:
                 except Exception:
                     pass
 
+            tags_data = []
+            if row_dict.get("tags"):
+                try:
+                    tags_data = json.loads(row_dict["tags"])
+                except Exception:
+                    pass
+
+            latency_data = None
+            if row_dict.get("latency_report"):
+                try:
+                    latency_data = json.loads(row_dict["latency_report"])
+                except Exception:
+                    pass
+
             call_dict = {
                 "job_id": row_dict["id"],
                 "audio_file": row_dict["filename"],
@@ -153,6 +262,13 @@ def get_all_calls() -> list[dict]:
                 "flagged": bool(row_dict["flagged"]),
                 "processed_at": row_dict["created_at"],
                 "segments": segments_data,
+                "summary": row_dict.get("summary") or "",
+                "summary_issue": row_dict.get("summary_issue") or "",
+                "summary_resolution": row_dict.get("summary_resolution") or "",
+                "summary_follow_up": row_dict.get("summary_follow_up") or "None",
+                "summary_engine": row_dict.get("summary_engine") or "extractive",
+                "latency_report": latency_data,
+                "tags": tags_data,
             }
             calls.append(call_dict)
         return calls
@@ -180,6 +296,20 @@ def get_call_by_id(job_id: str) -> dict | None:
                 except Exception:
                     pass
 
+            tags_data = []
+            if row_dict.get("tags"):
+                try:
+                    tags_data = json.loads(row_dict["tags"])
+                except Exception:
+                    pass
+
+            latency_data = None
+            if row_dict.get("latency_report"):
+                try:
+                    latency_data = json.loads(row_dict["latency_report"])
+                except Exception:
+                    pass
+
             return {
                 "job_id": row_dict["id"],
                 "audio_file": row_dict["filename"],
@@ -193,6 +323,13 @@ def get_call_by_id(job_id: str) -> dict | None:
                 "flagged": bool(row_dict["flagged"]),
                 "processed_at": row_dict["created_at"],
                 "segments": segments_data,
+                "summary": row_dict.get("summary") or "",
+                "summary_issue": row_dict.get("summary_issue") or "",
+                "summary_resolution": row_dict.get("summary_resolution") or "",
+                "summary_follow_up": row_dict.get("summary_follow_up") or "None",
+                "summary_engine": row_dict.get("summary_engine") or "extractive",
+                "latency_report": latency_data,
+                "tags": tags_data,
             }
         return None
     except Exception as e:

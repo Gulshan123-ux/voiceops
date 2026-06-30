@@ -1,0 +1,38 @@
+2026-06-30 21:29:27,401 | INFO     | root:86 | Logging initialised: level=20, file=logs/transcription_20260630.log
+2026-06-30 21:29:27,407 | INFO     | app.database:56 | Added 'summary' column to calls table
+2026-06-30 21:29:27,407 | INFO     | app.database:59 | Added 'summary_issue' column to calls table
+2026-06-30 21:29:27,408 | INFO     | app.database:62 | Added 'summary_resolution' column to calls table
+2026-06-30 21:29:27,408 | INFO     | app.database:65 | Added 'summary_follow_up' column to calls table
+2026-06-30 21:29:27,408 | INFO     | app.database:68 | Added 'summary_engine' column to calls table
+2026-06-30 21:29:27,408 | INFO     | app.database:71 | Added 'latency_report' column to calls table
+2026-06-30 21:29:27,409 | INFO     | app.database:74 | Added 'tags' column to calls table
+2026-06-30 21:29:27,409 | INFO     | app.database:77 | Database initialized successfully at ./voiceops.db
+2026-06-30 21:29:27,409 | INFO     | app.main:116 | VoiceOps Sentinel starting up | ASR_BACKEND=whisper | MAX_FILE_SIZE=26214400 bytes
+2026-06-30 21:29:42,663 | INFO     | app.main:122 | VoiceOps Sentinel shutting down…
+2026-06-30 21:29:43,233 | INFO     | root:86 | Logging initialised: level=20, file=logs/transcription_20260630.log
+2026-06-30 21:29:43,236 | INFO     | app.database:77 | Database initialized successfully at ./voiceops.db
+2026-06-30 21:29:43,237 | INFO     | app.main:116 | VoiceOps Sentinel starting up | ASR_BACKEND=whisper | MAX_FILE_SIZE=26214400 bytes
+2026-06-30 21:29:57,679 | INFO     | app.main:122 | VoiceOps Sentinel shutting down…
+2026-06-30 21:29:58,415 | INFO     | root:86 | Logging initialised: level=20, file=logs/transcription_20260630.log
+2026-06-30 21:29:58,418 | INFO     | app.database:77 | Database initialized successfully at ./voiceops.db
+2026-06-30 21:29:58,418 | INFO     | app.main:116 | VoiceOps Sentinel starting up | ASR_BACKEND=whisper | MAX_FILE_SIZE=26214400 bytes
+2026-06-30 21:30:01,347 | INFO     | app.main:122 | VoiceOps Sentinel shutting down…
+2026-06-30 21:30:01,949 | INFO     | root:86 | Logging initialised: level=20, file=logs/transcription_20260630.log
+2026-06-30 21:30:01,952 | INFO     | app.database:77 | Database initialized successfully at ./voiceops.db
+2026-06-30 21:30:01,952 | INFO     | app.main:116 | VoiceOps Sentinel starting up | ASR_BACKEND=whisper | MAX_FILE_SIZE=26214400 bytes
+2026-06-30 21:30:15,492 | INFO     | app.main:122 | VoiceOps Sentinel shutting down…
+2026-06-30 21:30:16,135 | INFO     | root:86 | Logging initialised: level=20, file=logs/transcription_20260630.log
+2026-06-30 21:30:16,138 | INFO     | app.database:77 | Database initialized successfully at ./voiceops.db
+2026-06-30 21:30:16,139 | INFO     | app.main:116 | VoiceOps Sentinel starting up | ASR_BACKEND=whisper | MAX_FILE_SIZE=26214400 bytes
+2026-06-30 21:30:24,832 | INFO     | app.main:122 | VoiceOps Sentinel shutting down…
+2026-06-30 21:30:25,297 | INFO     | root:86 | Logging initialised: level=20, file=logs/transcription_20260630.log
+2026-06-30 21:30:25,299 | INFO     | app.database:77 | Database initialized successfully at ./voiceops.db
+2026-06-30 21:30:25,300 | INFO     | app.main:116 | VoiceOps Sentinel starting up | ASR_BACKEND=whisper | MAX_FILE_SIZE=26214400 bytes
+2026-06-30 21:30:55,006 | INFO     | app.main:122 | VoiceOps Sentinel shutting down…
+2026-06-30 21:30:55,572 | INFO     | root:86 | Logging initialised: level=20, file=logs/transcription_20260630.log
+2026-06-30 21:30:55,575 | INFO     | app.database:77 | Database initialized successfully at ./voiceops.db
+2026-06-30 21:30:55,576 | INFO     | app.main:116 | VoiceOps Sentinel starting up | ASR_BACKEND=whisper | MAX_FILE_SIZE=26214400 bytes
+2026-06-30 21:31:38,218 | INFO     | app.main:122 | VoiceOps Sentinel shutting down…
+2026-06-30 21:31:38,697 | INFO     | root:86 | Logging initialised: level=20, file=logs/transcription_20260630.log
+2026-06-30 21:31:38,699 | INFO     | app.database:77 | Database initialized successfully at ./voiceops.db
+2026-06-30 21:31:38,699 | INFO     | app.main:116 | VoiceOps Sentinel starting up | ASR_BACKEND=whisper | MAX_FILE_SIZE=26214400 bytes

@@ -18,7 +18,10 @@
             <li><a href="/">Home</a></li>
             <li><a href="/dashboard" class="active">Dashboard</a></li>
         </ul>
-        <a href="/" class="btn-secondary">← Back to Home</a>
+        <div style="display: flex; align-items: center; gap: 1rem;">
+            <button id="theme-toggle-btn" onclick="toggleTheme()" class="btn-secondary" style="padding: 0.375rem 0.75rem; font-size: 1rem; border-radius: 50%; width: 2.25rem; height: 2.25rem; display: flex; align-items: center; justify-content: center; box-shadow: none;">🌙</button>
+            <a href="/" class="btn-secondary">← Back to Home</a>
+        </div>
     </nav>
 
     <!-- Top Dashboard Header -->
@@ -104,15 +107,66 @@
             </div>
 
             <!-- Call logs table controls -->
-            <div class="table-controls" style="margin-top: 1.5rem;">
-                <input type="text" id="db-search" class="search-input" placeholder="Search filename..." oninput="filterCallHistory()">
-                <div style="display: flex; gap: 0.5rem;">
-                    <select id="sort-selector" class="search-input" style="max-width: 150px;" onchange="sortCallHistory()">
-                        <option value="date-desc">Newest First</option>
-                        <option value="date-asc">Oldest First</option>
-                        <option value="wer-desc">Highest WER</option>
-                        <option value="wer-asc">Lowest WER</option>
-                    </select>
+            <div style="margin-top: 1.5rem;">
+                <div class="table-controls" style="margin-bottom: 0.75rem;">
+                    <input type="text" id="db-search" class="search-input" placeholder="Search filename or transcript..." oninput="triggerSearch()">
+                    <div style="display: flex; gap: 0.5rem;">
+                        <button class="btn-secondary" onclick="toggleAdvancedSearch()" style="padding: 0.5rem 0.75rem; font-size: 0.875rem;">⚙️ Filters</button>
+                        <select id="sort-selector" class="search-input" style="max-width: 150px;" onchange="sortCallHistory()">
+                            <option value="date-desc">Newest First</option>
+                            <option value="date-asc">Oldest First</option>
+                            <option value="wer-desc">Highest WER</option>
+                            <option value="wer-asc">Lowest WER</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Advanced Filters Panel (Hidden by default) -->
+                <div id="advanced-search-panel" style="display: none; flex-direction: column; gap: 0.75rem; background: var(--bg-darker); padding: 1rem; border-radius: 0.5rem; border: 1px solid var(--border-color); margin-bottom: 1rem;">
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem;">
+                        <div>
+                            <label style="font-size: 0.75rem; color: var(--text-secondary); display: block; margin-bottom: 0.25rem;">Sentiment</label>
+                            <select id="filter-sentiment" class="search-input" style="max-width: 100%;" onchange="triggerSearch()">
+                                <option value="">All Sentiments</option>
+                                <option value="Positive">Positive</option>
+                                <option value="Negative">Negative</option>
+                                <option value="Neutral">Neutral</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label style="font-size: 0.75rem; color: var(--text-secondary); display: block; margin-bottom: 0.25rem;">Alert Status</label>
+                            <select id="filter-flagged" class="search-input" style="max-width: 100%;" onchange="triggerSearch()">
+                                <option value="">All Statuses</option>
+                                <option value="1">Flagged</option>
+                                <option value="0">OK</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem;">
+                        <div>
+                            <label style="font-size: 0.75rem; color: var(--text-secondary); display: block; margin-bottom: 0.25rem;">WER Range</label>
+                            <div style="display: flex; gap: 0.5rem; align-items: center;">
+                                <input type="number" id="filter-wer-min" class="search-input" placeholder="Min %" step="1" min="0" max="100" oninput="triggerSearch()" style="padding: 0.25rem 0.5rem;">
+                                <span style="font-size: 0.75rem; color: var(--text-secondary);">to</span>
+                                <input type="number" id="filter-wer-max" class="search-input" placeholder="Max %" step="1" min="0" max="100" oninput="triggerSearch()" style="padding: 0.25rem 0.5rem;">
+                            </div>
+                        </div>
+                        <div>
+                            <label style="font-size: 0.75rem; color: var(--text-secondary); display: block; margin-bottom: 0.25rem;">Duration Range (sec)</label>
+                            <div style="display: flex; gap: 0.5rem; align-items: center;">
+                                <input type="number" id="filter-dur-min" class="search-input" placeholder="Min s" min="0" oninput="triggerSearch()" style="padding: 0.25rem 0.5rem;">
+                                <span style="font-size: 0.75rem; color: var(--text-secondary);">to</span>
+                                <input type="number" id="filter-dur-max" class="search-input" placeholder="Max s" min="0" oninput="triggerSearch()" style="padding: 0.25rem 0.5rem;">
+                            </div>
+                        </div>
+                    </div>
+                    <div>
+                        <label style="font-size: 0.75rem; color: var(--text-secondary); display: block; margin-bottom: 0.25rem;">Filter by Tag</label>
+                        <input type="text" id="filter-tag" class="search-input" placeholder="Enter tag name..." oninput="triggerSearch()" style="max-width: 100%;">
+                    </div>
+                    <div style="display: flex; justify-content: flex-end; margin-top: 0.25rem;">
+                        <button class="btn-secondary" onclick="resetAdvancedSearch()" style="padding: 0.25rem 0.75rem; font-size: 0.75rem; color: var(--accent-red); border-color: rgba(239, 68, 68, 0.2);">Clear Filters</button>
+                    </div>
                 </div>
             </div>
 

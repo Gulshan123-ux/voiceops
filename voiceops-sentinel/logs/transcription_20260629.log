@@ -16,3 +16,4 @@
 2026-06-29 21:39:41,287 | INFO     | root:86 | Logging initialised: level=20, file=logs/transcription_20260629.log
 2026-06-29 21:39:41,291 | INFO     | app.database:56 | Database initialized successfully at ./voiceops.db
 2026-06-29 21:39:41,291 | INFO     | app.main:116 | VoiceOps Sentinel starting up | ASR_BACKEND=whisper | MAX_FILE_SIZE=26214400 bytes
+2026-06-30 21:29:26,835 | INFO     | app.main:122 | VoiceOps Sentinel shutting down…

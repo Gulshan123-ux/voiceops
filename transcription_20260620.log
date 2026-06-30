@@ -1,0 +1,104 @@
+2026-06-20 10:13:29,746 | INFO     | root:80 | Logging initialised: level=20, file=logs/transcription_20260620.log
+2026-06-20 10:13:29,746 | INFO     | app.main:108 | VoiceOps Sentinel starting up | ASR_BACKEND=mock | MAX_FILE_SIZE=26214400 bytes
+2026-06-20 10:14:06,844 | INFO     | app.main:114 | VoiceOps Sentinel shutting down…
+2026-06-20 10:14:07,589 | INFO     | root:80 | Logging initialised: level=20, file=logs/transcription_20260620.log
+2026-06-20 10:14:07,589 | INFO     | app.main:108 | VoiceOps Sentinel starting up | ASR_BACKEND=mock | MAX_FILE_SIZE=26214400 bytes
+2026-06-20 10:14:17,115 | INFO     | app.main:114 | VoiceOps Sentinel shutting down…
+2026-06-20 10:14:17,885 | INFO     | root:80 | Logging initialised: level=20, file=logs/transcription_20260620.log
+2026-06-20 10:14:17,885 | INFO     | app.main:108 | VoiceOps Sentinel starting up | ASR_BACKEND=mock | MAX_FILE_SIZE=26214400 bytes
+2026-06-20 10:14:25,791 | INFO     | app.main:114 | VoiceOps Sentinel shutting down…
+2026-06-20 10:14:26,305 | INFO     | root:80 | Logging initialised: level=20, file=logs/transcription_20260620.log
+2026-06-20 10:14:26,305 | INFO     | app.main:108 | VoiceOps Sentinel starting up | ASR_BACKEND=mock | MAX_FILE_SIZE=26214400 bytes
+2026-06-20 10:14:39,177 | INFO     | app.main:114 | VoiceOps Sentinel shutting down…
+2026-06-20 10:14:39,713 | INFO     | root:80 | Logging initialised: level=20, file=logs/transcription_20260620.log
+2026-06-20 10:14:39,713 | INFO     | app.main:108 | VoiceOps Sentinel starting up | ASR_BACKEND=mock | MAX_FILE_SIZE=26214400 bytes
+2026-06-20 10:20:32,958 | INFO     | app.main:114 | VoiceOps Sentinel shutting down…
+2026-06-20 10:20:33,535 | INFO     | root:80 | Logging initialised: level=20, file=logs/transcription_20260620.log
+2026-06-20 10:20:33,535 | INFO     | app.main:108 | VoiceOps Sentinel starting up | ASR_BACKEND=mock | MAX_FILE_SIZE=26214400 bytes
+2026-06-20 10:21:41,760 | INFO     | app.main:114 | VoiceOps Sentinel shutting down…
+2026-06-20 10:21:42,326 | INFO     | root:80 | Logging initialised: level=20, file=logs/transcription_20260620.log
+2026-06-20 10:21:42,326 | INFO     | app.main:108 | VoiceOps Sentinel starting up | ASR_BACKEND=mock | MAX_FILE_SIZE=26214400 bytes
+2026-06-20 10:22:22,348 | INFO     | app.main:114 | VoiceOps Sentinel shutting down…
+2026-06-20 10:22:22,873 | INFO     | root:80 | Logging initialised: level=20, file=logs/transcription_20260620.log
+2026-06-20 10:22:22,874 | INFO     | app.main:108 | VoiceOps Sentinel starting up | ASR_BACKEND=mock | MAX_FILE_SIZE=26214400 bytes
+2026-06-20 10:22:38,523 | INFO     | app.main:114 | VoiceOps Sentinel shutting down…
+2026-06-20 10:22:38,944 | INFO     | root:80 | Logging initialised: level=20, file=logs/transcription_20260620.log
+2026-06-20 10:22:38,944 | INFO     | app.main:108 | VoiceOps Sentinel starting up | ASR_BACKEND=mock | MAX_FILE_SIZE=26214400 bytes
+2026-06-20 10:22:51,984 | INFO     | app.main:114 | VoiceOps Sentinel shutting down…
+2026-06-20 10:22:52,418 | INFO     | root:80 | Logging initialised: level=20, file=logs/transcription_20260620.log
+2026-06-20 10:22:52,418 | INFO     | app.main:108 | VoiceOps Sentinel starting up | ASR_BACKEND=mock | MAX_FILE_SIZE=26214400 bytes
+2026-06-20 10:23:20,727 | INFO     | app.main:114 | VoiceOps Sentinel shutting down…
+2026-06-20 10:23:21,419 | INFO     | root:80 | Logging initialised: level=20, file=logs/transcription_20260620.log
+2026-06-20 10:23:21,419 | INFO     | app.main:108 | VoiceOps Sentinel starting up | ASR_BACKEND=mock | MAX_FILE_SIZE=26214400 bytes
+2026-06-20 10:23:28,588 | INFO     | app.main:114 | VoiceOps Sentinel shutting down…
+2026-06-20 10:23:28,987 | INFO     | root:80 | Logging initialised: level=20, file=logs/transcription_20260620.log
+2026-06-20 10:23:28,987 | INFO     | app.main:108 | VoiceOps Sentinel starting up | ASR_BACKEND=mock | MAX_FILE_SIZE=26214400 bytes
+2026-06-20 10:23:45,058 | INFO     | app.main:114 | VoiceOps Sentinel shutting down…
+2026-06-20 10:23:51,240 | INFO     | root:80 | Logging initialised: level=20, file=logs/transcription_20260620.log
+2026-06-20 10:23:51,243 | INFO     | app.database:49 | Database initialized successfully at ./voiceops.db
+2026-06-20 10:23:51,244 | INFO     | app.main:110 | VoiceOps Sentinel starting up | ASR_BACKEND=mock | MAX_FILE_SIZE=26214400 bytes
+2026-06-20 10:23:57,625 | INFO     | app.main:116 | VoiceOps Sentinel shutting down…
+2026-06-20 10:23:58,022 | INFO     | root:80 | Logging initialised: level=20, file=logs/transcription_20260620.log
+2026-06-20 10:23:58,025 | INFO     | app.database:49 | Database initialized successfully at ./voiceops.db
+2026-06-20 10:23:58,025 | INFO     | app.main:110 | VoiceOps Sentinel starting up | ASR_BACKEND=mock | MAX_FILE_SIZE=26214400 bytes
+2026-06-20 10:25:10,841 | INFO     | app.main:116 | VoiceOps Sentinel shutting down…
+2026-06-20 10:25:11,269 | INFO     | root:81 | Logging initialised: level=20, file=logs/transcription_20260620.log
+2026-06-20 10:25:11,272 | INFO     | app.database:49 | Database initialized successfully at ./voiceops.db
+2026-06-20 10:25:11,272 | INFO     | app.main:111 | VoiceOps Sentinel starting up | ASR_BACKEND=mock | MAX_FILE_SIZE=26214400 bytes
+2026-06-20 10:25:19,957 | INFO     | app.main:117 | VoiceOps Sentinel shutting down…
+2026-06-20 10:25:49,315 | INFO     | root:81 | Logging initialised: level=20, file=logs/transcription_20260620.log
+2026-06-20 10:25:49,320 | INFO     | app.database:49 | Database initialized successfully at ./voiceops.db
+2026-06-20 10:25:49,320 | INFO     | app.main:111 | VoiceOps Sentinel starting up | ASR_BACKEND=mock | MAX_FILE_SIZE=26214400 bytes
+2026-06-20 10:36:27,639 | INFO     | app.main:117 | VoiceOps Sentinel shutting down…
+2026-06-20 10:36:28,341 | INFO     | root:81 | Logging initialised: level=20, file=logs/transcription_20260620.log
+2026-06-20 10:36:28,346 | INFO     | app.database:49 | Database initialized successfully at ./voiceops.db
+2026-06-20 10:36:28,346 | INFO     | app.main:111 | VoiceOps Sentinel starting up | ASR_BACKEND=mock | MAX_FILE_SIZE=26214400 bytes
+2026-06-20 10:36:30,367 | INFO     | app.main:117 | VoiceOps Sentinel shutting down…
+2026-06-20 10:36:30,944 | INFO     | root:81 | Logging initialised: level=20, file=logs/transcription_20260620.log
+2026-06-20 10:36:30,946 | INFO     | app.database:49 | Database initialized successfully at ./voiceops.db
+2026-06-20 10:36:30,947 | INFO     | app.main:111 | VoiceOps Sentinel starting up | ASR_BACKEND=mock | MAX_FILE_SIZE=26214400 bytes
+2026-06-20 10:36:32,572 | INFO     | app.main:117 | VoiceOps Sentinel shutting down…
+2026-06-20 10:36:33,277 | INFO     | root:81 | Logging initialised: level=20, file=logs/transcription_20260620.log
+2026-06-20 10:36:33,281 | INFO     | app.database:49 | Database initialized successfully at ./voiceops.db
+2026-06-20 10:36:33,281 | INFO     | app.main:111 | VoiceOps Sentinel starting up | ASR_BACKEND=mock | MAX_FILE_SIZE=26214400 bytes
+2026-06-20 10:36:33,382 | INFO     | app.main:117 | VoiceOps Sentinel shutting down…
+2026-06-20 10:36:33,840 | INFO     | root:81 | Logging initialised: level=20, file=logs/transcription_20260620.log
+2026-06-20 10:36:33,843 | INFO     | app.database:49 | Database initialized successfully at ./voiceops.db
+2026-06-20 10:36:33,843 | INFO     | app.main:111 | VoiceOps Sentinel starting up | ASR_BACKEND=mock | MAX_FILE_SIZE=26214400 bytes
+2026-06-20 10:37:10,039 | INFO     | app.main:117 | VoiceOps Sentinel shutting down…
+2026-06-20 10:37:10,800 | INFO     | root:81 | Logging initialised: level=20, file=logs/transcription_20260620.log
+2026-06-20 10:37:10,808 | INFO     | app.database:49 | Database initialized successfully at ./voiceops.db
+2026-06-20 10:37:10,809 | INFO     | app.main:111 | VoiceOps Sentinel starting up | ASR_BACKEND=mock | MAX_FILE_SIZE=26214400 bytes
+2026-06-20 10:39:43,501 | INFO     | app.main:117 | VoiceOps Sentinel shutting down…
+2026-06-20 10:39:44,340 | INFO     | root:81 | Logging initialised: level=20, file=logs/transcription_20260620.log
+2026-06-20 10:39:44,346 | INFO     | app.database:49 | Database initialized successfully at ./voiceops.db
+2026-06-20 10:39:44,346 | INFO     | app.main:111 | VoiceOps Sentinel starting up | ASR_BACKEND=mock | MAX_FILE_SIZE=26214400 bytes
+2026-06-20 10:42:47,355 | INFO     | app.main:117 | VoiceOps Sentinel shutting down…
+2026-06-20 10:42:48,056 | INFO     | root:81 | Logging initialised: level=20, file=logs/transcription_20260620.log
+2026-06-20 10:42:48,060 | INFO     | app.database:49 | Database initialized successfully at ./voiceops.db
+2026-06-20 10:42:48,060 | INFO     | app.main:111 | VoiceOps Sentinel starting up | ASR_BACKEND=mock | MAX_FILE_SIZE=26214400 bytes
+2026-06-20 10:43:40,422 | INFO     | app.main:117 | VoiceOps Sentinel shutting down…
+2026-06-20 10:43:41,023 | INFO     | root:81 | Logging initialised: level=20, file=logs/transcription_20260620.log
+2026-06-20 10:43:41,027 | INFO     | app.database:49 | Database initialized successfully at ./voiceops.db
+2026-06-20 10:43:41,027 | INFO     | app.main:111 | VoiceOps Sentinel starting up | ASR_BACKEND=mock | MAX_FILE_SIZE=26214400 bytes
+2026-06-20 10:46:02,004 | INFO     | app.main:117 | VoiceOps Sentinel shutting down…
+2026-06-20 10:46:03,103 | INFO     | root:81 | Logging initialised: level=20, file=logs/transcription_20260620.log
+2026-06-20 10:46:03,108 | INFO     | app.database:49 | Database initialized successfully at ./voiceops.db
+2026-06-20 10:46:03,108 | INFO     | app.main:111 | VoiceOps Sentinel starting up | ASR_BACKEND=mock | MAX_FILE_SIZE=26214400 bytes
+2026-06-20 10:47:15,785 | INFO     | app.main:117 | VoiceOps Sentinel shutting down…
+2026-06-20 10:47:16,358 | INFO     | root:81 | Logging initialised: level=20, file=logs/transcription_20260620.log
+2026-06-20 10:47:16,361 | INFO     | app.database:49 | Database initialized successfully at ./voiceops.db
+2026-06-20 10:47:16,361 | INFO     | app.main:111 | VoiceOps Sentinel starting up | ASR_BACKEND=mock | MAX_FILE_SIZE=26214400 bytes
+2026-06-20 10:50:52,789 | INFO     | app.main:117 | VoiceOps Sentinel shutting down…
+2026-06-20 10:50:53,927 | INFO     | root:81 | Logging initialised: level=20, file=logs/transcription_20260620.log
+2026-06-20 10:50:53,936 | INFO     | app.database:49 | Database initialized successfully at ./voiceops.db
+2026-06-20 10:50:53,936 | INFO     | app.main:111 | VoiceOps Sentinel starting up | ASR_BACKEND=mock | MAX_FILE_SIZE=26214400 bytes
+2026-06-20 10:51:35,553 | INFO     | app.main:117 | VoiceOps Sentinel shutting down…
+2026-06-20 10:51:36,575 | INFO     | root:81 | Logging initialised: level=20, file=logs/transcription_20260620.log
+2026-06-20 10:51:36,581 | INFO     | app.database:49 | Database initialized successfully at ./voiceops.db
+2026-06-20 10:51:36,581 | INFO     | app.main:111 | VoiceOps Sentinel starting up | ASR_BACKEND=mock | MAX_FILE_SIZE=26214400 bytes
+2026-06-20 10:52:46,410 | INFO     | app.main:117 | VoiceOps Sentinel shutting down…
+2026-06-20 10:52:47,312 | INFO     | root:81 | Logging initialised: level=20, file=logs/transcription_20260620.log
+2026-06-20 10:52:47,317 | INFO     | app.database:49 | Database initialized successfully at ./voiceops.db
+2026-06-20 10:52:47,317 | INFO     | app.main:111 | VoiceOps Sentinel starting up | ASR_BACKEND=mock | MAX_FILE_SIZE=26214400 bytes
+2026-06-22 09:04:12,149 | INFO     | app.main:117 | VoiceOps Sentinel shutting down…

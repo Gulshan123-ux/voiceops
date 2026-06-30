@@ -218,17 +218,7 @@ function renderCallHistoryTable(callsToRender) {
 }
 
 function getProcessedCalls() {
-    const searchInput = document.getElementById('db-search');
-    const query = searchInput ? searchInput.value.toLowerCase() : '';
-    
     let processed = [...allCalls];
-    if (query) {
-        processed = processed.filter(call => 
-            call.audio_file.toLowerCase().includes(query) ||
-            (call.sentiment || '').toLowerCase().includes(query)
-        );
-    }
-    
     const selector = document.getElementById('sort-selector');
     const currentSort = selector ? selector.value : 'date-desc';
     
@@ -239,18 +229,75 @@ function getProcessedCalls() {
     } else if (currentSort === 'wer-desc') {
         processed.sort((a, b) => (b.wer_score || 0) - (a.wer_score || 0));
     } else if (currentSort === 'wer-asc') {
-        processed.sort((a, b) => (a.wer_score || 999) - (b.wer_score || 999));
+        processed.sort((a, b) => (a.wer_score || 999) - (a.wer_score || 999));
     }
     
     return processed;
 }
 
 function filterCallHistory() {
-    renderCallHistoryTable(getProcessedCalls());
+    triggerSearch();
 }
 
 function sortCallHistory() {
     renderCallHistoryTable(getProcessedCalls());
+}
+
+async function triggerSearch() {
+    const q = document.getElementById('db-search')?.value.trim() || '';
+    const sentiment = document.getElementById('filter-sentiment')?.value || '';
+    const flagged = document.getElementById('filter-flagged')?.value || '';
+    const tag = document.getElementById('filter-tag')?.value.trim() || '';
+    const werMinVal = document.getElementById('filter-wer-min')?.value || '';
+    const werMaxVal = document.getElementById('filter-wer-max')?.value || '';
+    const durMinVal = document.getElementById('filter-dur-min')?.value || '';
+    const durMaxVal = document.getElementById('filter-dur-max')?.value || '';
+
+    // Convert WER % from input (e.g. 15%) to decimal (0.15) for database search
+    const wer_min = werMinVal ? parseFloat(werMinVal) / 100 : '';
+    const wer_max = werMaxVal ? parseFloat(werMaxVal) / 100 : '';
+
+    const params = new URLSearchParams();
+    if (q) params.append('q', q);
+    if (sentiment) params.append('sentiment', sentiment);
+    if (flagged !== '') params.append('flagged', flagged === '1' ? 'true' : 'false');
+    if (tag) params.append('tag', tag);
+    if (wer_min !== '') params.append('wer_min', wer_min);
+    if (wer_max !== '') params.append('wer_max', wer_max);
+    if (durMinVal !== '') params.append('duration_min', durMinVal);
+    if (durMaxVal !== '') params.append('duration_max', durMaxVal);
+
+    try {
+        const res = await fetch(`${API_URL}/calls?${params.toString()}`);
+        if (res.ok) {
+            allCalls = await res.json();
+            sortCallHistory();
+        }
+    } catch (err) {
+        console.error("Failed to query calls:", err);
+    }
+}
+
+function toggleAdvancedSearch() {
+    const panel = document.getElementById('advanced-search-panel');
+    if (!panel) return;
+    if (panel.style.display === 'none') {
+        panel.style.display = 'flex';
+    } else {
+        panel.style.display = 'none';
+    }
+}
+
+function resetAdvancedSearch() {
+    const elements = [
+        'filter-sentiment', 'filter-flagged', 'filter-tag',
+        'filter-wer-min', 'filter-wer-max', 'filter-dur-min', 'filter-dur-max'
+    ];
+    elements.forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.value = '';
+    });
+    triggerSearch();
 }
 
 
@@ -355,6 +402,22 @@ function renderDetailsPane() {
             </div>
         </div>
 
+        <!-- Tags Manager -->
+        <div style="margin-top: 0.75rem; background:rgba(0,0,0,0.1); padding:0.75rem; border-radius:0.5rem; border:1px solid var(--border-color);">
+            <div style="font-size:0.75rem; color:var(--text-secondary); text-transform:uppercase; margin-bottom: 0.5rem; font-weight: 600;">Tags</div>
+            <div id="call-tags-list" style="display: flex; flex-wrap: wrap; align-items: center; gap: 0.25rem;">
+                ${(selectedCall.tags || []).map(tag => `
+                    <span class="tag-badge">
+                        ${tag}
+                        <button class="tag-delete-btn" onclick="event.stopPropagation(); removeCallTag('${selectedCall.job_id}', '${tag}')">×</button>
+                    </span>
+                `).join('')}
+                <div id="tag-add-container" style="display: inline-flex; align-items: center;">
+                    <button class="tag-add-btn" onclick="showAddTagInput()">+ Add Tag</button>
+                </div>
+            </div>
+        </div>
+
         <!-- Week 2: Intelligence Layer — Call Summary Panel -->
         ${renderIntelligencePanel(selectedCall)}
 
@@ -373,6 +436,14 @@ function renderDetailsPane() {
                 </button>
                 <button class="btn-secondary" id="audio-stop-btn" onclick="stopAudioPlayback()" style="padding: 0.35rem 0.85rem; font-size:0.75rem;">⏹ Stop</button>
                 
+                <select id="playback-speed-selector" class="search-input" onchange="changePlaybackSpeed()" style="width: auto; max-width: 75px; padding: 0.25rem; font-size: 0.75rem; height: 30px; margin: 0; line-height: 1;">
+                    <option value="0.5">0.5x</option>
+                    <option value="1.0" selected>1.0x</option>
+                    <option value="1.25">1.25x</option>
+                    <option value="1.5">1.5x</option>
+                    <option value="2.0">2.0x</option>
+                </select>
+
                 <!-- Clickable Progress Track -->
                 <div id="audio-progress-track" onclick="onProgressTrackClick(event)" style="flex:1; height:6px; background:var(--border-color); border-radius:3px; position:relative; cursor:pointer; overflow:hidden;">
                     <div id="audio-progress-bar" style="position:absolute; top:0; left:0; width:0%; height:100%; background:var(--accent-blue); transition: width 0.05s linear;"></div>
@@ -1161,8 +1232,9 @@ function drawSentimentChart(stats) {
         currentAngle += sliceAngle;
     });
 
-    // Draw Donut Cutout
-    ctx.fillStyle = '#1e293b'; // Card background color
+    // Draw Donut Cutout dynamically using CSS variables
+    const computedStyle = getComputedStyle(document.documentElement);
+    ctx.fillStyle = computedStyle.getPropertyValue('--bg-card').trim() || '#ffffff';
     ctx.beginPath();
     ctx.arc(centerX, centerY, radius * 0.5, 0, Math.PI * 2);
     ctx.fill();
@@ -1179,7 +1251,144 @@ function drawSentimentChart(stats) {
         ctx.fillStyle = slice.color;
         ctx.fillRect(lx, ly - 5, 10, 10);
         
-        ctx.fillStyle = '#f8fafc';
+        ctx.fillStyle = computedStyle.getPropertyValue('--text-primary').trim() || '#0f172a';
         ctx.fillText(`${slice.label}: ${slice.count} (${((slice.count / total) * 100).toFixed(0)}%)`, lx + 16, ly);
     });
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Premium Theme Toggle (Light / Dark Mode)
+// ─────────────────────────────────────────────────────────────────────────────
+function toggleTheme() {
+    const currentTheme = document.documentElement.getAttribute('data-theme') || 'light';
+    const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+    document.documentElement.setAttribute('data-theme', newTheme);
+    localStorage.setItem('theme', newTheme);
+    updateThemeToggleUI(newTheme);
+    
+    // Redraw charts to update colors for the new theme
+    if (allCalls && allCalls.length > 0) {
+        drawWERChart(allCalls);
+        const stats = computeStatsFromCalls(allCalls);
+        drawSentimentChart(stats);
+    }
+}
+
+function updateThemeToggleUI(theme) {
+    const btns = document.querySelectorAll('#theme-toggle-btn');
+    btns.forEach(btn => {
+        btn.innerText = theme === 'dark' ? '☀️' : '🌙';
+    });
+}
+
+function computeStatsFromCalls(calls) {
+    const total_calls = calls.length;
+    let positive_calls = 0, negative_calls = 0, neutral_calls = 0;
+    calls.forEach(c => {
+        if (c.sentiment === 'Positive') positive_calls++;
+        else if (c.sentiment === 'Negative') negative_calls++;
+        else neutral_calls++;
+    });
+    return { total_calls, positive_calls, negative_calls, neutral_calls };
+}
+
+// Run immediately to load theme state
+(function() {
+    const savedTheme = localStorage.getItem('theme') || 'light';
+    document.documentElement.setAttribute('data-theme', savedTheme);
+    document.addEventListener('DOMContentLoaded', () => {
+        updateThemeToggleUI(savedTheme);
+    });
+})();
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Playback Speed Control
+// ─────────────────────────────────────────────────────────────────────────────
+function changePlaybackSpeed() {
+    const selector = document.getElementById('playback-speed-selector');
+    const audio = document.getElementById('active-call-audio');
+    if (selector && audio) {
+        audio.playbackRate = parseFloat(selector.value);
+    }
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Tag Management
+// ─────────────────────────────────────────────────────────────────────────────
+function showAddTagInput() {
+    const container = document.getElementById('tag-add-container');
+    if (!container) return;
+    container.innerHTML = `
+        <div class="tag-add-container">
+            <input type="text" id="new-tag-input" class="tag-input-field" placeholder="Tag..." onkeydown="handleTagInputKey(event)">
+            <button class="tag-save-btn" onclick="saveCallTag()">Save</button>
+            <button class="tag-cancel-btn" onclick="cancelAddTag()">Cancel</button>
+        </div>
+    `;
+    const input = document.getElementById('new-tag-input');
+    if (input) input.focus();
+}
+
+function cancelAddTag() {
+    const container = document.getElementById('tag-add-container');
+    if (!container) return;
+    container.innerHTML = `<button class="tag-add-btn" onclick="showAddTagInput()">+ Add Tag</button>`;
+}
+
+function handleTagInputKey(event) {
+    if (event.key === 'Enter') {
+        saveCallTag();
+    } else if (event.key === 'Escape') {
+        cancelAddTag();
+    }
+}
+
+async function saveCallTag() {
+    const input = document.getElementById('new-tag-input');
+    if (!input || !selectedCall) return;
+    const tagVal = input.value.trim().toLowerCase();
+    if (!tagVal) return;
+
+    try {
+        const formData = new FormData();
+        formData.append('tag', tagVal);
+        const res = await fetch(`${API_URL}/calls/${selectedCall.job_id}/tags`, {
+            method: 'POST',
+            body: formData
+        });
+        if (res.ok) {
+            const updatedTags = await res.json();
+            selectedCall.tags = updatedTags;
+            const localCall = allCalls.find(c => c.job_id === selectedCall.job_id);
+            if (localCall) localCall.tags = updatedTags;
+            
+            renderDetailsPane();
+        } else {
+            alert('Failed to save tag');
+        }
+    } catch (err) {
+        console.error('Error saving tag:', err);
+    }
+}
+
+async function removeCallTag(jobId, tagVal) {
+    try {
+        const res = await fetch(`${API_URL}/calls/${jobId}/tags/${encodeURIComponent(tagVal)}`, {
+            method: 'DELETE'
+        });
+        if (res.ok) {
+            const updatedTags = await res.json();
+            if (selectedCall && selectedCall.job_id === jobId) {
+                selectedCall.tags = updatedTags;
+            }
+            const localCall = allCalls.find(c => c.job_id === jobId);
+            if (localCall) localCall.tags = updatedTags;
+            
+            renderDetailsPane();
+        } else {
+            alert('Failed to remove tag');
+        }
+    } catch (err) {
+        console.error('Error removing tag:', err);
+    }
 }

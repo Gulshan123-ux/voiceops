@@ -19,7 +19,10 @@
             <li><a href="/" class="active">Home</a></li>
             <li><a href="/dashboard">Dashboard</a></li>
         </ul>
-        <a href="/dashboard" class="nav-btn">Open App</a>
+        <div style="display: flex; align-items: center; gap: 1rem;">
+            <button id="theme-toggle-btn" onclick="toggleTheme()" class="btn-secondary" style="padding: 0.375rem 0.75rem; font-size: 1rem; border-radius: 50%; width: 2.25rem; height: 2.25rem; display: flex; align-items: center; justify-content: center; box-shadow: none;">🌙</button>
+            <a href="/dashboard" class="nav-btn">Open App</a>
+        </div>
     </nav>
 
     <!-- Status Bar -->
