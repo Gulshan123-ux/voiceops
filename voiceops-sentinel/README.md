@@ -1,5 +1,5 @@
 # 🎙️ VoiceOps Sentinel
-### Real-Time Call Intelligence System — Week 2: Intelligence Layer
+### Real-Time Call Intelligence System — Week 2: Intelligence Layer & Advanced Search
 
 [![Python 3.11+](https://img.shields.io/badge/python-3.11+-blue.svg)](https://python.org)
 [![FastAPI](https://img.shields.io/badge/FastAPI-0.111-green.svg)](https://fastapi.tiangolo.com)
@@ -8,11 +8,14 @@
 
 VoiceOps Sentinel is a **production-grade audio transcription and call intelligence pipeline** designed for customer support operations. The system validates and preprocesses audio uploads, runs multi-engine speech recognition (Whisper / Deepgram fallback), applies Presidio PII redaction, extracts actionable follow-ups, structures speaker-labeled transcripts, generates call summaries, and measures stage latency against strict targets.
 
+The platform now features an **advanced search engine, dynamic metadata tagging, custom audio playback speeds, and a premium Light/Dark theme toggle**, backed by robust SQLite persistence and auto-migration schemas.
+
 ---
 
 ## 📋 Table of Contents
 
 - [Architecture](#-architecture)
+- [New Advanced Features](#-new-advanced-features)
 - [Prerequisites](#-prerequisites)
 - [Installation](#-installation)
 - [Configuration](#-configuration)
@@ -75,8 +78,23 @@ Audio File (mp3/wav/flac)
 │  SQLite DB & Operations Dashboard                       │
 │    • Stores metadata, summaries, segments, latency logs │
 │    • Dynamic frontend charts (Chart.js) + sync audio    │
+│    • NEW: Dynamic search service & tags service modules │
 └─────────────────────────────────────────────────────────┘
 ```
+
+---
+
+## ✨ New Advanced Features
+
+1. **Advanced Database & Backend Search Service**:
+   - Dynamic query builder filtering transcripts, filenames, sentiments, alerts/flagged status, custom tag metadata, WER scores, and call durations.
+   - Persisted SQLite intelligence schema upgrades running auto-migrations on application launch.
+2. **Dynamic Tag Management Service**:
+   - Multi-tag additions and deletions saved directly to the database calls store.
+3. **Responsive Operations Control**:
+   - Expanded filters drawer on the dashboard for deep search queries.
+   - Variable playback speed controls (`0.5x` up to `2.0x`) matching call listener requirements.
+   - Gorgeous premium Light/Dark theme toggle with dynamic Chart.js color adaptation.
 
 ---
 
@@ -163,7 +181,13 @@ Uploads and transcribes audio files, executes PII redaction, and processes Week 
   ```
 
 ### 2. `GET /calls`
-Returns an array of all call history records stored in the database.
+Returns an array of call history records. Accepts advanced filtering parameters:
+- `q`: Search query string matching filenames and transcripts.
+- `sentiment`: Filter by sentiment string (`Positive`, `Negative`, `Neutral`).
+- `flagged`: Boolean string (`true`, `false`) matching flagged/alert calls.
+- `tag`: Filter calls containing a specific tag badge.
+- `wer_min` / `wer_max`: Word Error Rate range values (0.0 to 1.0).
+- `duration_min` / `duration_max`: Duration range values in seconds.
 
 ### 3. `GET /calls/{job_id}`
 Returns details for a single call record.
@@ -172,11 +196,18 @@ Returns details for a single call record.
 Permanently removes a call record and its associated audio file.
 
 ### 5. `GET /stats`
-Returns aggregated analytics metrics (averages, sentiments, flagged totals) for the Operations Dashboard.
+Returns aggregated analytics metrics for the Operations Dashboard.
 
 ### 6. `GET /calls/{job_id}/audio`
-Retrieves the preprocessed WAV audio file for browser playback and real-time streaming.
+Retrieves the preprocessed WAV audio file.
 
+### 7. `POST /calls/{job_id}/tags`
+Adds a unique tag to the specified call record.
+- **Form Data**:
+  - `tag`: The tag name to add.
+
+### 8. `DELETE /calls/{job_id}/tags/{tag}`
+Removes a tag from the specified call record.
 
 ---
 
@@ -210,6 +241,7 @@ Retrieves the preprocessed WAV audio file for browser playback and real-time str
   "summary_resolution": "Agent processing transaction",
   "summary_follow_up": "None",
   "summary_engine": "extractive",
+  "tags": ["refund", "frustrated"],
   "latency_report": {
     "preprocess_ms": 120.4,
     "transcribe_ms": 1105.1,
@@ -246,7 +278,7 @@ print_wer_report(report)
 
 ## 🧪 Running Tests
 
-A comprehensive suite of **76 tests** covers the transcription dispatchers, preprocessing conversions, Presidio redactions, summarization, and latency timer modules.
+A comprehensive suite of **80 tests** covers the transcription dispatchers, preprocessing conversions, Presidio redactions, summarization, latency timer modules, advanced queries, and tags.
 
 ```bash
 # Run pytest globally using the venv interpreter
@@ -267,17 +299,22 @@ voiceops-sentinel/
 │   ├── summarizer.py        # CallSummarizer (GPT-3.5 + extractive fallback)
 │   ├── latency_tracker.py   # Stage microsecond timing & benchmarks
 │   ├── schemas.py           # Pydantic validation models
-│   └── database.py          # SQLite connections and migrations
+│   ├── database.py          # SQLite connections and migrations
+│   ├── search/
+│   │   └── search_service.py # Parameterized multi-field SQL query builder
+│   └── tags/
+│       └── tags_service.py  # Unique tag additions/removals logic
 ├── tests/
 │   ├── test_transcriber.py  # Mocked transcriber tests
 │   ├── test_preprocessor.py # Preprocessor conversions verification
 │   ├── test_wer.py          # jiwer metrics unit tests
-│   └── test_intelligence.py # Summarization and latency unit tests
+│   ├── test_intelligence.py # Summarization and latency unit tests
+│   └── test_advanced_features.py # Search & tag backend test suite
 ├── frontend/
-│   ├── index.html           # Landing layout Page
-│   ├── dashboard.html       # Operations Workspace layout
-│   ├── app.js               # Audio player sync, filters, and rendering pipeline
-│   └── style.css            # Dark/Glassmorphic dashboard theme
+│   ├── index.html           # Landing layout Page (Theme toggle)
+│   ├── dashboard.html       # Operations Workspace layout (Search panel)
+│   ├── app.js               # Audio speed controls, tag binders, and theme toggle logic
+│   └── style.css            # Dark/Glassmorphic dashboard theme overrides
 ├── requirements.txt         # Pinned packages list
 └── README.md                # System documentation
 ```

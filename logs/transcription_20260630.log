@@ -1,0 +1,12 @@
+2026-06-30 21:38:06,171 | INFO     | root:86 | Logging initialised: level=20, file=logs/transcription_20260630.log
+2026-06-30 21:38:06,175 | INFO     | app.database:56 | Added 'summary' column to calls table
+2026-06-30 21:38:06,175 | INFO     | app.database:59 | Added 'summary_issue' column to calls table
+2026-06-30 21:38:06,176 | INFO     | app.database:62 | Added 'summary_resolution' column to calls table
+2026-06-30 21:38:06,176 | INFO     | app.database:65 | Added 'summary_follow_up' column to calls table
+2026-06-30 21:38:06,176 | INFO     | app.database:68 | Added 'summary_engine' column to calls table
+2026-06-30 21:38:06,177 | INFO     | app.database:71 | Added 'latency_report' column to calls table
+2026-06-30 21:38:06,177 | INFO     | app.database:74 | Added 'tags' column to calls table
+2026-06-30 21:38:06,177 | INFO     | app.database:77 | Database initialized successfully at ./voiceops.db
+2026-06-30 21:38:06,177 | INFO     | app.main:116 | VoiceOps Sentinel starting up | ASR_BACKEND=whisper | MAX_FILE_SIZE=26214400 bytes
+2026-06-30 21:45:43,259 | INFO     | app.database:213 | Updated tags for call 91784807-d3d0-41a4-954b-98438c42a0a3: ['billing']
+2026-06-30 21:46:25,438 | INFO     | app.database:213 | Updated tags for call 91784807-d3d0-41a4-954b-98438c42a0a3: []
